@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TrackerService.Api.Controllers
@@ -11,7 +12,13 @@ namespace TrackerService.Api.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new[] { "value1", "value2" };
+            return new[] { "value1", "value2", "value3" };
+        }
+
+        [Route("time")]
+        public ActionResult<string> GetCurrentTime()
+        {
+            return DateTime.Now.ToLongDateString();
         }
 
         // GET api/values/5
