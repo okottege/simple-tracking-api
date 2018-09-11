@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tests\TrackerService.Api\TrackerService.Api.csproj" />
+    <ProjectReference Include="..\..\TrackerService.Api\TrackerService.Api.csproj" />
   </ItemGroup>
 
 </Project>
