@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackerService.Api", "Track
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Api.Tests", "Tests\Tracker.Api.Tests\Tracker.Api.Tests.csproj", "{5315DB38-0C59-4660-B8C6-7FDD1BA2B955}"
 EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "TrackerService.Deployment", "TrackerService.Deployment\TrackerService.Deployment.deployproj", "{1F1C02C9-EDFD-4DC0-9782-3403A5B99F63}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{5315DB38-0C59-4660-B8C6-7FDD1BA2B955}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5315DB38-0C59-4660-B8C6-7FDD1BA2B955}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5315DB38-0C59-4660-B8C6-7FDD1BA2B955}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F1C02C9-EDFD-4DC0-9782-3403A5B99F63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F1C02C9-EDFD-4DC0-9782-3403A5B99F63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F1C02C9-EDFD-4DC0-9782-3403A5B99F63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F1C02C9-EDFD-4DC0-9782-3403A5B99F63}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
