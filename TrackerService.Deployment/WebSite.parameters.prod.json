@@ -3,10 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "hostingPlanName": {
-      "value": "hp-tracking-service"
+      "value": "hp-prod-tracking-service"
     },
     "skuName": {
-      "value":  "S1"
-    }
+      "value": "S1"
+    },
+    "website": {
+      "value": "prod-tracking-service-api"
+    } 
   }
 }
