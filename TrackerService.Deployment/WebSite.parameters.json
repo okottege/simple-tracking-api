@@ -4,6 +4,9 @@
   "parameters": {
     "hostingPlanName": {
       "value": "hp-tracking-service"
+    },
+    "skuName": {
+      "value":  "S1"
     }
   }
 }
