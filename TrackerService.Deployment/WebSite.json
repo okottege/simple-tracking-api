@@ -290,6 +290,53 @@
       "properties": {
         "applicationId": "[variables('webSiteName')]"
       }
+    },
+    {
+      "type": "Microsoft.Web/sites/slots",
+      "kind": "app",
+      "name": "[concat(variables('webSiteName'), '/staging')]",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName":  "slot"
+      },
+      "scale": null,
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('webSiteName'), '-staging.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('webSiteName'), '-staging.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
+        "reserved": false,
+        "siteConfig": null,
+        "scmSiteAlsoStopped": false,
+        "hostingEnvironmentProfile": null,
+        "clientAffinityEnabled": true,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 0,
+        "dailyMemoryTimeQuota": 0,
+        "cloningInfo": null
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('webSiteName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+      ]
     }
   ]
 }
