@@ -298,7 +298,7 @@
       "apiVersion": "2016-08-01",
       "location": "[resourceGroup().location]",
       "tags": {
-        "displayName":  "slot"
+        "displayName": "slot"
       },
       "scale": null,
       "properties": {
