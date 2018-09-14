@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TrackerService.Api.Controllers
@@ -11,8 +10,9 @@ namespace TrackerService.Api.Controllers
         {
             return new
             {
-                Version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                    .InformationalVersion
+                Version = Assembly.GetEntryAssembly()
+                                  .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                                  .InformationalVersion
             };
         }
     }
