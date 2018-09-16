@@ -36,10 +36,22 @@
       }
     },
     "website": {
-      "type": "string", 
+      "type": "string",
       "metadata": {
-        "description":  "The name of the website" 
+        "description": "The name of the website"
       }
+    },
+    "sql-server-name": {
+      "type": "string"
+    },
+    "sql-admin-login": {
+      "type": "string"
+    },
+    "simple-tax-db-name": {
+      "type": "string"
+    },
+    "sql-admin-password": {
+      "type": "string"
     } 
   },
   "variables": {
@@ -342,6 +354,41 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('webSiteName'))]",
         "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Sql/servers",
+      "kind": "v12.0",
+      "name": "[parameters('sql-server-name')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "australiasoutheast",
+      "scale": null,
+      "properties": {
+        "administratorLogin": "[parameters('sql-admin-login')]",
+        "administratorLoginPassword": "[parameters('sql-admin-password')]",
+        "version": "12.0"
+      },
+      "dependsOn": []
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "sku": {
+        "name": "Basic",
+        "tier": "Basic"
+      },
+      "kind": "v12.0,user",
+      "name": "[concat(parameters('sql-server-name'), '/', parameters('simple-tax-db-name'))]",
+      "apiVersion": "2017-03-01-preview",
+      "location": "australiasoutheast",
+      "scale": null,
+      "properties": {
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "maxSizeBytes": 2147483648,
+        "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+        "zoneRedundant": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', parameters('sql-server-name'))]"
       ]
     }
   ]
