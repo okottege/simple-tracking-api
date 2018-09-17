@@ -3,9 +3,16 @@ using TrackerService.Data.Repositories;
 
 namespace TrackerService.Data
 {
-    public static class RepositoryFactory
+    public class RepositoryFactory : IRepositoryFactory
     {
-        public static IEmployeeRepository CreateEmployeeRepository(string connString)
+        private readonly string connString;
+
+        public RepositoryFactory(string connString)
+        {
+            this.connString = connString;
+        }
+
+        public IEmployeeRepository CreateEmployeeRepository()
         {
             return new EmployeeSqlRepository(connString);
         }
