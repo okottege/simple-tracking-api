@@ -58,6 +58,7 @@ steps:
   displayName: 'Publish Sql Scripts'
   inputs:
     PathtoPublish: 'TrackerService.Data/SqlFiles'
+    ArtifactName: 'sql'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish ARM Artifacts'
