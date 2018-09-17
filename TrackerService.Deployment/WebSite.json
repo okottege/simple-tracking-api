@@ -358,6 +358,9 @@
     },
     {
       "type": "Microsoft.Sql/servers",
+      "tags": {
+        "displayName": "sql-instance" 
+      },
       "kind": "v12.0",
       "name": "[parameters('sql-server-name')]",
       "apiVersion": "2015-05-01-preview",
@@ -372,6 +375,9 @@
     },
     {
       "type": "Microsoft.Sql/servers/databases",
+      "tags": {
+        "displayName": "sql-database" 
+      },
       "sku": {
         "name": "Basic",
         "tier": "Basic"
