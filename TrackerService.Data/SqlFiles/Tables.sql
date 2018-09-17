@@ -1,14 +1,13 @@
-﻿IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='dbo.employee' AND xtype = 'U')
+﻿IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='employee' AND xtype = 'U')
 BEGIN
     CREATE TABLE dbo.employee(
         employeeId  INT IDENTITY(1, 1),
-        firstName NVARCHAR(50),
-        lastName NVARCHAR(50),
-        dateOfBirth DATE,
-        startDate DATE
+        firstName NVARCHAR(50) NOT NULL,
+        lastName NVARCHAR(50) NOT NULL,
+        dateOfBirth DATE NOT NULL,
+        startDate DATE NOT NULL,
+
+        CONSTRAINT PK_employee_employeeId PRIMARY KEY (employeeId)
     );
-
-    ALTER TABLE dbo.employee ADD CONSTRAINT PK_employee_employeeId PRIMARY KEY
 END
-GO;
-
+GO
