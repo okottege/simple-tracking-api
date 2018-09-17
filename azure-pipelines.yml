@@ -54,6 +54,10 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)/TrackerService.Api.zip'
 
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Sql Scripts'
+  inputs:
+    PathtoPublish: 'TrackerService.Data/SqlFiles'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish ARM Artifacts'
