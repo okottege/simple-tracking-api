@@ -399,9 +399,6 @@
     },
     {
       "type": "Microsoft.Sql/servers/firewallRules",
-      "tags": {
-        "displayName": "db-firewall-rule"
-      },
       "kind": "v12.0",
       "name": "[concat(parameters('sql-server-name'), '/', 'allow-access-to-azure-services')]",
       "apiVersion": "2014-04-01-preview",
