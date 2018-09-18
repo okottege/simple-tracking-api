@@ -400,7 +400,7 @@
     {
       "type": "Microsoft.Sql/servers/firewallRules",
       "tags": {
-        "displayName": "rule-db-allow-access-to-azure-services"
+        "displayName": "db-firewall-rule"
       },
       "kind": "v12.0",
       "name": "[concat(parameters('sql-server-name'), '/', 'allow-access-to-azure-services')]",
