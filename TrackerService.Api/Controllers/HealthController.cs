@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrackerService.Data.Contracts;
 
 namespace TrackerService.Api.Controllers
 {
+    [Authorize]
     [Route("api/health")]
     public class HealthController : ControllerBase
     {
