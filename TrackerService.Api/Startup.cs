@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using TrackerService.Data;
 using TrackerService.Data.Contracts;
 
@@ -23,26 +22,25 @@ namespace TrackerService.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var authority = string.Format(Configuration["ADSettings:ADInstance"], Configuration["ADSettings:TenantId"]);
+            var audience = Configuration["ADSettings:AppIdUri"];
+
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("default", policy => policy.RequireAuthenticatedUser());
+                options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build();
             });
 
             services.AddAuthentication(options =>
                 {
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
             .AddJwtBearer(option =>
                 {
-                    option.Authority = string.Format(Configuration["ADSettings:ADInstance"], Configuration["ADSettings:TenantId"]);
-                    option.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidAudiences = new List<string>
-                        {
-                            Configuration["ADSettings:AppIdUri"],
-                            Configuration["ADSettings:ClientId"]
-                        }
-                    };
+                    option.Authority = authority;
+                    option.Audience = audience;
 
                 });
             services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB")));
