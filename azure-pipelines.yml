@@ -29,14 +29,14 @@ steps:
     arguments: '--configuration $(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
-  displayName: Test
+  displayName: 'Run unit tests'
   inputs:
     command: test
     projects: '**/[Tt]ests/**/*.csproj'
     arguments: '--configuration $(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
-  displayName: Publish
+  displayName: 'Publish web project'
   inputs:
     command: publish
     publishWebProjects: false
@@ -45,9 +45,9 @@ steps:
     zipAfterPublish: True
 
 - task: DotNetCoreCLI@2
-  displayName: Publish
+  displayName: 'Publish Integration Test .dlls'
   inputs:
-    command: 'Publish Integration Tests'
+    command: publish
     projects: '**/*IntegrationTest*.csproj'
     arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/IntegrationTests'
 
