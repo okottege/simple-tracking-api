@@ -11,7 +11,6 @@ steps:
     command: restore
     projects: '$(Parameters.RestoreBuildProjects)'
 
-
 - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-Task.Assembly-Info-Task@1
   displayName: 'Set Assembly Manifest Data'
   inputs:
@@ -22,7 +21,6 @@ steps:
     VersionNumber: '$(Build.BuildNumber)'
     FileVersionNumber: '$(Build.BuildNumber)'
     InformationalVersion: '$(Build.BuildNumber)'
-
 
 - task: DotNetCoreCLI@2
   displayName: Build
@@ -38,7 +36,6 @@ steps:
     projects: '**/[Tt]ests/**/*.csproj'
     arguments: '--configuration $(BuildConfiguration)'
 
-
 - task: DotNetCoreCLI@2
   displayName: Publish
   inputs:
@@ -48,6 +45,21 @@ steps:
     arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
     zipAfterPublish: True
 
+- task: DotNetCoreCLI@2
+  displayName: Publish
+  inputs:
+    command: 'Publish Integration Tests'
+    projects: '**/*IntegrationTest*.csproj'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/IntegrationTests'
+
+steps:
+
+- task: CopyFiles@2
+  displayName: 'Copy runsettings file'
+  inputs:
+    Contents: '**\*.runsettings'
+    TargetFolder: '$(build.artifactstagingdirectory)\IntegrationTests'
+    flattenFolders: true
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Web Artifacts'
@@ -65,3 +77,9 @@ steps:
   inputs:
     PathtoPublish: TrackerService.Deployment
     ArtifactName: arm
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Integration Tests'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)/IntegrationTests'
+    ArtifactName: IntegrationTests
