@@ -28,7 +28,6 @@ steps:
     projects: '$(Parameters.RestoreBuildProjects)'
     arguments: '--configuration $(BuildConfiguration)'
 
-
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
@@ -51,8 +50,6 @@ steps:
     command: 'Publish Integration Tests'
     projects: '**/*IntegrationTest*.csproj'
     arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/IntegrationTests'
-
-steps:
 
 - task: CopyFiles@2
   displayName: 'Copy runsettings file'
