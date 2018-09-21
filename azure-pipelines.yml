@@ -35,7 +35,7 @@ steps:
   displayName: Test
   inputs:
     command: test
-    projects: '**/*[Tt]ests/*.csproj'
+    projects: '**/[Tt]ests/**/*.csproj'
     arguments: '--configuration $(BuildConfiguration)'
 
 
