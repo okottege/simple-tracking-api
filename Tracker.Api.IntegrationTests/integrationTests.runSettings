@@ -3,7 +3,7 @@
 
   <!-- Parameters used by tests at runtime -->  
   <TestRunParameters>  
-    <Parameter name="webUrl" value="http://localhost" />  
+    <Parameter name="webUrl" value=" http://localhost:5000" />  
   </TestRunParameters>  
 
 </RunSettings> 
