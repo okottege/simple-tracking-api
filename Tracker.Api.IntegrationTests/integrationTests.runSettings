@@ -1,9 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>  
-<RunSettings>  
-
+<RunSettings>
   <!-- Parameters used by tests at runtime -->  
   <TestRunParameters>  
-    <Parameter name="webUrl" value=" http://localhost:5000" />  
-  </TestRunParameters>  
-
+    <Parameter name="webUrl" value=" http://localhost:5000" />
+    <Parameter name="clientId" value="[client-id]" />
+    <Parameter name="resource" value="[resource]" />
+    <Parameter name="username" value="[username]" />
+    <Parameter name="password" value="[password]" />
+    <Parameter name="clientSecret" value="[client-secret]" />
+    <Parameter name="tenantId" value="[tenant-id]" />
+    <Parameter name="authBaseUrl" value="[auth-base-url]" />
+  </TestRunParameters>
 </RunSettings> 
