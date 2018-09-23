@@ -1,5 +1,10 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Tracker.Api.IntegrationTests.Configuration;
 using Tracker.Api.IntegrationTests.Factories;
 
 namespace Tracker.Api.IntegrationTests
@@ -8,11 +13,26 @@ namespace Tracker.Api.IntegrationTests
     {
         private static readonly HttpClientFactory clientFactory = new HttpClientFactory();
         protected static HttpClient client;
+        protected static TestConfiguration config;
 
-        [ClassInitialize]
-        public static void InitialiseTests(TestContext testContext)
+        public static void Initialise(TestContext testContext)
         {
             client = clientFactory.CreateNewClient();
+            config = new TestConfiguration(testContext);
+        }
+
+        protected static async Task<string> GetAccessToken()
+        {
+            var payload = new Dictionary<string, string>();
+            payload["client_id"] = config.Authentication.ClientId;
+            payload["resource"] = config.Authentication.Resource;
+            payload["grant_type"] = "password";
+            payload["username"] = config.Authentication.Username;
+            payload["password"] = config.Authentication.Password;
+            payload["client_secret"] = config.Authentication.ClientSecret;
+            var response = await client.PostAsync(config.Authentication.AuthenticationBaseUrl, new FormUrlEncodedContent(payload));
+            var content = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+            return content["access_token"].ToString();
         }
     }
 }
