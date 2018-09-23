@@ -31,7 +31,9 @@ namespace Tracker.Api.IntegrationTests
             payload["password"] = config.Authentication.Password;
             payload["client_secret"] = config.Authentication.ClientSecret;
             var response = await client.PostAsync(config.Authentication.AuthenticationBaseUrl, new FormUrlEncodedContent(payload));
-            var content = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
+            var strContent = await response.Content.ReadAsStringAsync();
+            var content = JsonConvert.DeserializeObject<JObject>(strContent);
+
             return content["access_token"].ToString();
         }
     }

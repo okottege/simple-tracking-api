@@ -5,7 +5,7 @@ namespace Tracker.Api.IntegrationTests
     [TestClass]
     public class HealthCheckEndpointTests : BaseIntegrationTest
     {
-        [TestInitialize]
+        [ClassInitialize]
         public static void InitialiseTests(TestContext context)
         {
             Initialise(context);
@@ -14,7 +14,7 @@ namespace Tracker.Api.IntegrationTests
         [TestMethod]
         public void TestHealthCheck()
         {
-            var token = GetAccessToken();
+            var token = GetAccessToken().Result;
         }
     }
 }

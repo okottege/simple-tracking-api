@@ -18,7 +18,7 @@ Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "TrackerService.Deployment",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackerService.Data", "TrackerService.Data\TrackerService.Data.csproj", "{D56DC1D2-3D8D-4B2F-867E-BFE159F0499A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Api.IntegrationTests", "Tracker.Api.IntegrationTests\Tracker.Api.IntegrationTests.csproj", "{53650AC7-6D35-4E50-A778-7591344BDB04}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.Api.IntegrationTests", "Tracker.Api.IntegrationTests\Tracker.Api.IntegrationTests.csproj", "{53650AC7-6D35-4E50-A778-7591344BDB04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
