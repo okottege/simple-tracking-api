@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,14 +12,17 @@ namespace Tracker.Api.IntegrationTests
 {
     public class BaseIntegrationTest
     {
-        private static readonly HttpClientFactory clientFactory = new HttpClientFactory();
-        protected static HttpClient client;
+        protected static HttpClient serviceClient;
+        protected static HttpClient authClient;
         protected static TestConfiguration config;
 
         public static void Initialise(TestContext testContext)
         {
-            client = clientFactory.CreateNewClient();
             config = new TestConfiguration(testContext);
+            var clientFactory = new HttpClientFactory(config.WebApiUrl, config.Authentication.AuthenticationBaseUrl);
+
+            serviceClient = clientFactory.CreateNewServiceClient();
+            authClient = clientFactory.CreateNewAuthenticationClient();
         }
 
         protected static async Task<string> GetAccessToken()
@@ -30,7 +34,7 @@ namespace Tracker.Api.IntegrationTests
             payload["username"] = config.Authentication.Username;
             payload["password"] = config.Authentication.Password;
             payload["client_secret"] = config.Authentication.ClientSecret;
-            var response = await client.PostAsync(config.Authentication.AuthenticationBaseUrl, new FormUrlEncodedContent(payload));
+            var response = await authClient.PostAsync(String.Empty, new FormUrlEncodedContent(payload));
             var strContent = await response.Content.ReadAsStringAsync();
             var content = JsonConvert.DeserializeObject<JObject>(strContent);
 
