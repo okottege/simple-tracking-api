@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,19 +12,26 @@ namespace Tracker.Api.IntegrationTests
     public class BaseIntegrationTest
     {
         protected static HttpClient serviceClient;
-        protected static HttpClient authClient;
         protected static TestConfiguration config;
 
-        public static void Initialise(TestContext testContext)
+        public static async Task Initialise(TestContext testContext)
         {
             config = new TestConfiguration(testContext);
             var clientFactory = new HttpClientFactory(config.WebApiUrl, config.Authentication.AuthenticationBaseUrl);
+            var authClient = clientFactory.CreateNewAuthenticationClient();
 
             serviceClient = clientFactory.CreateNewServiceClient();
-            authClient = clientFactory.CreateNewAuthenticationClient();
+            await InitialiseServiceClient(authClient);
         }
 
-        protected static async Task<string> GetAccessToken()
+        private static async Task InitialiseServiceClient(HttpClient authClient)
+        {
+            var accessToken = await GetAccessToken(authClient);
+            serviceClient.DefaultRequestHeaders.Clear();
+            serviceClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+        }
+
+        private static async Task<string> GetAccessToken(HttpClient authClient)
         {
             var payload = new Dictionary<string, string>();
             payload["client_id"] = config.Authentication.ClientId;
@@ -34,7 +40,8 @@ namespace Tracker.Api.IntegrationTests
             payload["username"] = config.Authentication.Username;
             payload["password"] = config.Authentication.Password;
             payload["client_secret"] = config.Authentication.ClientSecret;
-            var response = await authClient.PostAsync(String.Empty, new FormUrlEncodedContent(payload));
+
+            var response = await authClient.PostAsync(string.Empty, new FormUrlEncodedContent(payload));
             var strContent = await response.Content.ReadAsStringAsync();
             var content = JsonConvert.DeserializeObject<JObject>(strContent);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -8,20 +9,16 @@ namespace Tracker.Api.IntegrationTests
     public class HealthCheckEndpointTests : BaseIntegrationTest
     {
         [ClassInitialize]
-        public static void InitialiseTests(TestContext context)
+        public static async Task InitialiseTests(TestContext context)
         {
-            Initialise(context);
-
-            var token = GetAccessToken().Result;
-            serviceClient.DefaultRequestHeaders.Clear();
-            serviceClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            await Initialise(context);
         }
 
         [TestMethod]
-        public void TestHealthCheck()
+        public async Task TestHealthCheck()
         {
-            var respHealthCheck = serviceClient.GetAsync("/api/health").Result;
-            var strHealthContent = respHealthCheck.Content.ReadAsStringAsync().Result;
+            var respHealthCheck = await serviceClient.GetAsync("/api/health");
+            var strHealthContent = await respHealthCheck.Content.ReadAsStringAsync();
             var content = JsonConvert.DeserializeObject<JObject>(strHealthContent);
 
             Assert.IsTrue(!string.IsNullOrWhiteSpace(content["version"].ToString()));
