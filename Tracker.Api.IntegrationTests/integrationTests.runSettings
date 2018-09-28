@@ -2,7 +2,7 @@
 <RunSettings>
   <!-- Parameters used by tests at runtime -->  
   <TestRunParameters>  
-    <Parameter name="webUrl" value=" http://localhost:5000" />
+    <Parameter name="webUrl" value=" https://localhost:5001" />
     <Parameter name="clientId" value="[client-id]" />
     <Parameter name="resource" value="[resource]" />
     <Parameter name="username" value="[username]" />

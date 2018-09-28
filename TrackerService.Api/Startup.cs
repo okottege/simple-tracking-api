@@ -39,8 +39,8 @@ namespace TrackerService.Api
                 })
             .AddJwtBearer(option =>
                 {
-                    option.Authority = authority;
-                    option.Audience = audience;
+                    option.Authority = Configuration["Authentication:Authority"];
+                    option.Audience = Configuration["Authentication:Audience"];
 
                 });
             services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB")));
@@ -59,6 +59,7 @@ namespace TrackerService.Api
                 app.UseHsts();
             }
 
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
         }

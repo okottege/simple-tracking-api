@@ -10,9 +10,10 @@ namespace Tracker.Api.IntegrationTests.Configuration
             Resource = properties["resource"].ToString();
             Username = properties["username"].ToString();
             Password = properties["password"].ToString();
+            Audience = properties["audience"].ToString();
             ClientSecret = properties["clientSecret"].ToString();
             TenantId = properties["tenantId"].ToString();
-            AuthenticationBaseUrl = $"{properties["authBaseUrl"]}/{TenantId}/oauth2/token";
+            AuthenticationBaseUrl = properties["authBaseUrl"].ToString();
         }
 
         public string ClientId { get; }
@@ -22,5 +23,6 @@ namespace Tracker.Api.IntegrationTests.Configuration
         public string ClientSecret { get; }
         public string TenantId { get; }
         public string AuthenticationBaseUrl { get; }
+        public string Audience { get; }
     }
 }
