@@ -37,8 +37,6 @@ namespace Tracker.Api.IntegrationTests
             payload["client_id"] = config.Authentication.ClientId;
             payload["audience"] = config.Authentication.Audience;
             payload["grant_type"] = "client_credentials";
-            //payload["username"] = config.Authentication.Username;
-            //payload["password"] = config.Authentication.Password;
             payload["client_secret"] = config.Authentication.ClientSecret;
 
             var response = await authClient.PostAsync(string.Empty, new FormUrlEncodedContent(payload));
