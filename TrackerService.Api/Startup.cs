@@ -22,9 +22,6 @@ namespace TrackerService.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var authority = string.Format(Configuration["ADSettings:ADInstance"], Configuration["ADSettings:TenantId"]);
-            var audience = Configuration["ADSettings:AppIdUri"];
-
             services.AddAuthorization(options =>
             {
                 options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
