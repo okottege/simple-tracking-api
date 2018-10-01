@@ -51,5 +51,21 @@ namespace Tracker.Api.Tests
             Assert.Equal(employee.DateOfBirth, responsePayload.DateOfBirth);
             Assert.Equal(employee.StartDate, responsePayload.StartDate);
         }
+
+        [Fact]
+        public async Task TestCreateEmployee_ReturnsCreatedAtResult()
+        {
+            var mockRepo = new Mock<IEmployeeRepository>();
+            var vmEmployee = new Employee {EmployeeId = 100};
+            mockRepo.Setup(m => m.Create(It.IsAny<Employee>())).ReturnsAsync(vmEmployee);
+            factory.Setup(m => m.CreateEmployeeRepository()).Returns(mockRepo.Object);
+            var controller = new EmployeeController(factory.Object);
+
+            var response = await controller.CreateAsync(new EmployeeViewModel {DateOfBirth = new DateTime(), StartDate = new DateTime()});
+
+            var result = Assert.IsType<CreatedAtActionResult>(response);
+            Assert.Equal("GetEmployee", result.ActionName);
+            Assert.Equal(100, result.RouteValues["employeeId"]);
+        }
     }
 }
