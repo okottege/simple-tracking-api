@@ -21,8 +21,8 @@ namespace Tracker.Api.IntegrationTests
             var strHealthContent = await respHealthCheck.Content.ReadAsStringAsync();
             var content = JsonConvert.DeserializeObject<JObject>(strHealthContent);
 
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(content["version"].ToString()));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(content["numEmployees"].ToString()));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(content["Version"].ToString()));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(content["NumEmployees"].ToString()));
         }
     }
 }
