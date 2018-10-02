@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrackerService.Api.ViewModels;
 using TrackerService.Data.Contracts;
@@ -6,6 +7,7 @@ using TrackerService.Data.DataObjects;
 
 namespace TrackerService.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/employee")]
     public class EmployeeController : ControllerBase

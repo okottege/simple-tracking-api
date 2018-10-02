@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Tracker.Api.IntegrationTests.Configuration;
 using Tracker.Api.IntegrationTests.Factories;
+using Tracker.Api.IntegrationTests.Logging;
 
 namespace Tracker.Api.IntegrationTests
 {
@@ -13,10 +14,12 @@ namespace Tracker.Api.IntegrationTests
     {
         protected static HttpClient serviceClient;
         protected static TestConfiguration config;
+        protected static ITestTraceLogger logger;
 
         public static async Task Initialise(TestContext testContext)
         {
             config = new TestConfiguration(testContext);
+            logger = new TestTraceTraceLogger(testContext);
             var clientFactory = new HttpClientFactory(config.WebApiUrl, config.Authentication.AuthenticationBaseUrl);
             var authClient = clientFactory.CreateNewAuthenticationClient();
 
@@ -44,6 +47,12 @@ namespace Tracker.Api.IntegrationTests
             var content = JsonConvert.DeserializeObject<JObject>(strContent);
 
             return content["access_token"].ToString();
+        }
+
+        protected static async Task<dynamic> GetResponsePayload(HttpResponseMessage response)
+        {
+            var respContentStr = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject(respContentStr);
         }
     }
 }
