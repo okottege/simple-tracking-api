@@ -34,6 +34,17 @@ namespace Tracker.Api.IntegrationTests
             await TestDeleteEmployee(employee);
         }
 
+        [TestMethod]
+        public async Task TestCreateEmployeeWithValidationErrors()
+        {
+            dynamic employee = new ExpandoObject();
+            var reqContent = new StringContent(JsonConvert.SerializeObject(employee));
+            reqContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var response = await serviceClient.PostAsync("api/employee", reqContent);
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
         private async Task<int> TestEmployeeCreate(dynamic employee)
         {
             logger.WriteLine("Testing creation of a new employee");
@@ -48,6 +59,7 @@ namespace Tracker.Api.IntegrationTests
             
             int employeeId = Convert.ToInt32(data.EmployeeId.ToString());
             Assert.IsTrue(employeeId > 0);
+            Assert.IsTrue(response.Headers.Location.ToString().EndsWith($"api/employee/{employeeId}"));
 
             logger.WriteLine("Creation of new employee test was successful.");
             return employeeId;
@@ -67,7 +79,7 @@ namespace Tracker.Api.IntegrationTests
 
         private async Task TestDeleteEmployee(dynamic employee)
         {
-            logger.WriteLine($"Test deleting employee by Id: ${employee.EmployeeId}");
+            logger.WriteLine($"Test deleting employee by Id: {employee.EmployeeId}");
 
             var response = await serviceClient.DeleteAsync($"api/employee/{employee.EmployeeId}");
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
