@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Dynamic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Tracker.Api.IntegrationTests
 {
@@ -43,6 +45,13 @@ namespace Tracker.Api.IntegrationTests
             var response = await serviceClient.PostAsync("api/employee", reqContent);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            dynamic data = await GetResponsePayload(response);
+            string firstNameError = JArray.FromObject(data.FirstName)[0].ToString();
+            string lastNameError = JArray.FromObject(data.LastName)[0].ToString();
+            string dateOfBirthError = JArray.FromObject(data.DateOfBirth)[0].ToString();
+            string startDateError = JArray.FromObject(data.StartDate)[0].ToString();
+
+            new[] {firstNameError, lastNameError, dateOfBirthError, startDateError}.ToList().ForEach(e => Assert.IsTrue(e.EndsWith("field is required.")));
         }
 
         private async Task<int> TestEmployeeCreate(dynamic employee)
