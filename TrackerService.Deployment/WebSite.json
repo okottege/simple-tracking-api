@@ -88,7 +88,15 @@
       ],
       "properties": {
         "name": "[variables('webSiteName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
+        "siteConfig": {
+          "cors": {
+            "allowedOrigins": [
+              "http://localhost:8080",
+              "[concat('https://', parameters('website'), '.azurewebsites.net')]"
+            ]
+          }
+        }
       }
     },
     {

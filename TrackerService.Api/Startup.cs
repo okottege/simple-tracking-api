@@ -57,10 +57,10 @@ namespace TrackerService.Api
             else
             {
                 app.UseHsts();
+                app.UseHttpsRedirection();
             }
 
             app.UseAuthentication();
-            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
