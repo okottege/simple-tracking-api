@@ -10,6 +10,9 @@
     },
     "website": {
       "value": "prod-tracking-service-api"
-    } 
+    },
+    "web-client-url": {
+      "value": "https://prod-tracking-client-web.azurewebsites.net"
+    }
   }
 }

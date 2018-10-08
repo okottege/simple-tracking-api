@@ -9,7 +9,10 @@
       "value": "S1"
     },
     "website": {
-      "value":  "test-tracking-service-api" 
-    } 
+      "value": "test-tracking-service-api"
+    },
+    "web-client-url": {
+      "value": "https://test-tracking-client-web.azurewebsites.net"
+    }
   }
 }

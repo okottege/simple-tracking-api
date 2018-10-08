@@ -52,7 +52,10 @@
     },
     "sql-admin-password": {
       "type": "string"
-    } 
+    },
+    "web-client-url": {
+      "type": "string"
+    }
   },
   "variables": {
     "webSiteName": "[parameters('website')]"
@@ -93,7 +96,7 @@
           "cors": {
             "allowedOrigins": [
               "http://localhost:8080",
-              "[concat('https://', parameters('website'), '.azurewebsites.net')]"
+              "[parameters('web-client-url')]"
             ]
           }
         }
