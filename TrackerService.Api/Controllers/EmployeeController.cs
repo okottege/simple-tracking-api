@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrackerService.Api.ViewModels;
@@ -17,6 +18,14 @@ namespace TrackerService.Api.Controllers
         public EmployeeController(IRepositoryFactory factory)
         {
             repository = factory.CreateEmployeeRepository();
+        }
+
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Employee>))]
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var employees = await repository.GetAllEmployees();
+            return Ok(employees);
         }
 
         [ProducesResponseType(200, Type = typeof(EmployeeViewModel))]
