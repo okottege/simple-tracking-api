@@ -31,7 +31,7 @@ namespace TrackerService.Data.Repositories
             return id;
         }
 
-        protected async Task<bool> Delete(string sql, object @params)
+        protected async Task<bool> ExecuteCommand(string sql, object @params)
         {
             using (IDbConnection conn = new SqlConnection(connString))
             {

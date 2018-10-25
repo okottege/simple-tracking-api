@@ -12,6 +12,8 @@ namespace TrackerService.Data.Contracts
 
         Task<Employee> Create(Employee employee);
 
+        Task<bool> Update(Employee employee);
+
         Task<bool> Remove(int employeeId);
     }
 }

@@ -51,16 +51,22 @@ namespace TrackerService.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] EmployeeViewModel employee)
         {
-            var newEmployee = await repository.Create(new Employee
-            {
-                EmployeeId = employee.EmployeeId,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                DateOfBirth = employee.DateOfBirth.Value,
-                StartDate = employee.StartDate.Value
-            });
+            var newEmployee = await repository.Create(GetEmployee(employee));
 
             return CreatedAtAction(nameof(GetEmployee), new {employeeId = newEmployee.EmployeeId}, newEmployee);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync([FromBody] EmployeeViewModel employee)
+        {
+            var updated = await repository.Update(GetEmployee(employee));
+
+            if (updated)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
         }
 
         [HttpDelete("{employeeId}")]
@@ -68,6 +74,18 @@ namespace TrackerService.Api.Controllers
         {
             await repository.Remove(employeeId);
             return NoContent();
+        }
+
+        private Employee GetEmployee(EmployeeViewModel employeeVM)
+        {
+            return new Employee
+            {
+                EmployeeId = employeeVM.EmployeeId,
+                FirstName = employeeVM.FirstName,
+                LastName = employeeVM.LastName,
+                DateOfBirth = employeeVM.DateOfBirth.Value,
+                StartDate = employeeVM.StartDate.Value
+            };
         }
     }
 }

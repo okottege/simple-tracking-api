@@ -44,9 +44,25 @@ namespace TrackerService.Data.Repositories
             return employee;
         }
 
+        public async Task<bool> Update(Employee employee)
+        {
+            const string SQL = @"UPDATE [Employee] 
+                                SET firstName = @firstName, lastName = @lastName, dateOfBirth = @dateOfBirth, startDate = @startDate
+                                WHERE employeeId = @employeeId";
+            var args = new
+            {
+                employeeId = employee.EmployeeId,
+                firstName = employee.FirstName,
+                lastName = employee.LastName,
+                dateOfBirth = employee.DateOfBirth,
+                startDate = employee.StartDate
+            };
+            return await ExecuteCommand(SQL, args);
+        }
+
         public async Task<bool> Remove(int employeeId)
         {
-            return await Delete("DELETE FROM Employee WHERE employeeId = @employeeId", new {employeeId});
+            return await ExecuteCommand("DELETE FROM Employee WHERE employeeId = @employeeId", new {employeeId});
         }
     }
 }
