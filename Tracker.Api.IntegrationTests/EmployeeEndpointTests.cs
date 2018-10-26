@@ -37,12 +37,7 @@ namespace Tracker.Api.IntegrationTests
         [TestMethod]
         public async Task TestEmployeeCRUDOperations()
         {
-            dynamic employee = new ExpandoObject();
-            employee.StartDate = new DateTime(2004, 11, 15);
-            employee.DateOfBirth = new DateTime(2000, 12, 3);
-            employee.LastName = "Smith";
-            employee.FirstName = "Bob";
-
+            dynamic employee = GetNewEmployee("Bob", "Smith", new DateTime(2000, 12, 3), new DateTime(2004, 11, 15));
             int employeeId = await TestEmployeeCreate(employee);
             employee.EmployeeId = employeeId;
 
@@ -84,7 +79,7 @@ namespace Tracker.Api.IntegrationTests
             var updateResponse = await serviceClient.PutAsync("api/employee", reqContent);
 
             updateResponse.EnsureSuccessStatusCode();
-            Assert.AreEqual(HttpStatusCode.NoContent, updateResponse.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, updateResponse.StatusCode);
 
             employeeIdsToRemove.Add(employeeId);
 
@@ -154,6 +149,7 @@ namespace Tracker.Api.IntegrationTests
             employee.DateOfBirth = dob;
             employee.LastName = firstName;
             employee.FirstName = lastName;
+            employee.Email = $"{firstName}.{lastName}@gmail.com";
 
             return employee;
         }
