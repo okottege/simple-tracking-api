@@ -18,5 +18,8 @@ namespace TrackerService.Api.ViewModels
 
         [Required]
         public DateTime? StartDate { get; set; }
+
+        [Required]
+        public string Email { get; set; }
     }
 }

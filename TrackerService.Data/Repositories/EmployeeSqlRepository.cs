@@ -29,8 +29,8 @@ namespace TrackerService.Data.Repositories
         
         public async Task<Employee> Create(Employee employee)
         {
-            const string SQL = @"INSERT INTO [Employee] (firstName, lastName, dateOfBirth, startDate) 
-                               VALUES (@firstName, @lastName, @dateOfBirth, @startDate);
+            const string SQL = @"INSERT INTO [Employee] (firstName, lastName, dateOfBirth, startDate, email) 
+                               VALUES (@firstName, @lastName, @dateOfBirth, @startDate, @email);
                                SELECT CAST(SCOPE_IDENTITY() as int)";
             var id = await Insert(SQL,
                 new
@@ -38,7 +38,8 @@ namespace TrackerService.Data.Repositories
                     firstName = employee.FirstName,
                     lastName = employee.LastName,
                     dateOfBirth = employee.DateOfBirth,
-                    startDate = employee.StartDate
+                    startDate = employee.StartDate,
+                    email = employee.Email
                 });
             employee.EmployeeId = id;
             return employee;

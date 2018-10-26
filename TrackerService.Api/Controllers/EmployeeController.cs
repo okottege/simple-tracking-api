@@ -42,7 +42,8 @@ namespace TrackerService.Api.Controllers
                     FirstName = employee.FirstName,
                     LastName = employee.LastName,
                     DateOfBirth = employee.DateOfBirth,
-                    StartDate = employee.StartDate
+                    StartDate = employee.StartDate,
+                    Email = employee.Email
                 });
             }
             return NotFound();
@@ -52,7 +53,6 @@ namespace TrackerService.Api.Controllers
         public async Task<IActionResult> CreateAsync([FromBody] EmployeeViewModel employee)
         {
             var newEmployee = await repository.Create(GetEmployee(employee));
-
             return CreatedAtAction(nameof(GetEmployee), new {employeeId = newEmployee.EmployeeId}, newEmployee);
         }
 
@@ -63,7 +63,7 @@ namespace TrackerService.Api.Controllers
 
             if (updated)
             {
-                return NoContent();
+                return Ok();
             }
 
             return NotFound();
@@ -84,7 +84,8 @@ namespace TrackerService.Api.Controllers
                 FirstName = employeeVM.FirstName,
                 LastName = employeeVM.LastName,
                 DateOfBirth = employeeVM.DateOfBirth.Value,
-                StartDate = employeeVM.StartDate.Value
+                StartDate = employeeVM.StartDate.Value,
+                Email = employeeVM.Email
             };
         }
     }

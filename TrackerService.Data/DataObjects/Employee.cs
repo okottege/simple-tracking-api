@@ -13,5 +13,7 @@ namespace TrackerService.Data.DataObjects
         public DateTime DateOfBirth { get; set; }
 
         public DateTime StartDate { get; set; }
+
+        public string Email { get; set; }
     }
 }
