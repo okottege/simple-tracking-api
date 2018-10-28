@@ -333,3 +333,6 @@ ASALocalRun/
 
 # developer .runsettings file for integration tests
 *.dev.runsettings
+
+# any developer configuration json files
+*.dev.json
