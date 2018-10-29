@@ -16,11 +16,10 @@ namespace TrackerService.Api
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                     {
-                        config.SetBasePath(Directory.GetCurrentDirectory());
-
                         if (hostingContext.HostingEnvironment.IsDevelopment())
                         {
-                            config.AddJsonFile("appSettings.dev.json");
+                            config.SetBasePath(Directory.GetCurrentDirectory());
+                            config.AddJsonFile("appSettings.dev.json", true);
                         }
                     })
                 .UseStartup<Startup>();
