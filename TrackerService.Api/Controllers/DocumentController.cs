@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using TrackerService.Api.Filters;
 
@@ -16,8 +19,14 @@ namespace TrackerService.Api.Controllers
     public class DocumentController : ControllerBase
     {
         private static readonly FormOptions defaultFormOptions = new FormOptions();
+        private readonly ILogger<DocumentController> logger;
 
-        [HttpPost("upload")]
+        public DocumentController(ILogger<DocumentController> logger)
+        {
+            this.logger = logger;
+        }
+
+        [HttpPost]
         [DisableFormValueModelBinding]
         public async Task<IActionResult> UploadAsync()
         {
@@ -27,27 +36,54 @@ namespace TrackerService.Api.Controllers
             }
 
             var formAccumulator = new KeyValueAccumulator();
-            string targetFilePath = null;
 
             var boundary = GetBoundary(MediaTypeHeaderValue.Parse(Request.ContentType), defaultFormOptions.MultipartBoundaryLengthLimit);
             var reader = new MultipartReader(boundary, Request.Body);
             var section = await reader.ReadNextSectionAsync();
+            var filesUploaded = new List<string>();
 
             while (section != null)
             {
-                ContentDispositionHeaderValue contentDisposition;
-                var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out contentDisposition);
+                var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition);
 
                 if (hasContentDispositionHeader)
                 {
                     if (HasFileContentDisposition(contentDisposition))
                     {
-                        
+                        var targetFilePath = Path.GetTempFileName();
+                        using (var targetStream = System.IO.File.Create(targetFilePath))
+                        {
+                            await section.Body.CopyToAsync(targetStream);
+                            logger.LogInformation($"Copied the uploaded file to: {targetFilePath}");
+                            filesUploaded.Add(targetFilePath);
+                        }
                     }
                 }
+                else if (HasFormDataContentDisposition(contentDisposition))
+                {
+                    var key = HeaderUtilities.RemoveQuotes(contentDisposition.Name);
+                    var encoding = GetEncoding(section);
+                    using (var streamReader = new StreamReader(section.Body, encoding, true, 1024, true))
+                    {
+                        var value = await streamReader.ReadToEndAsync();
+                        if (string.Equals(value, "undefined", StringComparison.OrdinalIgnoreCase))
+                        {
+                            value = string.Empty;
+                        }
+
+                        formAccumulator.Append(key.Value, value);
+
+                        if (formAccumulator.ValueCount > defaultFormOptions.ValueCountLimit)
+                        {
+                            throw new InvalidDataException($"Form key count limit {defaultFormOptions.ValueCountLimit} exceeded");
+                        }
+                    }
+                }
+
+                section = await reader.ReadNextSectionAsync();
             }
 
-            return Content("WIP");
+            return Ok(new {Message = "File upload successful", Path = filesUploaded});
         }
 
         private static string GetBoundary(MediaTypeHeaderValue contentType, int lengthLimit)
@@ -85,6 +121,19 @@ namespace TrackerService.Api.Controllers
             return contentDisposition != null &&
                    contentDisposition.DispositionType.Equals("form-data") &&
                    (!string.IsNullOrEmpty(contentDisposition.FileName.Value) || !string.IsNullOrEmpty(contentDisposition.FileNameStar.Value));
+        }
+
+        private static Encoding GetEncoding(MultipartSection section)
+        {
+            var hasMediaTypeHeader = MediaTypeHeaderValue.TryParse(section.ContentType, out var mediaType);
+
+            // UTF-7 is insecure and should not be honored. UTF-8 will succeed in most cases.
+            if (!hasMediaTypeHeader || Encoding.UTF7.Equals(mediaType.Encoding))
+            {
+                return Encoding.UTF8;
+            }
+
+            return mediaType.Encoding;
         }
     }
 }
