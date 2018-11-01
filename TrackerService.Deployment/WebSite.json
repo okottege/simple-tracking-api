@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "hostingPlanName": {
@@ -449,7 +449,7 @@
       "resources": [
         {
           "name": "[parameters('blob-container-name')]",
-          "type": "blobServices/containers",
+          "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
           "apiVersion": "2018-03-01-preview",
           "dependsOn": [
             "[parameters('storage-account-name')]"
