@@ -58,6 +58,9 @@
     },
     "storage-account-name": {
       "type": "string"
+    },
+    "blob-container-name": {
+      "type": "string"
     }
   },
   "variables": {
@@ -442,7 +445,17 @@
       "tags": {
         "displayName": "StorageAccount"
       },
-      "kind": "BlobStorage"
+      "kind": "BlobStorage",
+      "resources": [
+        {
+          "name": "[parameters('blob-container-name')]",
+          "type": "blobServices/containers",
+          "apiVersion": "2016-01-01",
+          "dependsOn": [
+            "[parameters('storage-account-name')]"
+          ]
+        }
+      ]
     }
   ]
 }

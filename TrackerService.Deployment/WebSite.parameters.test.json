@@ -16,6 +16,9 @@
     },
     "storage-account-name": {
       "value": "testtrackservicestorage"
+    },
+    "blob-container-name": {
+      "value": "test-track-service-container"
     }
   }
 }
