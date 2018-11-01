@@ -13,6 +13,9 @@
     },
     "web-client-url": {
       "value": "https://test-tracking-client-web.azurewebsites.net"
+    },
+    "storage-account-name": {
+      "value": "testtrackservicestorage"
     }
   }
 }

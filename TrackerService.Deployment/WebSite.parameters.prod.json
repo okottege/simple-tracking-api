@@ -13,6 +13,9 @@
     },
     "web-client-url": {
       "value": "https://prod-tracking-client-web.azurewebsites.net"
+    },
+    "storage-account-name": {
+      "value": "prodtrackservicestorage"
     }
   }
 }

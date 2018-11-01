@@ -55,6 +55,9 @@
     },
     "web-client-url": {
       "type": "string"
+    },
+    "storage-account-name": {
+      "type": "string"
     }
   },
   "variables": {
@@ -422,6 +425,24 @@
       "dependsOn": [
         "[resourceId('Microsoft.Sql/servers', parameters('sql-server-name'))]"
       ]
+    },
+    {
+      "name": "[parameters('storage-account-name')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-01-01",
+      "sku": {
+        "name": "Standard_RAGRS"
+      },
+      "properties": {
+        "accessTier": "Cool",
+        "supportsHttpsTrafficOnly": "true"
+      },
+      "dependsOn": [],
+      "tags": {
+        "displayName": "StorageAccount"
+      },
+      "kind": "BlobStorage"
     }
   ]
 }

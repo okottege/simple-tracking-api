@@ -13,7 +13,7 @@ using TrackerService.Api.Filters;
 
 namespace TrackerService.Api.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/document")]
     public class DocumentController : ControllerBase
@@ -50,6 +50,7 @@ namespace TrackerService.Api.Controllers
                 {
                     if (HasFileContentDisposition(contentDisposition))
                     {
+                        logger.LogInformation($"The file name of uploaded file is: {contentDisposition.FileName}");
                         var targetFilePath = Path.GetTempFileName();
                         using (var targetStream = System.IO.File.Create(targetFilePath))
                         {
