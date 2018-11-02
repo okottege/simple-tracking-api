@@ -448,7 +448,7 @@
       "kind": "BlobStorage",
       "resources": [
         {
-          "name": "[concat(parameters('storage-account-name'), '/', parameters('blob-container-name'))]",
+          "name": "[concat('default', '/', parameters('blob-container-name'))]",
           "type": "blobServices/containers",
           "apiVersion": "2018-07-01",
           "dependsOn": [
