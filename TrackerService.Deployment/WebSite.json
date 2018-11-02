@@ -433,7 +433,7 @@
       "name": "[parameters('storage-account-name')]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2018-03-01-preview",
+      "apiVersion": "2018-07-01",
       "sku": {
         "name": "Standard_RAGRS"
       },
@@ -450,7 +450,7 @@
         {
           "name": "[concat(parameters('storage-account-name'), '/', parameters('blob-container-name'))]",
           "type": "blobServices/containers",
-          "apiVersion": "2018-03-01-preview",
+          "apiVersion": "2018-07-01",
           "dependsOn": [
             "[parameters('storage-account-name')]"
           ]
