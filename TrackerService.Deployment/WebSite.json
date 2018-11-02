@@ -452,7 +452,7 @@
           "type": "blobServices/containers",
           "apiVersion": "2018-07-01",
           "dependsOn": [
-            "[parameters('storage-account-name')]"
+            "[resourceId('Microsoft.Storage/storageAccounts', parameters('storage-account-name'))]"
           ]
         }
       ]
