@@ -433,7 +433,7 @@
       "name": "[parameters('storage-account-name')]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2018-02-01",
+      "apiVersion": "2018-03-01-preview",
       "sku": {
         "name": "Standard_RAGRS"
       },
