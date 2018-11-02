@@ -10,20 +10,23 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using TrackerService.Api.Filters;
+using TrackerService.Data.Contracts;
 
 namespace TrackerService.Api.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/document")]
     public class DocumentController : ControllerBase
     {
         private static readonly FormOptions defaultFormOptions = new FormOptions();
         private readonly ILogger<DocumentController> logger;
+        private readonly IDocumentStorageRepository storageRepository;
 
-        public DocumentController(ILogger<DocumentController> logger)
+        public DocumentController(ILogger<DocumentController> logger, IRepositoryFactory repositoryFactory)
         {
             this.logger = logger;
+            storageRepository = repositoryFactory.CreateDocumentStorageRepository();
         }
 
         [HttpPost]
@@ -51,13 +54,7 @@ namespace TrackerService.Api.Controllers
                     if (HasFileContentDisposition(contentDisposition))
                     {
                         logger.LogInformation($"The file name of uploaded file is: {contentDisposition.FileName}");
-                        var targetFilePath = Path.GetTempFileName();
-                        using (var targetStream = System.IO.File.Create(targetFilePath))
-                        {
-                            await section.Body.CopyToAsync(targetStream);
-                            logger.LogInformation($"Copied the uploaded file to: {targetFilePath}");
-                            filesUploaded.Add(targetFilePath);
-                        }
+                        await storageRepository.SaveDocument($"{Guid.NewGuid()}_{contentDisposition.FileName}", section.Body);
                     }
                 }
                 else if (HasFormDataContentDisposition(contentDisposition))

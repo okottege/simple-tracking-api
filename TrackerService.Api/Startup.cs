@@ -59,7 +59,8 @@ namespace TrackerService.Api
 
                 });
             services.AddHttpClient();
-            services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB")));
+            var storageConn = new StorageConnectionInfo(Configuration.GetConnectionString("CloudStorage"), Configuration["StorageConnection:ContainerName"]);
+            services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB"), storageConn));
             services.AddMvc()
                 .AddJsonOptions(opt => opt.SerializerSettings.ContractResolver = new DefaultContractResolver())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

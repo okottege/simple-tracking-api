@@ -6,15 +6,22 @@ namespace TrackerService.Data
     public class RepositoryFactory : IRepositoryFactory
     {
         private readonly string connString;
+        private readonly StorageConnectionInfo storageConnInfo;
 
-        public RepositoryFactory(string connString)
+        public RepositoryFactory(string connString, StorageConnectionInfo storageConnInfo)
         {
             this.connString = connString;
+            this.storageConnInfo = storageConnInfo;
         }
 
         public IEmployeeRepository CreateEmployeeRepository()
         {
             return new EmployeeSqlRepository(connString);
+        }
+
+        public IDocumentStorageRepository CreateDocumentStorageRepository()
+        {
+            return new BlobStorageRepository(storageConnInfo);
         }
     }
 }

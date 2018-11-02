@@ -3,5 +3,7 @@
     public interface IRepositoryFactory
     {
         IEmployeeRepository CreateEmployeeRepository();
+
+        IDocumentStorageRepository CreateDocumentStorageRepository();
     }
 }
