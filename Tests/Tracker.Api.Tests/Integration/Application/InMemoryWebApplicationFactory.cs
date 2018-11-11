@@ -1,14 +1,8 @@
-﻿using System.IO;
-using System.Linq;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using Tracker.Api.Tests.Integration.Application.Authentication;
 using TrackerService.Data.Contracts;
@@ -27,19 +21,6 @@ namespace Tracker.Api.Tests.Integration.Application
 
             builder.ConfigureTestServices(services =>
             {
-                //var serviceDescriptor = services.Where(
-                //    s => s.ServiceType == typeof(IAuthenticationService) || 
-                //         s.ServiceType == typeof(JwtBearerHandler) ||
-                //         s.ServiceType == typeof(IAuthenticationHandlerProvider) ||
-                //         s.ServiceType == typeof(IAuthenticationSchemeProvider)).ToList();
-                //serviceDescriptor.ForEach(d => services.Remove(d));
-                
-                services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = TestAuthenticationExtensions.TEST_SCHEME;
-                    options.DefaultChallengeScheme = TestAuthenticationExtensions.TEST_SCHEME;
-                }).AddTestAuth(opt => {});
-                
                 services.AddTransient(provider => mockRepoFactory.Object);
             });
         }

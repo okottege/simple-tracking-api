@@ -1,27 +1,19 @@
-﻿using System.IO;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
-using TrackerService.Api;
-using TrackerService.Data;
-using TrackerService.Data.Contracts;
+using TrackerService.Api.Controllers;
 
 namespace Tracker.Api.Tests.Integration.Application.Authentication
 {
     public class TestStartup
     {
-        private readonly IHostingEnvironment environment;
-
-        public TestStartup(IConfiguration configuration, IHostingEnvironment environment)
+        public TestStartup(IConfiguration configuration)
         {
             Configuration = configuration;
-            this.environment = environment;
         }
 
         public IConfiguration Configuration { get; }
@@ -29,41 +21,28 @@ namespace Tracker.Api.Tests.Integration.Application.Authentication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (environment.IsDevelopment())
-            {
-                services.AddCors(options =>
-                {
-                    options.AddPolicy("DevPolicy", builder =>
-                    {
-                        builder.AllowAnyOrigin();
-                        builder.AllowAnyHeader();
-                        builder.AllowAnyMethod();
-                    });
-                });
-            }
-
             services.AddAuthorization(options =>
             {
-                options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                options.DefaultPolicy = new AuthorizationPolicyBuilder(TestAuthenticationExtensions.TEST_SCHEME)
                     .RequireAuthenticatedUser()
                     .Build();
             });
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = TestAuthenticationExtensions.TEST_SCHEME;
+                options.DefaultChallengeScheme = TestAuthenticationExtensions.TEST_SCHEME;
             })
+            .AddTestAuth(option => {})
             .AddJwtBearer(option =>
             {
-                option.Authority = Configuration["Authentication:Authority"];
-                option.Audience = Configuration["Authentication:Audience"];
+                option.Authority = "Test Authority";
+                option.Audience = "Test Audience";
 
             });
             services.AddHttpClient();
-            var storageConn = new StorageConnectionInfo(Configuration.GetConnectionString("CloudStorage"), Configuration["StorageConnection:ContainerName"]);
-            services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB"), storageConn));
             services.AddMvc()
+                .AddApplicationPart(typeof(EmployeeController).Assembly)
                 .AddJsonOptions(opt => opt.SerializerSettings.ContractResolver = new DefaultContractResolver())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -74,7 +53,6 @@ namespace Tracker.Api.Tests.Integration.Application.Authentication
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors("DevPolicy");
             }
             else
             {
