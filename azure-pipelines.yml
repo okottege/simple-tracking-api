@@ -50,7 +50,7 @@ steps:
     zipAfterPublish: True
 
 - task: DotNetCoreCLI@2
-  displayName: 'Publish Integration Test .dlls'
+  displayName: 'Publish Integration Test project'
   inputs:
     command: publish
     publishWebProjects: false
@@ -83,7 +83,7 @@ steps:
     ArtifactName: arm
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Integration Tests'
+  displayName: 'Publish Integration Test Artifacts'
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)/IntegrationTests'
     ArtifactName: IntegrationTests
