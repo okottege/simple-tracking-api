@@ -18,7 +18,9 @@ Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "TrackerService.Deployment",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackerService.Data", "TrackerService.Data\TrackerService.Data.csproj", "{D56DC1D2-3D8D-4B2F-867E-BFE159F0499A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.Api.IntegrationTests", "Tracker.Api.IntegrationTests\Tracker.Api.IntegrationTests.csproj", "{53650AC7-6D35-4E50-A778-7591344BDB04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Api.IntegrationTests", "Tracker.Api.IntegrationTests\Tracker.Api.IntegrationTests.csproj", "{53650AC7-6D35-4E50-A778-7591344BDB04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackerService.BuildTools", "Build\TrackerService.BuildTools\TrackerService.BuildTools.csproj", "{F8EC7B54-2628-49D9-AA79-FF7E6F63499B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +48,10 @@ Global
 		{53650AC7-6D35-4E50-A778-7591344BDB04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53650AC7-6D35-4E50-A778-7591344BDB04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53650AC7-6D35-4E50-A778-7591344BDB04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8EC7B54-2628-49D9-AA79-FF7E6F63499B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8EC7B54-2628-49D9-AA79-FF7E6F63499B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8EC7B54-2628-49D9-AA79-FF7E6F63499B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8EC7B54-2628-49D9-AA79-FF7E6F63499B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
