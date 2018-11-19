@@ -10,6 +10,8 @@ namespace TrackerService.BuildTools
     {
         static void  Main(string[] args)
         {
+            Console.WriteLine("Tracker Service Build Tools started.");
+
             if (args.Any())
             {
                 switch (args[0])
@@ -34,6 +36,8 @@ namespace TrackerService.BuildTools
         {
             try
             {
+                Console.WriteLine("Executing the combining of SQL scripts command.");
+
                 if (args.Length < 3)
                 {
                     Console.WriteLine("Cannot combine sql scripts as source sql folder and destination sql file not provided.");
@@ -59,6 +63,7 @@ namespace TrackerService.BuildTools
                         using (var outputFile = new StreamWriter(args[2]))
                         {
                             await outputFile.WriteAsync(sb.ToString());
+                            Console.WriteLine($"Created the combined sql file: {args[2]}");
                         }
                     }
                 }
