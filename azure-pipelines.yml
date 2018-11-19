@@ -69,7 +69,7 @@ steps:
   displayName: 'Run SQL Scripts Combine'
   inputs:
     command: run
-    projects: 'Build/TrackerService.BuildTools.csproj'
+    projects: 'Build/TrackerService.BuildTools/TrackerService.BuildTools.csproj'
     arguments: 'sql-script-combine ../../TrackerService.Data/SqlFiles combined-sql-script.sql'
 
 - task: PublishBuildArtifacts@1
