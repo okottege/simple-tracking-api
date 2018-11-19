@@ -79,7 +79,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Sql Scripts'
   inputs:
-    PathtoPublish: 'Build/TrackerService.BuildTools/$(Parameters.CombinedSqlFileName)'
+    PathtoPublish: '$(Parameters.CombinedSqlFileName)'
     ArtifactName: 'sql'
 
 - task: PublishBuildArtifacts@1
