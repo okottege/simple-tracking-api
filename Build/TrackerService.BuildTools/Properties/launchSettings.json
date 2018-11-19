@@ -2,7 +2,7 @@
   "profiles": {
     "TrackerService.BuildTools": {
       "commandName": "Project",
-      "commandLineArgs": "sql-script-combine ../../../../TrackerService.Data/SqlFiles sql-script.sql"
+      "commandLineArgs": "sql-script-combine ../../../../../TrackerService.Data/SqlFiles sql-script.sql"
     }
   }
 }
