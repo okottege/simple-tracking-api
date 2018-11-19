@@ -65,6 +65,13 @@ steps:
     TargetFolder: '$(build.artifactstagingdirectory)\IntegrationTests'
     flattenFolders: true
 
+- task: DotNetCoreCLI@2
+  displayName: 'Run SQL Scripts Combine'
+  inputs:
+    command: run
+    projects: 'Build/TrackerService.BuildTools.csproj'
+    arguments: 'sql-script-combine ../../TrackerService.Data/SqlFiles combined-sql-script.sql'
+
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Web Artifacts'
   inputs:
@@ -73,7 +80,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Sql Scripts'
   inputs:
-    PathtoPublish: 'TrackerService.Data/SqlFiles'
+    PathtoPublish: 'Build/TrackerService.BuildTools/combined-sql-script.sql'
     ArtifactName: 'sql'
 
 - task: PublishBuildArtifacts@1
