@@ -11,6 +11,7 @@ namespace TrackerService.BuildTools
         static void  Main(string[] args)
         {
             Console.WriteLine("Tracker Service Build Tools started.");
+            Console.WriteLine($"Command Line arguments: {string.Join(", ", args)}");
 
             if (args.Any())
             {
@@ -27,6 +28,7 @@ namespace TrackerService.BuildTools
             else
             {
                 Console.WriteLine("Command Line Arguments must be supplied.");
+                Environment.Exit(-1);
             }
 
             Console.WriteLine("Build Tools finished execution.");
@@ -41,12 +43,17 @@ namespace TrackerService.BuildTools
                 if (args.Length < 3)
                 {
                     Console.WriteLine("Cannot combine sql scripts as source sql folder and destination sql file not provided.");
+                    Environment.Exit(-1);
                 }
                 else
                 {
                     var sb = new StringBuilder();
+                    var sqlFiles = Directory.EnumerateFiles(args[1], "*.sql").ToList();
+                    var outputFileName = args[2];
 
-                    foreach (var sqlFile in Directory.EnumerateFiles(args[1], "*.sql").OrderBy(f => f))
+                    Console.WriteLine($"Found the following SQL files: {string.Join(", ", sqlFiles)}");
+
+                    foreach (var sqlFile in sqlFiles.OrderBy(f => f))
                     {
                         var content = await File.ReadAllTextAsync(sqlFile);
                         sb.Append(content);
@@ -55,15 +62,15 @@ namespace TrackerService.BuildTools
 
                     if (sb.Length > 0)
                     {
-                        if (File.Exists(args[2]))
+                        if (File.Exists(outputFileName))
                         {
-                            File.Delete(args[2]);
+                            File.Delete(outputFileName);
                         }
 
-                        using (var outputFile = new StreamWriter(args[2]))
+                        using (var outputFile = new StreamWriter(outputFileName))
                         {
                             await outputFile.WriteAsync(sb.ToString());
-                            Console.WriteLine($"Created the combined sql file: {args[2]}");
+                            Console.WriteLine($"Created the combined sql file: {outputFileName}");
                         }
                     }
                 }
@@ -71,6 +78,7 @@ namespace TrackerService.BuildTools
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Environment.Exit(-1);
             }
         }
     }
