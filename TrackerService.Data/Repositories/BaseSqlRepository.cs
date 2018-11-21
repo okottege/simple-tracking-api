@@ -9,7 +9,7 @@ namespace TrackerService.Data.Repositories
 {
     internal class BaseSqlRepository
     {
-        private readonly string connString;
+        protected readonly string connString;
 
         protected BaseSqlRepository(string connString)
         {

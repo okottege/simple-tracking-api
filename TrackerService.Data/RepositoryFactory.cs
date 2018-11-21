@@ -23,5 +23,10 @@ namespace TrackerService.Data
         {
             return new BlobStorageRepository(storageConnInfo);
         }
+
+        public ITimesheetRepository CreateTimesheetRepository()
+        {
+            return new TimesheetSqlRepository(connString);
+        }
     }
 }

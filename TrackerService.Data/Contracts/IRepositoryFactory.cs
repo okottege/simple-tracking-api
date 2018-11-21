@@ -5,5 +5,7 @@
         IEmployeeRepository CreateEmployeeRepository();
 
         IDocumentStorageRepository CreateDocumentStorageRepository();
+
+        ITimesheetRepository CreateTimesheetRepository();
     }
 }
