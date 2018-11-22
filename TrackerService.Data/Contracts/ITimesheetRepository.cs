@@ -10,5 +10,8 @@ namespace TrackerService.Data.Contracts
         Task<Timesheet> GetTimesheet(int id);
         Task<TimesheetEntry> GetTimesheetEntry(int id);
         Task<IEnumerable<TimesheetEntry>> GetTimesheetEntries(int timesheetId);
+
+        Task<int> CreateTimesheet(Timesheet timesheet);
+        Task<int> CreateTimesheetEntry(TimesheetEntry timesheetEntry);
     }
 }

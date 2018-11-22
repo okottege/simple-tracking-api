@@ -49,5 +49,15 @@ namespace TrackerService.Data.Repositories
         {
             return await QueryAsync<TimesheetEntry>("SELECT * FROM timesheetEntry WHERE timesheetId = @timesheetId", new {timesheetId});
         }
+
+        public async Task<int> CreateTimesheet(Timesheet timesheet)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public async Task<int> CreateTimesheetEntry(TimesheetEntry timesheetEntry)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
