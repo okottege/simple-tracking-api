@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,14 +51,45 @@ namespace TrackerService.Data.Repositories
             return await QueryAsync<TimesheetEntry>("SELECT * FROM timesheetEntry WHERE timesheetId = @timesheetId", new {timesheetId});
         }
 
-        public async Task<int> CreateTimesheet(Timesheet timesheet)
+        public async Task<Timesheet> CreateTimesheet(Timesheet timesheet)
         {
-            throw new System.NotImplementedException();
+            const string SQL = @"INSERT INTO Timesheet (employeeId, workDate, createdDate, createdBy, modifiedDate, modifiedBy)
+                                 VALUES (@employeeId, @workDate, @createdDate, @createdBy, @modifiedDate, @modifiedBy);
+                                 SELECT CAST (SCOPE_IDENTITY() as int)";
+            var timesheetId = await Insert(SQL, new
+            {
+                employeeId = timesheet.EmployeeId,
+                workDate = timesheet.WorkDate,
+                createdBy = timesheet.CreatedBy,
+                createdDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                modifiedBy = timesheet.ModifiedBy,
+                modifiedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
+            });
+            timesheet.TimesheetId = timesheetId;
+
+            foreach (var tsEntry in timesheet.TimesheetEntries)
+            {
+                tsEntry.TimesheetId = timesheetId;
+                var tsEntrySaved = await CreateTimesheetEntry(tsEntry);
+                tsEntry.TimesheetEntryId = tsEntrySaved.TimesheetEntryId;
+            }
+            return timesheet;
         }
 
-        public async Task<int> CreateTimesheetEntry(TimesheetEntry timesheetEntry)
+        public async Task<TimesheetEntry> CreateTimesheetEntry(TimesheetEntry timesheetEntry)
         {
-            throw new System.NotImplementedException();
+            const string SQL = @"INSERT INTO TimesheetEntry (timesheetId, startDate, endDate, notes)
+                                 VALUES (@timesheetId, @startDate, @endDate, @notes);
+                                 SELECT CAST (SCOPE_IDENTITY() as int)";
+            var tsEntryId = await Insert(SQL, new
+            {
+                timesheetId = timesheetEntry.TimesheetId,
+                startDate = timesheetEntry.StartDate,
+                endDate = timesheetEntry.EndDate,
+                notes = timesheetEntry.Notes
+            });
+            timesheetEntry.TimesheetEntryId = tsEntryId;
+            return timesheetEntry;
         }
     }
 }
