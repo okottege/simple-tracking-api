@@ -2,7 +2,7 @@
 
 namespace TrackerService.Data.DataObjects
 {
-    public class TimesheetEntry
+    public class TimesheetEntry : AuditableEntity
     {
         public long TimesheetEntryId { get; set; }
         public int TimesheetId { get; set; }
