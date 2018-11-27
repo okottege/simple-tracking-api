@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
+using TrackerService.Api.Infrastructure;
+using TrackerService.Api.Infrastructure.Contracts;
 using TrackerService.Data;
 using TrackerService.Data.Contracts;
 
@@ -61,6 +64,8 @@ namespace TrackerService.Api
             services.AddHttpClient();
             var storageConn = new StorageConnectionInfo(Configuration.GetConnectionString("CloudStorage"), Configuration["StorageConnection:ContainerName"]);
             services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB"), storageConn));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IUserContext, ApiUserContext>();
             services.AddMvc()
                 .AddJsonOptions(opt => opt.SerializerSettings.ContractResolver = new DefaultContractResolver())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
