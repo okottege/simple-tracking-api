@@ -30,7 +30,7 @@ namespace TrackerService.Api.Controllers
         public async Task<IActionResult> GetAllTimesheets()
         {
             var timesheets = await timesheetRepo.GetTimesheets();
-            return Ok(timesheets);
+            return Ok(timesheets.Select(MapToTimesheetViewModel));
         }
 
         [HttpGet("{id}")]
@@ -41,7 +41,7 @@ namespace TrackerService.Api.Controllers
             var timesheet = await timesheetRepo.GetTimesheet(id);
             if (timesheet != null)
             {
-                return Ok(timesheet);
+                return Ok(MapToTimesheetViewModel(timesheet));
             }
 
             return NotFound();
@@ -78,6 +78,29 @@ namespace TrackerService.Api.Controllers
                 EndDate = vmTimesheetEntry.EndDate ?? DateTime.MinValue,
                 TimesheetId = vmTimesheetEntry.TimesheetId.Value,
                 Notes = vmTimesheetEntry.Notes
+            };
+        }
+
+        private TimesheetViewModel MapToTimesheetViewModel(Timesheet timesheet)
+        {
+            return new TimesheetViewModel
+            {
+                TimesheetId = timesheet.TimesheetId,
+                EmployeeId = timesheet.EmployeeId,
+                WorkDate = timesheet.WorkDate,
+                Entries = timesheet.TimesheetEntries.Select(MapToTimesheetEntryViewModel)
+            };
+        }
+
+        private TimesheetEntryViewModel MapToTimesheetEntryViewModel(TimesheetEntry tsEntry)
+        {
+            return new TimesheetEntryViewModel
+            {
+                TimesheetEntryId = tsEntry.TimesheetEntryId,
+                TimesheetId = tsEntry.TimesheetId,
+                StartDate = tsEntry.StartDate,
+                EndDate = tsEntry.EndDate,
+                Notes = tsEntry.Notes
             };
         }
     }
