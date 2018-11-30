@@ -59,7 +59,6 @@ namespace TrackerService.Api
                     option.Authority = Configuration["Authentication:Authority"];
                     option.Audience = Configuration["Authentication:Audience"];
                     option.SaveToken = true;
-
                 });
             services.AddHttpClient();
             var storageConn = new StorageConnectionInfo(Configuration.GetConnectionString("CloudStorage"), Configuration["StorageConnection:ContainerName"]);

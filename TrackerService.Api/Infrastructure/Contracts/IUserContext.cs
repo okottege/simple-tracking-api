@@ -7,5 +7,6 @@ namespace TrackerService.Api.Infrastructure.Contracts
         string UserId { get; }
         string Email { get; }
         Task<string> GetAccessToken();
+        bool IsAdmin { get; }
     }
 }

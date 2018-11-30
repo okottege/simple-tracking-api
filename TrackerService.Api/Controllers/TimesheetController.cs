@@ -51,8 +51,8 @@ namespace TrackerService.Api.Controllers
         public async Task<IActionResult> CreateAsync([FromBody]TimesheetViewModel vmTimesheet)
         {
             var timesheet = MapToTimesheet(vmTimesheet);
-            timesheet.CreatedBy = userContext.Email;
-            timesheet.ModifiedBy = userContext.Email;
+            timesheet.CreatedBy = userContext.UserId;
+            timesheet.ModifiedBy = userContext.UserId;
 
             var result = await timesheetRepo.CreateTimesheet(timesheet);
             return CreatedAtAction(nameof(GetTimesheetAsync), new {id = result.TimesheetId}, result);

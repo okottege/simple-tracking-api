@@ -23,6 +23,8 @@ namespace TrackerService.Api.Infrastructure
             return await context.GetTokenAsync("access_token");
         }
 
+        public bool IsAdmin => GetClaim(UserClaimTypes.ROLES).Contains("admin");
+
         private bool IsUserAuthenticated()
         {
             return context.User?.Identity?.IsAuthenticated == true;
@@ -30,7 +32,14 @@ namespace TrackerService.Api.Infrastructure
 
         private string GetClaim(string type)
         {
-            return context.User?.Claims.FirstOrDefault(c => c.Type == type)?.Value;
+            return GetClaims(type).FirstOrDefault();
+        }
+
+        private string[] GetClaims(string type)
+        {
+            return context.User?.Claims.Where(c => c.Type == type)
+                .Select(c => c.Value)
+                .ToArray() ?? new string []{};
         }
     }
 }
