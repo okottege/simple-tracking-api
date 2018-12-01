@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using TrackerService.Api.Infrastructure;
 using TrackerService.Api.Infrastructure.Contracts;
+using TrackerService.Api.Infrastructure.Middleware;
 using TrackerService.Data;
 using TrackerService.Data.Contracts;
 
@@ -73,6 +74,8 @@ namespace TrackerService.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseApplicationVersionMiddleware();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
