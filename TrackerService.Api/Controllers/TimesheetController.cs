@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrackerService.Api.Infrastructure.Contracts;
@@ -18,11 +18,13 @@ namespace TrackerService.Api.Controllers
     {
         private readonly ITimesheetRepository timesheetRepo;
         private readonly IUserContext userContext;
+        private readonly IMapper mapper;
 
-        public TimesheetController(IRepositoryFactory factory, IUserContext userContext)
+        public TimesheetController(IRepositoryFactory factory, IUserContext userContext, IMapper mapper)
         {
             timesheetRepo = factory.CreateTimesheetRepository();
             this.userContext = userContext;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -30,7 +32,7 @@ namespace TrackerService.Api.Controllers
         public async Task<IActionResult> GetAllTimesheets()
         {
             var timesheets = await timesheetRepo.GetTimesheets();
-            return Ok(timesheets.Select(MapToTimesheetViewModel));
+            return Ok(timesheets.Select(t => mapper.Map<TimesheetViewModel>(t)));
         }
 
         [HttpGet("{id}")]
@@ -41,7 +43,7 @@ namespace TrackerService.Api.Controllers
             var timesheet = await timesheetRepo.GetTimesheet(id);
             if (timesheet != null)
             {
-                return Ok(MapToTimesheetViewModel(timesheet));
+                return Ok(mapper.Map<TimesheetViewModel>(timesheet));
             }
 
             return NotFound();
@@ -50,58 +52,12 @@ namespace TrackerService.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody]TimesheetViewModel vmTimesheet)
         {
-            var timesheet = MapToTimesheet(vmTimesheet);
+            var timesheet = mapper.Map<Timesheet>(vmTimesheet);
             timesheet.CreatedBy = userContext.UserId;
             timesheet.ModifiedBy = userContext.UserId;
 
             var result = await timesheetRepo.CreateTimesheet(timesheet);
             return CreatedAtAction(nameof(GetTimesheetAsync), new {id = result.TimesheetId}, result);
-        }
-
-        private Timesheet MapToTimesheet(TimesheetViewModel vmTimesheet)
-        {
-            return new Timesheet
-            {
-                TimesheetId = vmTimesheet.TimesheetId,
-                EmployeeId = vmTimesheet.EmployeeId.Value,
-                WorkDate = vmTimesheet.WorkDate.Value,
-                TimesheetEntries = vmTimesheet.Entries.Select(MapToTimesheetEntry).ToList()
-            };
-        }
-
-        private TimesheetEntry MapToTimesheetEntry(TimesheetEntryViewModel vmTimesheetEntry)
-        {
-            return new TimesheetEntry
-            {
-                TimesheetEntryId = vmTimesheetEntry.TimesheetEntryId,
-                StartDate = vmTimesheetEntry.StartDate.Value,
-                EndDate = vmTimesheetEntry.EndDate ?? DateTime.MinValue,
-                TimesheetId = vmTimesheetEntry.TimesheetId.Value,
-                Notes = vmTimesheetEntry.Notes
-            };
-        }
-
-        private TimesheetViewModel MapToTimesheetViewModel(Timesheet timesheet)
-        {
-            return new TimesheetViewModel
-            {
-                TimesheetId = timesheet.TimesheetId,
-                EmployeeId = timesheet.EmployeeId,
-                WorkDate = timesheet.WorkDate,
-                Entries = timesheet.TimesheetEntries.Select(MapToTimesheetEntryViewModel)
-            };
-        }
-
-        private TimesheetEntryViewModel MapToTimesheetEntryViewModel(TimesheetEntry tsEntry)
-        {
-            return new TimesheetEntryViewModel
-            {
-                TimesheetEntryId = tsEntry.TimesheetEntryId,
-                TimesheetId = tsEntry.TimesheetId,
-                StartDate = tsEntry.StartDate,
-                EndDate = tsEntry.EndDate,
-                Notes = tsEntry.Notes
-            };
         }
     }
 }
