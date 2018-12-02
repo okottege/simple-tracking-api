@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Infrastructure\Contracts\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -19,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TrackerService.Common\TrackerService.Common.csproj" />
     <ProjectReference Include="..\TrackerService.Data\TrackerService.Data.csproj" />
   </ItemGroup>
 

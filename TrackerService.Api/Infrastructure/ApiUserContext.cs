@@ -2,17 +2,17 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using TrackerService.Api.Infrastructure.Contracts;
+using TrackerService.Common.Contracts;
 
 namespace TrackerService.Api.Infrastructure
 {
     public class ApiUserContext : IUserContext
     {
-        private readonly HttpContext context;
+        private readonly IHttpContextAccessor contextAccessor;
 
         public ApiUserContext(IHttpContextAccessor contextAccessor)
         {
-            context = contextAccessor.HttpContext;
+            this.contextAccessor = contextAccessor;
         }
 
         public string UserId => IsUserAuthenticated() ? GetClaim(UserClaimTypes.USER_ID) : null;
@@ -20,14 +20,14 @@ namespace TrackerService.Api.Infrastructure
 
         public async Task<string> GetAccessToken()
         {
-            return await context.GetTokenAsync("access_token");
+            return await contextAccessor.HttpContext.GetTokenAsync("access_token");
         }
 
         public bool IsAdmin => GetClaim(UserClaimTypes.ROLES).Contains("admin");
 
         private bool IsUserAuthenticated()
         {
-            return context.User?.Identity?.IsAuthenticated == true;
+            return contextAccessor.HttpContext.User?.Identity?.IsAuthenticated == true;
         }
 
         private string GetClaim(string type)
@@ -37,7 +37,7 @@ namespace TrackerService.Api.Infrastructure
 
         private string[] GetClaims(string type)
         {
-            return context.User?.Claims.Where(c => c.Type == type)
+            return contextAccessor.HttpContext.User?.Claims.Where(c => c.Type == type)
                 .Select(c => c.Value)
                 .ToArray() ?? new string []{};
         }

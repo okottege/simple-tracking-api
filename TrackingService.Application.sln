@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackerService.Data", "Trac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker.Api.IntegrationTests", "Tracker.Api.IntegrationTests\Tracker.Api.IntegrationTests.csproj", "{53650AC7-6D35-4E50-A778-7591344BDB04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackerService.BuildTools", "Build\TrackerService.BuildTools\TrackerService.BuildTools.csproj", "{F8EC7B54-2628-49D9-AA79-FF7E6F63499B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackerService.BuildTools", "Build\TrackerService.BuildTools\TrackerService.BuildTools.csproj", "{F8EC7B54-2628-49D9-AA79-FF7E6F63499B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackerService.Common", "TrackerService.Common\TrackerService.Common.csproj", "{E272673C-8B89-4E4C-A786-E164A6AA0231}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,10 @@ Global
 		{F8EC7B54-2628-49D9-AA79-FF7E6F63499B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8EC7B54-2628-49D9-AA79-FF7E6F63499B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8EC7B54-2628-49D9-AA79-FF7E6F63499B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E272673C-8B89-4E4C-A786-E164A6AA0231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E272673C-8B89-4E4C-A786-E164A6AA0231}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E272673C-8B89-4E4C-A786-E164A6AA0231}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E272673C-8B89-4E4C-A786-E164A6AA0231}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

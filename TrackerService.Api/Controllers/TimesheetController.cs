@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TrackerService.Api.Infrastructure.Contracts;
 using TrackerService.Api.ViewModels;
 using TrackerService.Data.Contracts;
 using TrackerService.Data.DataObjects;
@@ -17,13 +16,11 @@ namespace TrackerService.Api.Controllers
     public class TimesheetController : ControllerBase
     {
         private readonly ITimesheetRepository timesheetRepo;
-        private readonly IUserContext userContext;
         private readonly IMapper mapper;
 
-        public TimesheetController(IRepositoryFactory factory, IUserContext userContext, IMapper mapper)
+        public TimesheetController(IRepositoryFactory factory, IMapper mapper)
         {
             timesheetRepo = factory.CreateTimesheetRepository();
-            this.userContext = userContext;
             this.mapper = mapper;
         }
 
@@ -53,9 +50,6 @@ namespace TrackerService.Api.Controllers
         public async Task<IActionResult> CreateAsync([FromBody]TimesheetViewModel vmTimesheet)
         {
             var timesheet = mapper.Map<Timesheet>(vmTimesheet);
-            timesheet.CreatedBy = userContext.UserId;
-            timesheet.ModifiedBy = userContext.UserId;
-
             var result = await timesheetRepo.CreateTimesheet(timesheet);
             return CreatedAtAction(nameof(GetTimesheetAsync), new {id = result.TimesheetId}, result);
         }

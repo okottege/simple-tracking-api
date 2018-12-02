@@ -14,6 +14,6 @@ namespace TrackerService.Api.ViewModels
         [Required]
         public DateTime? WorkDate { get; set; }
 
-        public IEnumerable<TimesheetEntryViewModel> Entries { get; set; } = new List<TimesheetEntryViewModel>();
+        public IEnumerable<TimesheetEntryViewModel> TimesheetEntries { get; set; } = new List<TimesheetEntryViewModel>();
     }
 }

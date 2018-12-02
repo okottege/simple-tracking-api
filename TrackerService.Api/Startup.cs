@@ -9,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using TrackerService.Api.Infrastructure;
-using TrackerService.Api.Infrastructure.Contracts;
 using TrackerService.Api.Infrastructure.Middleware;
+using TrackerService.Common.Contracts;
 using TrackerService.Data;
 using TrackerService.Data.Contracts;
 
@@ -63,11 +63,15 @@ namespace TrackerService.Api
                     option.SaveToken = true;
                 });
             services.AddHttpClient();
-            var storageConn = new StorageConnectionInfo(Configuration.GetConnectionString("CloudStorage"), Configuration["StorageConnection:ContainerName"]);
-            services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB"), storageConn));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IUserContext, ApiUserContext>();
             services.AddAutoMapper();
+
+            var storageConn = new StorageConnectionInfo(Configuration.GetConnectionString("CloudStorage"), Configuration["StorageConnection:ContainerName"]);
+            var serviceProvider = services.BuildServiceProvider();
+            var userContext = serviceProvider.GetService<IUserContext>();
+            services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB"), storageConn, userContext));
+
             services.AddMvc()
                 .AddJsonOptions(opt => opt.SerializerSettings.ContractResolver = new DefaultContractResolver())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

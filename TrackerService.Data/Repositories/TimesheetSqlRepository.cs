@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using TrackerService.Common.Contracts;
 using TrackerService.Data.Contracts;
 using TrackerService.Data.DataObjects;
 
@@ -11,8 +12,11 @@ namespace TrackerService.Data.Repositories
 {
     internal class TimesheetSqlRepository : BaseSqlRepository, ITimesheetRepository
     {
-        internal TimesheetSqlRepository(string connString) : base(connString)
+        private readonly IUserContext userContext;
+
+        internal TimesheetSqlRepository(string connString, IUserContext userContext) : base(connString)
         {
+            this.userContext = userContext;
         }
 
         public async Task<IEnumerable<Timesheet>> GetTimesheets()
@@ -56,14 +60,19 @@ namespace TrackerService.Data.Repositories
             const string SQL = @"INSERT INTO Timesheet (employeeId, workDate, createdDate, createdBy, modifiedDate, modifiedBy)
                                  VALUES (@employeeId, @workDate, @createdDate, @createdBy, @modifiedDate, @modifiedBy);
                                  SELECT CAST (SCOPE_IDENTITY() as int)";
+            timesheet.CreatedBy = userContext.UserId;
+            timesheet.ModifiedBy = userContext.UserId;
+            timesheet.CreatedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+            timesheet.ModifiedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+
             var timesheetId = await Insert(SQL, new
             {
                 employeeId = timesheet.EmployeeId,
                 workDate = timesheet.WorkDate,
                 createdBy = timesheet.CreatedBy,
-                createdDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+                createdDate = timesheet.CreatedDate,
                 modifiedBy = timesheet.ModifiedBy,
-                modifiedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
+                modifiedDate = timesheet.ModifiedDate
             });
             timesheet.TimesheetId = timesheetId;
 

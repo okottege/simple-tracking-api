@@ -1,4 +1,5 @@
-﻿using TrackerService.Data.Contracts;
+﻿using TrackerService.Common.Contracts;
+using TrackerService.Data.Contracts;
 using TrackerService.Data.Repositories;
 
 namespace TrackerService.Data
@@ -7,11 +8,13 @@ namespace TrackerService.Data
     {
         private readonly string connString;
         private readonly StorageConnectionInfo storageConnInfo;
+        private readonly IUserContext userContext;
 
-        public RepositoryFactory(string connString, StorageConnectionInfo storageConnInfo)
+        public RepositoryFactory(string connString, StorageConnectionInfo storageConnInfo, IUserContext userContext)
         {
             this.connString = connString;
             this.storageConnInfo = storageConnInfo;
+            this.userContext = userContext;
         }
 
         public IEmployeeRepository CreateEmployeeRepository()
@@ -26,7 +29,7 @@ namespace TrackerService.Data
 
         public ITimesheetRepository CreateTimesheetRepository()
         {
-            return new TimesheetSqlRepository(connString);
+            return new TimesheetSqlRepository(connString, userContext);
         }
     }
 }
