@@ -51,7 +51,7 @@ namespace TrackerService.Api.Controllers
         {
             var timesheet = mapper.Map<Timesheet>(vmTimesheet);
             var result = await timesheetRepo.CreateTimesheet(timesheet);
-            return CreatedAtAction(nameof(GetTimesheetAsync), new {id = result.TimesheetId}, result);
+            return CreatedAtAction(nameof(GetTimesheetAsync), new {id = result.TimesheetId}, mapper.Map<TimesheetViewModel>(result));
         }
     }
 }
