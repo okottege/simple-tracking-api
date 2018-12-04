@@ -25,7 +25,7 @@ namespace TrackerService.Data.Repositories
             return await QueryAsync<Timesheet>(SQL_QUERY, null);
         }
 
-        public async Task<IEnumerable<Timesheet>> GetTimesheets(string employeeId)
+        public async Task<IEnumerable<Timesheet>> GetTimesheets(int employeeId)
         {
             const string SQL_QUERY = @"SELECT * FROM Timesheet WHERE employeeId = @employeeId";
             return await QueryAsync<Timesheet>(SQL_QUERY, new {employeeId});
