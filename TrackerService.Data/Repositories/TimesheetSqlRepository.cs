@@ -25,6 +25,12 @@ namespace TrackerService.Data.Repositories
             return await QueryAsync<Timesheet>(SQL_QUERY, null);
         }
 
+        public async Task<IEnumerable<Timesheet>> GetTimesheets(string employeeId)
+        {
+            const string SQL_QUERY = @"SELECT * FROM Timesheet WHERE employeeId = @employeeId";
+            return await QueryAsync<Timesheet>(SQL_QUERY, new {employeeId});
+        }
+
         public async Task<Timesheet> GetTimesheet(int id)
         {
             const string SQL_QUERY = @"
@@ -46,7 +52,7 @@ namespace TrackerService.Data.Repositories
 
         public async Task<TimesheetEntry> GetTimesheetEntry(int id)
         {
-            var result = await QueryAsync<TimesheetEntry>("SELECT * FROM timesheetEntry WHERE timesheetEntry = @timesheetEntryId", new {timesheetEntryId = id});
+            var result = await QueryAsync<TimesheetEntry>("SELECT * FROM timesheetEntry WHERE timesheetEntryId = @timesheetEntryId", new {timesheetEntryId = id});
             return result.FirstOrDefault();
         }
 
