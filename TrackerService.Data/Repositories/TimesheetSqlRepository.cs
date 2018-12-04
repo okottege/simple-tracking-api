@@ -43,7 +43,7 @@ namespace TrackerService.Data.Repositories
                 using (var result = await conn.QueryMultipleAsync(SQL_QUERY, new { timesheetId = id }))
                 {
                     var timesheet = await result.ReadFirstAsync<Timesheet>();
-                    timesheet.TimesheetEntries = (await result.ReadAsync<TimesheetEntry>()).ToList();
+                    timesheet.Entries = (await result.ReadAsync<TimesheetEntry>()).ToList();
 
                     return timesheet;
                 }
@@ -82,7 +82,7 @@ namespace TrackerService.Data.Repositories
             });
             timesheet.TimesheetId = timesheetId;
 
-            foreach (var tsEntry in timesheet.TimesheetEntries)
+            foreach (var tsEntry in timesheet.Entries)
             {
                 tsEntry.TimesheetId = timesheetId;
                 var tsEntrySaved = await CreateTimesheetEntry(tsEntry);

@@ -9,6 +9,6 @@ namespace TrackerService.Data.DataObjects
         public int EmployeeId { get; set; }
         public DateTime WorkDate { get; set; }
 
-        public IList<TimesheetEntry> TimesheetEntries { get; set; } = new List<TimesheetEntry>();
+        public IList<TimesheetEntry> Entries { get; set; } = new List<TimesheetEntry>();
     }
 }

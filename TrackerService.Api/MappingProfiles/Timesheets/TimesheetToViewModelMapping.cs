@@ -8,7 +8,8 @@ namespace TrackerService.Api.MappingProfiles.Timesheets
     {
         public TimesheetToViewModelMapping()
         {
-            CreateMap<Timesheet, TimesheetViewModel>();
+            CreateMap<Timesheet, TimesheetViewModel>()
+                .ForMember(dest => dest.TimesheetEntries, opt => opt.MapFrom(src => src.Entries));
             CreateMap<TimesheetEntry, TimesheetEntryViewModel>();
         }
     }
