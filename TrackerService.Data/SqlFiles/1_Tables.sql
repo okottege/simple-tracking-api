@@ -17,3 +17,9 @@ BEGIN
     ALTER TABLE Employee ADD Email NVARCHAR(300)        
 END
 GO
+
+IF (COL_LENGTH('dbo.Employee', 'userId') IS NULL)
+BEGIN
+    ALTER TABLE Employee ADD userId NVARCHAR(100)        
+END
+GO
