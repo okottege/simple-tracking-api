@@ -7,5 +7,6 @@
         string GrantType { get; }
         string ConnectionName { get; }
         string Audience { get; }
+        string UserManagementBaseUrl { get; }
     }
 }
