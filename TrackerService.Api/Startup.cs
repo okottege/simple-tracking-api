@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -8,11 +9,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
+using TrackerService.Api.Configuration;
 using TrackerService.Api.Infrastructure;
+using TrackerService.Api.Infrastructure.Authentication;
+using TrackerService.Api.Infrastructure.Authentication.Models;
+using TrackerService.Api.Infrastructure.Contracts;
+using TrackerService.Api.Infrastructure.Filters;
 using TrackerService.Api.Infrastructure.Middleware;
 using TrackerService.Common.Contracts;
 using TrackerService.Data;
 using TrackerService.Data.Contracts;
+using TrackerService.Data.Repositories;
 
 namespace TrackerService.Api
 {
@@ -71,6 +78,25 @@ namespace TrackerService.Api
             var serviceProvider = services.BuildServiceProvider();
             var userContext = serviceProvider.GetService<IUserContext>();
             services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB"), storageConn, userContext));
+
+            var userManagementConfig = new ServiceAuthenticationConfiguration
+            {
+                ClientId = Configuration["UserManagement:ClientID"],
+                ClientSecret = Configuration["UserManagement:ClientSecret"],
+                GrantType = Configuration["UserManagement:GrantType"],
+                Audience = Configuration["UserManagement:Audience"],
+                AuthBaseUrl = Configuration["Authentication:Authority"]
+            };
+            services.AddSingleton(userManagementConfig);
+            services.AddTransient<IServiceAuthenticator, ServiceToServiceAuthenticator>();
+
+            var userRepoConfig = new UserRepositoryConfig
+            {
+                ConnectionName = Configuration["UserManagement:ConnectionID"],
+                UserManagementBaseUrl = Configuration["UserManagement:BaseUrl"]
+            };
+            services.AddTransient<IUserRepository>(sp => new UserRepository(sp.GetService<IHttpClientFactory>(), userRepoConfig));
+            services.AddScoped<RequireServiceToken>();
 
             services.AddMvc()
                 .AddJsonOptions(opt => opt.SerializerSettings.ContractResolver = new DefaultContractResolver())

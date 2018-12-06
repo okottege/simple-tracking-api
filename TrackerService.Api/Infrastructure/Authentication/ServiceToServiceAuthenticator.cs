@@ -13,9 +13,9 @@ namespace TrackerService.Api.Infrastructure.Authentication
     public class ServiceToServiceAuthenticator : IServiceAuthenticator
     {
         private readonly HttpClient client;
-        private readonly AuthenticationConfiguration config;
+        private readonly ServiceAuthenticationConfiguration config;
 
-        public ServiceToServiceAuthenticator(IHttpClientFactory factory, AuthenticationConfiguration config)
+        public ServiceToServiceAuthenticator(IHttpClientFactory factory, ServiceAuthenticationConfiguration config)
         {
             client = factory.CreateClient();
             client.BaseAddress = new Uri(config.AuthBaseUrl);
