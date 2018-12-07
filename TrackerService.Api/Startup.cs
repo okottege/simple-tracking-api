@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +17,7 @@ using TrackerService.Api.Infrastructure.Authentication.Models;
 using TrackerService.Api.Infrastructure.Contracts;
 using TrackerService.Api.Infrastructure.Filters;
 using TrackerService.Api.Infrastructure.Middleware;
+using TrackerService.Common;
 using TrackerService.Common.Contracts;
 using TrackerService.Data;
 using TrackerService.Data.Contracts;
@@ -69,7 +71,16 @@ namespace TrackerService.Api
                     option.Audience = Configuration["Authentication:Audience"];
                     option.SaveToken = true;
                 });
-            services.AddHttpClient();
+
+            services.AddHttpClient(HttpClientNames.USER_MANAGEMENT_CLIENT, c =>
+                {
+                    c.BaseAddress = new Uri(Configuration["UserManagement:BaseUrl"]);
+                });
+            services.AddHttpClient(HttpClientNames.AUTHENTICATION_CLIENT, c =>
+                {
+                    c.BaseAddress = new Uri(Configuration["Authentication:Authority"]);
+                });
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IUserContext, ApiUserContext>();
             services.AddAutoMapper();

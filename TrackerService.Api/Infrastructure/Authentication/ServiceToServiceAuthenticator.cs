@@ -1,5 +1,4 @@
-﻿using System;
-using System.Dynamic;
+﻿using System.Dynamic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TrackerService.Api.Infrastructure.Authentication.Models;
 using TrackerService.Api.Infrastructure.Contracts;
+using TrackerService.Common;
 
 namespace TrackerService.Api.Infrastructure.Authentication
 {
@@ -17,9 +17,7 @@ namespace TrackerService.Api.Infrastructure.Authentication
 
         public ServiceToServiceAuthenticator(IHttpClientFactory factory, ServiceAuthenticationConfiguration config)
         {
-            client = factory.CreateClient();
-            client.BaseAddress = new Uri(config.AuthBaseUrl);
-
+            client = factory.CreateClient(HttpClientNames.AUTHENTICATION_CLIENT);
             this.config = config;
         }
 
@@ -32,7 +30,7 @@ namespace TrackerService.Api.Infrastructure.Authentication
             reqContent.audience = config.Audience;
 
             var content = new StringContent(JsonConvert.SerializeObject(reqContent), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("/oauth/token", content);
+            var response = await client.PostAsync("oauth/token", content);
             var responseBody = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
             return responseBody["access_token"].ToString();
         }

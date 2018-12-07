@@ -1,5 +1,4 @@
-﻿using System;
-using System.Dynamic;
+﻿using System.Dynamic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TrackerService.Api.ViewModels;
+using TrackerService.Common;
 
 namespace TrackerService.Api.Controllers
 {
@@ -20,8 +20,7 @@ namespace TrackerService.Api.Controllers
         public AuthenticationController(IHttpClientFactory clientFactory, IConfiguration config)
         {
             this.config = config;
-            client = clientFactory.CreateClient();
-            client.BaseAddress = new Uri($"{config["Authentication:Authority"]}");
+            client = clientFactory.CreateClient(HttpClientNames.AUTHENTICATION_CLIENT);
         }
 
         [Route("token")]
@@ -38,7 +37,7 @@ namespace TrackerService.Api.Controllers
             reqContent.realm = config["Authentication:Realm"];
 
             var content = new StringContent(JsonConvert.SerializeObject(reqContent), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("/oauth/token", content);
+            var response = await client.PostAsync("oauth/token", content);
             var responseBody = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
             return responseBody;
         }
