@@ -27,6 +27,7 @@ namespace TrackerService.Data.Repositories
             dynamic reqContent = new ExpandoObject();
             reqContent.connection = config.ConnectionName;
             reqContent.email = registration.Email;
+            reqContent.name = registration.Email;
             reqContent.password = registration.Password;
 
             var content = new StringContent(JsonConvert.SerializeObject(reqContent), Encoding.UTF8, "application/json");
@@ -38,7 +39,7 @@ namespace TrackerService.Data.Repositories
             var responseBody = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
             return new User
             {
-                Id =  responseBody["identities.user_id"].ToString(),
+                Id =  responseBody.SelectToken("identities[0].user_id").ToString(),
                 Email = responseBody["email"].ToString()
             };
         }
