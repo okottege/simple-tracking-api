@@ -72,10 +72,13 @@ namespace TrackerService.Api
                     option.SaveToken = true;
                 });
 
+            services.AddTransient<UserManagerErrorResponseHandler>();
             services.AddHttpClient(HttpClientNames.USER_MANAGEMENT_CLIENT, c =>
                 {
                     c.BaseAddress = new Uri(Configuration["UserManagement:BaseUrl"]);
-                });
+                })
+                .AddHttpMessageHandler<UserManagerErrorResponseHandler>();
+
             services.AddHttpClient(HttpClientNames.AUTHENTICATION_CLIENT, c =>
                 {
                     c.BaseAddress = new Uri(Configuration["Authentication:Authority"]);
@@ -130,6 +133,7 @@ namespace TrackerService.Api
                 app.UseHttpsRedirection();
             }
 
+            app.ConfigureExceptionHandler(env);
             app.UseAuthentication();
             app.UseMvc();
         }
