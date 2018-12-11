@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using TrackerService.Api.Infrastructure.Contracts;
 using TrackerService.Api.Infrastructure.Filters;
 using TrackerService.Data.Contracts;
 

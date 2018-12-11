@@ -73,7 +73,7 @@ namespace Tracker.Api.Tests.Integration
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        [Theory(DisplayName = "Register without mandatory data")]
+        [Theory(DisplayName = "User registration without mandatory data")]
         [InlineData(null, null)]
         [InlineData("", "")]
         [InlineData("bob.smith@hotmail.com", null)]
