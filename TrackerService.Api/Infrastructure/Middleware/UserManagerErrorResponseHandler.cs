@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using TrackerService.Api.CustomExceptions;
@@ -20,9 +19,6 @@ namespace TrackerService.Api.Infrastructure.Middleware
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"Http status code: {response.StatusCode}");
-                Console.WriteLine($"Error msg: {ex.Message}");
-                Console.WriteLine($"Error Content: {responseContent}");
                 throw new UserManagementException(response.StatusCode, responseContent, ex);
             }
 

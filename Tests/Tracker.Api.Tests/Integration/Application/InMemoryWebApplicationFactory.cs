@@ -1,20 +1,24 @@
-﻿using Microsoft.AspNetCore;
+﻿using AutoMapper;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Tracker.Api.Tests.Integration.Application.Authentication;
+using TrackerService.Api.Infrastructure.Contracts;
+using TrackerService.Api.Infrastructure.Filters;
 using TrackerService.Data.Contracts;
 
 namespace Tracker.Api.Tests.Integration.Application
 {
-    public class InMemoryWebApplicationFactory<TStartup> : WebApplicationFactory<TestStartup>
+    public class InMemoryWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class 
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             var mockRepoFactory = new Mock<IRepositoryFactory>();
             var mockEmployeeRepo = new Mock<IEmployeeRepository>();
+            var mockUserRepo = new Mock<IUserRepository>();
+            var mockAuthenticator = new Mock<IServiceAuthenticator>();
 
             mockRepoFactory.Setup(m => m.CreateEmployeeRepository()).Returns(mockEmployeeRepo.Object);
             builder.UseSolutionRelativeContentRoot("./");
@@ -22,13 +26,18 @@ namespace Tracker.Api.Tests.Integration.Application
             builder.ConfigureTestServices(services =>
             {
                 services.AddTransient(provider => mockRepoFactory.Object);
+                services.AddTransient(provider => mockUserRepo.Object);
+                services.AddTransient(provider => mockAuthenticator.Object);
+
+                services.AddAutoMapper();
+                services.AddTransient<RequireServiceToken>();
             });
         }
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             return WebHost.CreateDefaultBuilder(new string[]{})
-                .UseStartup<TestStartup>();
+                .UseStartup<TStartup>();
         }
     }
 }

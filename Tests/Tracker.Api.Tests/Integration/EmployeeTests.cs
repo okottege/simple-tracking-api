@@ -11,7 +11,7 @@ namespace Tracker.Api.Tests.Integration
     public class EmployeeTests : IClassFixture<InMemoryWebApplicationFactory<TestStartup>>
     {
         private readonly HttpClient client;
-
+        
         public EmployeeTests(InMemoryWebApplicationFactory<TestStartup> factory)
         {
             client = factory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
