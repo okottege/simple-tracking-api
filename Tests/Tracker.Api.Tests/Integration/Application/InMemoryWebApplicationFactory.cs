@@ -17,17 +17,13 @@ namespace Tracker.Api.Tests.Integration.Application
         {
             var mockRepoFactory = new Mock<IRepositoryFactory>();
             var mockEmployeeRepo = new Mock<IEmployeeRepository>();
-            var mockUserRepo = new Mock<IUserRepository>();
-            var mockAuthenticator = new Mock<IServiceAuthenticator>();
-
+            
             mockRepoFactory.Setup(m => m.CreateEmployeeRepository()).Returns(mockEmployeeRepo.Object);
             builder.UseSolutionRelativeContentRoot("./");
 
             builder.ConfigureTestServices(services =>
             {
                 services.AddTransient(provider => mockRepoFactory.Object);
-                services.AddTransient(provider => mockUserRepo.Object);
-                services.AddTransient(provider => mockAuthenticator.Object);
 
                 services.AddAutoMapper();
                 services.AddTransient<RequireServiceToken>();
