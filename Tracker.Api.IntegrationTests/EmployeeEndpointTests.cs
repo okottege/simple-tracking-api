@@ -55,10 +55,10 @@ namespace Tracker.Api.IntegrationTests
 
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
             dynamic data = await GetResponsePayload(response);
-            string firstNameError = JArray.FromObject(data.FirstName)[0].ToString();
-            string lastNameError = JArray.FromObject(data.LastName)[0].ToString();
-            string dateOfBirthError = JArray.FromObject(data.DateOfBirth)[0].ToString();
-            string startDateError = JArray.FromObject(data.StartDate)[0].ToString();
+            string firstNameError = JArray.FromObject(data.errors.FirstName)[0].ToString();
+            string lastNameError = JArray.FromObject(data.errors.LastName)[0].ToString();
+            string dateOfBirthError = JArray.FromObject(data.errors.DateOfBirth)[0].ToString();
+            string startDateError = JArray.FromObject(data.errors.StartDate)[0].ToString();
 
             new[] {firstNameError, lastNameError, dateOfBirthError, startDateError}.ToList().ForEach(e => Assert.IsTrue(e.EndsWith("field is required.")));
         }

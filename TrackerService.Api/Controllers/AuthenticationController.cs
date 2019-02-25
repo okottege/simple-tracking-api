@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -16,9 +17,11 @@ namespace TrackerService.Api.Controllers
     {
         private readonly HttpClient client;
         private readonly IConfiguration config;
+        private readonly IAntiforgery antiforgery;
 
-        public AuthenticationController(IHttpClientFactory clientFactory, IConfiguration config)
+        public AuthenticationController(IHttpClientFactory clientFactory, IAntiforgery antiforgery, IConfiguration config)
         {
+            this.antiforgery = antiforgery;
             this.config = config;
             client = clientFactory.CreateClient(HttpClientNames.AUTHENTICATION_CLIENT);
         }
@@ -40,6 +43,13 @@ namespace TrackerService.Api.Controllers
             var response = await client.PostAsync("oauth/token", content);
             var responseBody = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
             return responseBody;
+        }
+
+        [HttpGet("anti-forgery")]
+        public IActionResult GetAntiForgeryToken()
+        {
+            var tokenSet = antiforgery.GetTokens(HttpContext);
+            return Content(tokenSet.RequestToken);
         }
     }
 }
