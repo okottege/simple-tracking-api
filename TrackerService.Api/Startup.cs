@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using TrackerService.Api.Configuration;
 using TrackerService.Api.Infrastructure;
@@ -93,6 +94,8 @@ namespace TrackerService.Api
             var userContext = serviceProvider.GetService<IUserContext>();
             services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB"), storageConn, userContext));
 
+            IUserManagementOptions userManConf = Configuration.GetSection("UserManagement").Get<UserManagementOptions>();
+
             var userManagementConfig = new ServiceAuthenticationConfiguration
             {
                 ClientId = Configuration["UserManagement:ClientID"],
@@ -101,6 +104,7 @@ namespace TrackerService.Api
                 Audience = Configuration["UserManagement:Audience"],
                 AuthBaseUrl = Configuration["Authentication:Authority"]
             };
+            services.AddSingleton(userManConf);
             services.AddSingleton(userManagementConfig);
             services.AddTransient<IServiceAuthenticator, ServiceToServiceAuthenticator>();
 
@@ -113,7 +117,11 @@ namespace TrackerService.Api
             services.AddScoped<RequireServiceToken>();
 
             services.AddMvc()
-                .AddJsonOptions(opt => opt.SerializerSettings.ContractResolver = new DefaultContractResolver())
+                .AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    opt.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
