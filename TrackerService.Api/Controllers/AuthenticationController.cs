@@ -26,8 +26,7 @@ namespace TrackerService.Api.Controllers
             client = clientFactory.CreateClient(HttpClientNames.AUTHENTICATION_CLIENT);
         }
 
-        [Route("token")]
-        [HttpPost]
+        [HttpPost("token")]
         public async Task<ActionResult<object>> GetToken([FromBody]LoginInformation login)
         {
             dynamic reqContent = new ExpandoObject();
@@ -49,7 +48,14 @@ namespace TrackerService.Api.Controllers
         public IActionResult GetAntiForgeryToken()
         {
             var tokenSet = antiforgery.GetTokens(HttpContext);
-            return Content(tokenSet.RequestToken);
+            return Ok(new {requestToken = tokenSet.RequestToken, header = tokenSet.HeaderName, cookieToken = tokenSet.CookieToken});
+        }
+
+        [HttpPost("change-password")]
+        [ValidateAntiForgeryToken]
+        public IActionResult ChangePassword([FromBody]LoginInformation login)
+        {
+            return Ok("All good");
         }
     }
 }
