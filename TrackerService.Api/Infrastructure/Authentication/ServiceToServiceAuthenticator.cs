@@ -13,9 +13,9 @@ namespace TrackerService.Api.Infrastructure.Authentication
     public class ServiceToServiceAuthenticator : IServiceAuthenticator
     {
         private readonly HttpClient client;
-        private readonly ServiceAuthenticationConfiguration config;
+        private readonly AuthenticationConfig config;
 
-        public ServiceToServiceAuthenticator(IHttpClientFactory factory, ServiceAuthenticationConfiguration config)
+        public ServiceToServiceAuthenticator(IHttpClientFactory factory, AuthenticationConfig config)
         {
             client = factory.CreateClient(HttpClientNames.AUTHENTICATION_CLIENT);
             this.config = config;
@@ -25,7 +25,7 @@ namespace TrackerService.Api.Infrastructure.Authentication
         {
             dynamic reqContent = new ExpandoObject();
             reqContent.grant_type = config.GrantType;
-            reqContent.client_id = config.ClientId;
+            reqContent.client_id = config.ClientID;
             reqContent.client_secret = config.ClientSecret;
             reqContent.audience = config.Audience;
 

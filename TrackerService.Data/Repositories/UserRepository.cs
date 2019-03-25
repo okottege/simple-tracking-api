@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TrackerService.Common;
-using TrackerService.Common.Contracts;
 using TrackerService.Data.Contracts;
 using TrackerService.Data.DataObjects;
 
@@ -14,9 +13,9 @@ namespace TrackerService.Data.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly HttpClient http;
-        private readonly IUserRepositoryConfig config;
+        private readonly UserManagementConfig config;
 
-        public UserRepository(IHttpClientFactory httpFactory, IUserRepositoryConfig config)
+        public UserRepository(IHttpClientFactory httpFactory, UserManagementConfig config)
         {
             http = httpFactory.CreateClient(HttpClientNames.USER_MANAGEMENT_CLIENT);
             this.config = config;
@@ -25,13 +24,13 @@ namespace TrackerService.Data.Repositories
         public async Task<User> Register(UserRegistration registration)
         {
             dynamic reqContent = new ExpandoObject();
-            reqContent.connection = config.ConnectionName;
+            reqContent.connection = config.ConnectionID;
             reqContent.email = registration.Email;
             reqContent.name = registration.Email;
             reqContent.password = registration.Password;
 
             var content = new StringContent(JsonConvert.SerializeObject(reqContent), Encoding.UTF8, "application/json");
-            http.DefaultRequestHeaders.Add("Authorization", $"Bearer {registration.ServiceToken}");
+            // http.DefaultRequestHeaders.Add("Authorization", $"Bearer {registration.ServiceToken}");
 
             var response = await http.PostAsync("users", content);
             response.EnsureSuccessStatusCode();

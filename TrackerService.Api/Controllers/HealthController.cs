@@ -7,8 +7,8 @@ using TrackerService.Data.Contracts;
 
 namespace TrackerService.Api.Controllers
 {
-    [Authorize]
     [Route("api/health")]
+    [AllowAnonymous]
     public class HealthController : ControllerBase
     {
         private readonly IEmployeeRepository employeeRepo;

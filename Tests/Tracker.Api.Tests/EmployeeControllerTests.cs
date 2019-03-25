@@ -13,44 +13,6 @@ namespace Tracker.Api.Tests
     public class EmployeeControllerTests
     {
         private readonly Mock<IRepositoryFactory> factory = new Mock<IRepositoryFactory>();
-        
-        [Fact]
-        public async Task TestGetWhenNotFound_NotFoundResponseIsReturned()
-        {
-            var mockRepo = new Mock<IEmployeeRepository>();
-            mockRepo.Setup(m => m.GetEmployee(It.IsAny<int>())).ReturnsAsync((Employee) null); 
-            factory.Setup(m => m.CreateEmployeeRepository()).Returns(mockRepo.Object);
-            var controller = new EmployeeController(factory.Object);
-
-            var response = await controller.GetEmployee(100);
-            Assert.IsType<NotFoundResult>(response);
-        }
-
-        [Fact]
-        public async Task TestGetByIdWhenEmployeeFound_FieldsAreMappedCorrectly()
-        {
-            var mockRepo = new Mock<IEmployeeRepository>();
-            var employee = new Employee
-            {
-                EmployeeId = 1,
-                FirstName = "Bob",
-                LastName = "Smith",
-                DateOfBirth = new DateTime(1955, 1, 22),
-                StartDate = new DateTime(2000, 2, 14)
-            };
-            mockRepo.Setup(m => m.GetEmployee(It.IsAny<int>())).ReturnsAsync(employee);
-            factory.Setup(m => m.CreateEmployeeRepository()).Returns(mockRepo.Object);
-            var controller = new EmployeeController(factory.Object);
-
-            var response = await controller.GetEmployee(100);
-
-            var responsePayload = Assert.IsType<OkObjectResult>(response).Value as EmployeeViewModel;
-            Assert.Equal(employee.EmployeeId, responsePayload.EmployeeId);
-            Assert.Equal(employee.FirstName, responsePayload.FirstName);
-            Assert.Equal(employee.LastName, responsePayload.LastName);
-            Assert.Equal(employee.DateOfBirth, responsePayload.DateOfBirth);
-            Assert.Equal(employee.StartDate, responsePayload.StartDate);
-        }
 
         [Fact]
         public async Task TestCreateEmployee_ReturnsCreatedAtResult()

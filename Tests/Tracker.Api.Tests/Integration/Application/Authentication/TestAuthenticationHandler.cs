@@ -9,13 +9,16 @@ namespace Tracker.Api.Tests.Integration.Application.Authentication
 {
     public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticationOptions>
     {
-        public TestAuthenticationHandler(IOptionsMonitor<TestAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        public TestAuthenticationHandler(IOptionsMonitor<TestAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) 
+            : base(options, logger, encoder, clock)
         {
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var authTicket = new AuthenticationTicket(new ClaimsPrincipal(Options.Identity), new AuthenticationProperties(), TestAuthenticationExtensions.TEST_SCHEME);
+            var claimIdentity = new ClaimsIdentity(TestAuthenticationExtensions.TestAuthScheme);
+            var identities = new[] {claimIdentity};
+            var authTicket = new AuthenticationTicket(new ClaimsPrincipal(identities), Scheme.Name);
             return Task.FromResult(AuthenticateResult.Success(authTicket));
         }
     }
