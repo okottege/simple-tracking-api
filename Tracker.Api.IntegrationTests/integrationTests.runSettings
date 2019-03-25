@@ -2,7 +2,7 @@
 <RunSettings>
   <!-- Parameters used by tests at runtime -->  
   <TestRunParameters>  
-    <Parameter name="webUrl" value=" https://localhost:5001" />
+    <Parameter name="webUrl" value="https://localhost:5001" />
     <Parameter name="clientId" value="[client-id]" />
     <Parameter name="audience" value="[audience]" />
     <Parameter name="clientSecret" value="[client-secret]" />

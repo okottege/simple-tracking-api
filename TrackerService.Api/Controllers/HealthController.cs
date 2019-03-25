@@ -18,6 +18,7 @@ namespace TrackerService.Api.Controllers
             employeeRepo = factory.CreateEmployeeRepository();
         }
 
+        [HttpGet]
         public async Task<ActionResult<object>> Get()
         {
             var employees = await employeeRepo.GetAllEmployees();
