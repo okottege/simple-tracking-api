@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TrackerService.Api.Infrastructure.Authentication.Models;
 using TrackerService.Api.Infrastructure.Contracts;
 using TrackerService.Common;
 

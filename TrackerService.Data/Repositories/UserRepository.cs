@@ -30,10 +30,7 @@ namespace TrackerService.Data.Repositories
             reqContent.password = registration.Password;
 
             var content = new StringContent(JsonConvert.SerializeObject(reqContent), Encoding.UTF8, "application/json");
-            // http.DefaultRequestHeaders.Add("Authorization", $"Bearer {registration.ServiceToken}");
-
             var response = await http.PostAsync("users", content);
-            response.EnsureSuccessStatusCode();
 
             var responseBody = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
             return new User
