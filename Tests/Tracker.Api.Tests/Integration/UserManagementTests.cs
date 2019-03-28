@@ -4,8 +4,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using Newtonsoft.Json;
+using NSubstitute;
 using Tracker.Api.Tests.Integration.Application;
 using TrackerService.Api.ViewModels.UserManagement;
 using TrackerService.Data.Contracts;
@@ -30,10 +30,10 @@ namespace Tracker.Api.Tests.Integration
             {
                 builder.ConfigureTestServices(services =>
                 {
-                    var mockUserRepo = new Mock<IUserRepository>();
-                    mockUserRepo.Setup(m => m.Register(It.IsAny<UserRegistration>()))
-                        .ReturnsAsync(new User { Email = "user.name@gmail.com", Id = "usr-001" });
-                    services.AddTransient(p => mockUserRepo.Object);
+                    var mockUserRepo = Substitute.For<IUserRepository>();
+                    mockUserRepo.Register(Arg.Any<UserRegistration>())
+                        .Returns(new User { Email = "user.name@gmail.com", Id = "usr-001" });
+                    services.AddTransient(p => mockUserRepo);
                 });
             }).CreateClient();
             var content = GetSampleRegistrationViewModel();
@@ -54,7 +54,7 @@ namespace Tracker.Api.Tests.Integration
             {
                 builder.ConfigureTestServices(services =>
                 {
-                    services.AddTransient(provider => new Mock<IUserRepository>().Object);
+                    services.AddTransient(provider => Substitute.For<IUserRepository>());
                     AddRepositoryFactory(services);
                 });
             }).CreateClient();
@@ -74,8 +74,9 @@ namespace Tracker.Api.Tests.Integration
 
         private static void AddRepositoryFactory(IServiceCollection services)
         {
-            var mockRepoFactory = new Mock<IRepositoryFactory>();
-            mockRepoFactory.Setup(m => m.CreateEmployeeRepository()).Returns(new Mock<IEmployeeRepository>().Object);
+            var mockRepoFactory = Substitute.For<IRepositoryFactory>();
+            var mockEmpRepo = Substitute.For<IEmployeeRepository>();
+            mockRepoFactory.CreateEmployeeRepository().Returns(mockEmpRepo);
             services.AddTransient(provider => mockRepoFactory);
         }
     }

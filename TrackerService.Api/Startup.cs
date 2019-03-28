@@ -46,9 +46,8 @@ namespace TrackerService.Api
                     });
                 });
             }
-
+            services.AddAutoMapper(typeof(Startup));
             var authConfig = Configuration.GetAuthenticationOptions();
-            services.AddAutoMapper();
             services.AddAuthentication(authConfig);
 
             var authPolicyBuilder = new AuthorizationPolicyBuilder()

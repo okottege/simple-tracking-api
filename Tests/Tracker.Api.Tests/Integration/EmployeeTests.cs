@@ -4,7 +4,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
+using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using Tracker.Api.Tests.Integration.Application;
 using TrackerService.Api.ViewModels;
 using TrackerService.Common;
@@ -27,12 +28,13 @@ namespace Tracker.Api.Tests.Integration
         [Fact]
         public async Task GetEmployeeList_ReturnsOK()
         {
-            var mockEmployeeRepo = new Mock<IEmployeeRepository>().Object;
-            var mockEmpRepoFactory = new Mock<IRepositoryFactory>();
-            mockEmpRepoFactory.Setup(m => m.CreateEmployeeRepository()).Returns(mockEmployeeRepo);
+            var mockEmployeeRepo = Substitute.For<IEmployeeRepository>();
+            var repoFactory = Substitute.For<IRepositoryFactory>();
+            repoFactory.CreateEmployeeRepository().Returns(mockEmployeeRepo);
+
             var client = factory.WithWebHostBuilder(builder =>
                 {
-                    builder.ConfigureTestServices(services => { services.AddTransient(p => mockEmpRepoFactory.Object); });
+                    builder.ConfigureTestServices(services => { services.AddTransient(p => repoFactory); });
                 }).CreateClient();
 
             var response = await client.GetAsync("api/employee");
@@ -43,11 +45,11 @@ namespace Tracker.Api.Tests.Integration
         public async Task TestGetWhenNotFound_NotFoundResponseIsReturned()
         {
             var mockEmployeeRepo = SetupGetEmployeeByIdThrowException(new EntityNotFoundException("task not found"));
-            var mockEmpRepoFactory = SetupRepositoryFactory(mockEmployeeRepo.Object);
+            var mockEmpRepoFactory = SetupRepositoryFactory(mockEmployeeRepo);
 
             var http = factory.WithWebHostBuilder(builder =>
             {
-                builder.ConfigureTestServices(services => { services.AddTransient(p => mockEmpRepoFactory.Object); });
+                builder.ConfigureTestServices(services => { services.AddTransient(p => mockEmpRepoFactory); });
             }).CreateClient();
 
             var response = await http.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/api/employee/22"));
@@ -69,10 +71,10 @@ namespace Tracker.Api.Tests.Integration
                 StartDate = new DateTime(2000, 2, 14)
             };
             var mockEmpRepo = SetupGetEmployeeById(employee);
-            var mockEmpRepoFactory = SetupRepositoryFactory(mockEmpRepo.Object);
+            var mockEmpRepoFactory = SetupRepositoryFactory(mockEmpRepo);
             var http = factory.WithWebHostBuilder(builder =>
             {
-                builder.ConfigureTestServices(services => { services.AddTransient(p => mockEmpRepoFactory.Object); });
+                builder.ConfigureTestServices(services => { services.AddTransient(p => mockEmpRepoFactory); });
             }).CreateClient();
 
             var response = await http.GetAsync("/api/employee/123");
@@ -86,24 +88,24 @@ namespace Tracker.Api.Tests.Integration
             Assert.Equal(employee.StartDate, empViewModel.StartDate);
         }
 
-        private Mock<IEmployeeRepository> SetupGetEmployeeById(Employee employee)
+        private IEmployeeRepository SetupGetEmployeeById(Employee employee)
         {
-            var mockEmployeeRepo = new Mock<IEmployeeRepository>();
-            mockEmployeeRepo.Setup(m => m.GetEmployee(It.IsAny<int>())).ReturnsAsync(employee);
+            var mockEmployeeRepo = Substitute.For<IEmployeeRepository>();
+            mockEmployeeRepo.GetEmployee(Arg.Any<int>()).Returns(employee);
             return mockEmployeeRepo;
         }
 
-        private Mock<IRepositoryFactory> SetupRepositoryFactory(IEmployeeRepository empRepo)
+        private IRepositoryFactory SetupRepositoryFactory(IEmployeeRepository empRepo)
         {
-            var mockRepoFactory = new Mock<IRepositoryFactory>();
-            mockRepoFactory.Setup(m => m.CreateEmployeeRepository()).Returns(empRepo);
+            var mockRepoFactory = Substitute.For<IRepositoryFactory>();
+            mockRepoFactory.CreateEmployeeRepository().Returns(empRepo);
             return mockRepoFactory;
         }
 
-        private Mock<IEmployeeRepository> SetupGetEmployeeByIdThrowException(Exception ex)
+        private IEmployeeRepository SetupGetEmployeeByIdThrowException(Exception ex)
         {
-            var empRepo = new Mock<IEmployeeRepository>();
-            empRepo.Setup(m => m.GetEmployee(It.IsAny<int>())).ThrowsAsync(ex);
+            var empRepo = Substitute.For<IEmployeeRepository>();
+            empRepo.GetEmployee(Arg.Any<int>()).Throws(ex);
             return empRepo;
         }
     }
