@@ -8,6 +8,7 @@ using Moq;
 using Tracker.Api.Tests.Integration.Application;
 using TrackerService.Api.ViewModels;
 using TrackerService.Common;
+using TrackerService.Common.Exceptions;
 using TrackerService.Data.Contracts;
 using TrackerService.Data.DataObjects;
 using Xunit;
@@ -41,7 +42,7 @@ namespace Tracker.Api.Tests.Integration
         [Fact]
         public async Task TestGetWhenNotFound_NotFoundResponseIsReturned()
         {
-            var mockEmployeeRepo = SetupGetEmployeeById(null);
+            var mockEmployeeRepo = SetupGetEmployeeByIdThrowException(new EntityNotFoundException("task not found"));
             var mockEmpRepoFactory = SetupRepositoryFactory(mockEmployeeRepo.Object);
 
             var http = factory.WithWebHostBuilder(builder =>
@@ -50,8 +51,10 @@ namespace Tracker.Api.Tests.Integration
             }).CreateClient();
 
             var response = await http.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/api/employee/22"));
+            var content = await response.GetContent<dynamic>();
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Contains("task not found", content.message.ToString());
         }
 
         [Fact]
@@ -95,6 +98,13 @@ namespace Tracker.Api.Tests.Integration
             var mockRepoFactory = new Mock<IRepositoryFactory>();
             mockRepoFactory.Setup(m => m.CreateEmployeeRepository()).Returns(empRepo);
             return mockRepoFactory;
+        }
+
+        private Mock<IEmployeeRepository> SetupGetEmployeeByIdThrowException(Exception ex)
+        {
+            var empRepo = new Mock<IEmployeeRepository>();
+            empRepo.Setup(m => m.GetEmployee(It.IsAny<int>())).ThrowsAsync(ex);
+            return empRepo;
         }
     }
 }

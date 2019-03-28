@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using TrackerService.Api.CustomExceptions;
+using TrackerService.Common.Exceptions;
 
 namespace TrackerService.Api.Infrastructure.Middleware
 {
@@ -34,6 +35,9 @@ namespace TrackerService.Api.Infrastructure.Middleware
             {
                 case UserManagementException exUserManagement:
                     await ApplyExceptionResponse(context, HttpStatusCode.BadRequest, exUserManagement.Message);
+                    break;
+                case EntityNotFoundException exNotFound:
+                    await ApplyExceptionResponse(context, HttpStatusCode.NotFound, exNotFound.Message);
                     break;
                 default:
                     await ApplyExceptionResponse(context, HttpStatusCode.InternalServerError, "There was an error processing request.");

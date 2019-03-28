@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TrackerService.Common.Exceptions;
 using TrackerService.Data.Contracts;
 using TrackerService.Data.DataObjects;
 
@@ -24,7 +25,9 @@ namespace TrackerService.Data.Repositories
             const string SQL = "SELECT * FROM Employee WHERE EmployeeId = @id";
             var result = (await QueryAsync<Employee>(SQL, new {id})).ToList();
 
-            return result.Any() ? result[0] : null;
+            if (!result.Any()) EmployeeNotFound(id);
+
+            return  result[0];
         }
         
         public async Task<Employee> Create(Employee employee)
@@ -58,12 +61,20 @@ namespace TrackerService.Data.Repositories
                 dateOfBirth = employee.DateOfBirth,
                 startDate = employee.StartDate
             };
-            return await ExecuteCommand(SQL, args);
+            var updated = await ExecuteCommand(SQL, args);
+            if(!updated) EmployeeNotFound(employee.EmployeeId);
+
+            return true;
         }
 
         public async Task<bool> Remove(int employeeId)
         {
             return await ExecuteCommand("DELETE FROM Employee WHERE employeeId = @employeeId", new {employeeId});
+        }
+
+        private void EmployeeNotFound(int id)
+        {
+            throw new EntityNotFoundException("Employee", id.ToString());
         }
     }
 }

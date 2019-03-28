@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TrackerService.Api.ViewModels;
 using TrackerService.Data.Contracts;
@@ -12,10 +13,12 @@ namespace TrackerService.Api.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeRepository repository;
+        private readonly IMapper mapper;
 
-        public EmployeeController(IRepositoryFactory factory)
+        public EmployeeController(IRepositoryFactory factory, IMapper mapper)
         {
             repository = factory.CreateEmployeeRepository();
+            this.mapper = mapper;
         }
 
         [ProducesResponseType(200, Type = typeof(IEnumerable<Employee>))]
@@ -23,7 +26,7 @@ namespace TrackerService.Api.Controllers
         public async Task<IActionResult> Get()
         {
             var employees = await repository.GetAllEmployees();
-            return Ok(employees);
+            return Ok(mapper.Map<List<EmployeeViewModel>>(employees));
         }
 
         [ProducesResponseType(200, Type = typeof(EmployeeViewModel))]
@@ -32,39 +35,22 @@ namespace TrackerService.Api.Controllers
         public async Task<IActionResult> GetEmployee(int employeeId)
         {
             var employee = await repository.GetEmployee(employeeId);
-            if (employee != null)
-            {
-                return Ok(new EmployeeViewModel
-                {
-                    EmployeeId = employee.EmployeeId,
-                    FirstName = employee.FirstName,
-                    LastName = employee.LastName,
-                    DateOfBirth = employee.DateOfBirth,
-                    StartDate = employee.StartDate,
-                    Email = employee.Email
-                });
-            }
-            return NotFound();
+            var vmEmployee = mapper.Map<EmployeeViewModel>(employee);
+            return Ok(vmEmployee);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] EmployeeViewModel employee)
+        public async Task<IActionResult> CreateAsync([FromBody] EmployeeViewModel vmEmployee)
         {
-            var newEmployee = await repository.Create(GetEmployee(employee));
-            return CreatedAtAction(nameof(GetEmployee), new {employeeId = newEmployee.EmployeeId}, newEmployee);
+            var employee = await repository.Create(mapper.Map<Employee>(vmEmployee));
+            return CreatedAtAction(nameof(GetEmployee), new {employeeId = employee.EmployeeId}, employee);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] EmployeeViewModel employee)
         {
-            var updated = await repository.Update(GetEmployee(employee));
-
-            if (updated)
-            {
-                return Ok();
-            }
-
-            return NotFound();
+            await repository.Update(mapper.Map<Employee>(employee));
+            return NoContent();
         }
 
         [HttpDelete("{employeeId}")]
@@ -72,19 +58,6 @@ namespace TrackerService.Api.Controllers
         {
             await repository.Remove(employeeId);
             return NoContent();
-        }
-
-        private Employee GetEmployee(EmployeeViewModel employeeVM)
-        {
-            return new Employee
-            {
-                EmployeeId = employeeVM.EmployeeId,
-                FirstName = employeeVM.FirstName,
-                LastName = employeeVM.LastName,
-                DateOfBirth = employeeVM.DateOfBirth.Value,
-                StartDate = employeeVM.StartDate.Value,
-                Email = employeeVM.Email
-            };
         }
     }
 }
