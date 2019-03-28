@@ -79,7 +79,7 @@ namespace Tracker.Api.IntegrationTests
             var updateResponse = await serviceClient.PutAsync("api/employee", reqContent);
 
             updateResponse.EnsureSuccessStatusCode();
-            Assert.AreEqual(HttpStatusCode.OK, updateResponse.StatusCode);
+            Assert.AreEqual(HttpStatusCode.NoContent, updateResponse.StatusCode);
 
             employeeIdsToRemove.Add(employeeId);
 
