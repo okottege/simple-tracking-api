@@ -1,11 +1,9 @@
-﻿using System.Dynamic;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TrackerService.Api.ViewModels;
@@ -17,13 +15,13 @@ namespace TrackerService.Api.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly HttpClient client;
-        private readonly IConfiguration config;
+        private readonly AuthenticationConfig authConfig;
         private readonly IAntiforgery antiforgery;
 
-        public AuthenticationController(IHttpClientFactory clientFactory, IAntiforgery antiforgery, IConfiguration config)
+        public AuthenticationController(IHttpClientFactory clientFactory, IAntiforgery antiforgery, AuthenticationConfig authConfig)
         {
             this.antiforgery = antiforgery;
-            this.config = config;
+            this.authConfig = authConfig;
             client = clientFactory.CreateClient(HttpClientNames.AUTHENTICATION_CLIENT);
         }
 
@@ -31,15 +29,16 @@ namespace TrackerService.Api.Controllers
         [HttpPost("token")]
         public async Task<ActionResult<object>> GetToken([FromBody]LoginInformation login)
         {
-            dynamic reqContent = new ExpandoObject();
-            reqContent.grant_type = config["Authentication:GrantType"];
-            reqContent.username = login.Username;
-            reqContent.password = login.Password;
-            reqContent.client_id = config["Authentication:ClientID"];
-            reqContent.client_secret = config["Authentication:ClientSecret"];
-            reqContent.audience = config["Authentication:Audience"];
-            reqContent.realm = config["Authentication:Realm"];
-
+            var reqContent = new
+            {
+                grant_type = authConfig.GrantType,
+                username = login.Username,
+                password = login.Password,
+                client_id = authConfig.ClientID,
+                client_secret = authConfig.ClientSecret,
+                audience = authConfig.Audience,
+                realm = authConfig.Realm
+            };
             var content = new StringContent(JsonConvert.SerializeObject(reqContent), Encoding.UTF8, "application/json");
             var response = await client.PostAsync("oauth/token", content);
             var responseBody = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
