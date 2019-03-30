@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -26,6 +27,7 @@ namespace TrackerService.Api.Controllers
             client = clientFactory.CreateClient(HttpClientNames.AUTHENTICATION_CLIENT);
         }
 
+        [AllowAnonymous]
         [HttpPost("token")]
         public async Task<ActionResult<object>> GetToken([FromBody]LoginInformation login)
         {
