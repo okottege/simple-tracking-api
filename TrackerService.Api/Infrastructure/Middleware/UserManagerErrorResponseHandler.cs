@@ -5,7 +5,7 @@ using TrackerService.Api.CustomExceptions;
 
 namespace TrackerService.Api.Infrastructure.Middleware
 {
-    public class UserManagerErrorResponseHandler : DelegatingHandler
+    public class UserManagerErrorResponseHandler : BaseHttpMessageHandler
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
