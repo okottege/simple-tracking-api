@@ -12,6 +12,7 @@ namespace TrackerService.Api.Infrastructure
         public static void AddHttpClients(
             this IServiceCollection services, AuthenticationConfig authConfig, UserManagementConfig userManagementConfig)
         {
+            services.AddTransient<BaseHttpMessageHandler>();
             services.AddHttpClient(HttpClientNames.AUTHENTICATION_CLIENT, c =>
             {
                 c.BaseAddress = new Uri(authConfig.Authority);

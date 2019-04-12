@@ -1,54 +1,37 @@
-﻿using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using TrackerService.Api.ViewModels;
-using TrackerService.Common;
+using TrackerService.Common.Contracts;
+using TrackerService.Data.Contracts;
 
 namespace TrackerService.Api.Controllers
 {
     [Route("api/auth")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly HttpClient client;
-        private readonly AuthenticationConfig authConfig;
-        private readonly IAntiforgery antiforgery;
+        private readonly IAntiforgery antiForgery;
+        private readonly IUserAuthenticator authenticator;
 
-        public AuthenticationController(IHttpClientFactory clientFactory, IAntiforgery antiforgery, AuthenticationConfig authConfig)
+        public AuthenticationController(IAntiforgery antiForgery, IUserAuthenticator authenticator)
         {
-            this.antiforgery = antiforgery;
-            this.authConfig = authConfig;
-            client = clientFactory.CreateClient(HttpClientNames.AUTHENTICATION_CLIENT);
+            this.antiForgery = antiForgery;
+            this.authenticator = authenticator;
         }
 
         [AllowAnonymous]
         [HttpPost("token")]
-        public async Task<ActionResult<object>> GetToken([FromBody]LoginInformation login)
+        public async Task<ActionResult<IUserAuthenticationResult>> GetToken([FromBody] LoginInformation login)
         {
-            var reqContent = new
-            {
-                grant_type = authConfig.GrantType,
-                username = login.Username,
-                password = login.Password,
-                client_id = authConfig.ClientID,
-                client_secret = authConfig.ClientSecret,
-                audience = authConfig.Audience,
-                realm = authConfig.Realm
-            };
-            var content = new StringContent(JsonConvert.SerializeObject(reqContent), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("oauth/token", content);
-            var responseBody = JsonConvert.DeserializeObject<JObject>(await response.Content.ReadAsStringAsync());
-            return responseBody;
+            var authResult = await authenticator.Authenticate(login.Username, login.Password);
+            return Ok(authResult);
         }
 
         [HttpGet("anti-forgery")]
         public IActionResult GetAntiForgeryToken()
         {
-            var tokenSet = antiforgery.GetTokens(HttpContext);
+            var tokenSet = antiForgery.GetTokens(HttpContext);
             return Ok(new {requestToken = tokenSet.RequestToken, header = tokenSet.HeaderName, cookieToken = tokenSet.CookieToken});
         }
 

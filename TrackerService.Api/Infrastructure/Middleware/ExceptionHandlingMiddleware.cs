@@ -39,17 +39,26 @@ namespace TrackerService.Api.Infrastructure.Middleware
                 case EntityNotFoundException exNotFound:
                     await ApplyExceptionResponse(context, HttpStatusCode.NotFound, exNotFound.Message);
                     break;
+                case ServiceAccessException exServiceAccess:
+                    await HandleServiceAccessException(context, exServiceAccess);
+                    break;
                 default:
                     await ApplyExceptionResponse(context, HttpStatusCode.InternalServerError, "There was an error processing request.");
                     break;
             }
         }
 
-        private static Task ApplyExceptionResponse(HttpContext context, HttpStatusCode statusCode, string message)
+        private static async Task ApplyExceptionResponse(HttpContext context, HttpStatusCode statusCode, string message)
         {
             context.Response.StatusCode = (int) statusCode;
             context.Response.ContentType = "application/json";
-            return context.Response.WriteAsync(JsonConvert.SerializeObject(new { message }));
+            await context.Response.WriteAsync(JsonConvert.SerializeObject(new { message }));
+        }
+
+        private static async Task HandleServiceAccessException(HttpContext context, ServiceAccessException ex)
+        {
+            var msg = await ex.Response.Content.ReadAsStringAsync();
+            await ApplyExceptionResponse(context, ex.Response.StatusCode, msg);
         }
     }
 }

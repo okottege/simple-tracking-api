@@ -73,6 +73,7 @@ namespace TrackerService.Api
             var userContext = serviceProvider.GetService<IUserContext>();
             services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB"), storageConn, userContext));
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUserAuthenticator, UserAuthenticator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
