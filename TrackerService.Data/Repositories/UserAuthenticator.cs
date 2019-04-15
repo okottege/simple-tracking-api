@@ -1,7 +1,5 @@
 ﻿using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using TrackerService.Common;
 using TrackerService.Common.Contracts;
 using TrackerService.Data.Contracts;
@@ -32,11 +30,15 @@ namespace TrackerService.Data.Repositories
                 client_secret = authConfig.ClientSecret,
                 audience = authConfig.Audience,
                 realm = authConfig.Realm
+            }.GetJsonContent();
+            var response = await http.PostAsync("oauth/token", reqContent);
+            var userAuthContent = await response.GetContent<UserAuthenticationResponse>();
+            return new UserAuthenticationResult
+            {
+                AccessToken = userAuthContent.access_token,
+                ExpiresIn = userAuthContent.expires_in,
+                Scope = userAuthContent.scope
             };
-            var content = new StringContent(JsonConvert.SerializeObject(reqContent), Encoding.UTF8, "application/json");
-            var response = await http.PostAsync("oauth/token", content);
-            var responseBody = JsonConvert.DeserializeObject<UserAuthenticationResponse>(await response.Content.ReadAsStringAsync());
-            return new UserAuthenticationResult { AccessToken = responseBody.access_token, ExpiresIn = responseBody.expires_in, Scope = responseBody.scope};
         }
     }
 }
