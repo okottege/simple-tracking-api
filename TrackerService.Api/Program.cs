@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Serilog;
+using Serilog.Formatting.Compact;
 
 namespace TrackerService.Api
 {
@@ -22,6 +24,14 @@ namespace TrackerService.Api
                             config.AddJsonFile("appSettings.dev.json", true);
                         }
                     })
+                .UseSerilog(SetupSerilog)
                 .UseStartup<Startup>();
+
+        private static void SetupSerilog(WebHostBuilderContext context, LoggerConfiguration config)
+        {
+            config.ReadFrom.Configuration(context.Configuration)
+                .Enrich.FromLogContext()
+                .WriteTo.Console(new RenderedCompactJsonFormatter());
+        }
     }
 }

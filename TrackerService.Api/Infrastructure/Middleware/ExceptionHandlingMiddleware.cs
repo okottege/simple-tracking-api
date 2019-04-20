@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TrackerService.Api.CustomExceptions;
 using TrackerService.Common.Exceptions;
@@ -11,10 +12,12 @@ namespace TrackerService.Api.Infrastructure.Middleware
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly ILogger<ExceptionHandlingMiddleware> logger;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
         {
             this.next = next;
+            this.logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -35,15 +38,18 @@ namespace TrackerService.Api.Infrastructure.Middleware
             {
                 case UserManagementException exUserManagement:
                     await ApplyExceptionResponse(context, HttpStatusCode.BadRequest, exUserManagement.Message);
+                    logger.LogWarning(ex, exUserManagement.Message);
                     break;
                 case EntityNotFoundException exNotFound:
                     await ApplyExceptionResponse(context, HttpStatusCode.NotFound, exNotFound.Message);
+                    logger.LogWarning(ex, exNotFound.Message);
                     break;
                 case ServiceAccessException exServiceAccess:
                     await HandleServiceAccessException(context, exServiceAccess);
                     break;
                 default:
                     await ApplyExceptionResponse(context, HttpStatusCode.InternalServerError, "There was an error processing request.");
+                    logger.LogError(ex, "Unexpected error occured.");
                     break;
             }
         }
@@ -55,9 +61,10 @@ namespace TrackerService.Api.Infrastructure.Middleware
             await context.Response.WriteAsync(JsonConvert.SerializeObject(new { message }));
         }
 
-        private static async Task HandleServiceAccessException(HttpContext context, ServiceAccessException ex)
+        private async Task HandleServiceAccessException(HttpContext context, ServiceAccessException ex)
         {
             var msg = await ex.Response.Content.ReadAsStringAsync();
+            logger.LogWarning(ex, msg);
             await ApplyExceptionResponse(context, ex.Response.StatusCode, msg);
         }
     }

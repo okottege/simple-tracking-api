@@ -90,6 +90,8 @@ namespace TrackerService.Api
                 app.UseHttpsRedirection();
             }
 
+            app.UseMiddleware<SerilogMiddleware>();
+            app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseMiddleware<ApplicationVersionMiddleware>();
             app.UseAuthentication();
