@@ -31,7 +31,8 @@ namespace TrackerService.Api
         {
             config.ReadFrom.Configuration(context.Configuration)
                 .Enrich.FromLogContext()
-                .WriteTo.Console(new RenderedCompactJsonFormatter());
+                .WriteTo.Console(new RenderedCompactJsonFormatter())
+                .WriteTo.Trace(new RenderedCompactJsonFormatter());
         }
     }
 }
