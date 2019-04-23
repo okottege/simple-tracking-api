@@ -33,7 +33,7 @@ namespace TrackerService.Api
             var appInsightKey = context.Configuration.GetValue<string>("APPINSIGHTKEY");
             config.Enrich.FromLogContext()
                 .WriteTo.Console(new RenderedCompactJsonFormatter())
-                .WriteTo.ApplicationInsights(appInsightKey, TelemetryConverter.Traces, LogEventLevel.Warning);
+                .WriteTo.ApplicationInsights(appInsightKey, TelemetryConverter.Traces, LogEventLevel.Information);
         }
     }
 }
