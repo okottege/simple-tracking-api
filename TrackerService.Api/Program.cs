@@ -3,6 +3,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Serilog.Events;
 using Serilog.Formatting.Compact;
 
 namespace TrackerService.Api
@@ -29,10 +30,10 @@ namespace TrackerService.Api
 
         private static void SetupSerilog(WebHostBuilderContext context, LoggerConfiguration config)
         {
-            config.ReadFrom.Configuration(context.Configuration)
-                .Enrich.FromLogContext()
+            var appInsightKey = context.Configuration.GetValue<string>("APPINSIGHTKEY");
+            config.Enrich.FromLogContext()
                 .WriteTo.Console(new RenderedCompactJsonFormatter())
-                .WriteTo.Trace(new RenderedCompactJsonFormatter());
+                .WriteTo.ApplicationInsights(appInsightKey, TelemetryConverter.Traces, LogEventLevel.Warning);
         }
     }
 }

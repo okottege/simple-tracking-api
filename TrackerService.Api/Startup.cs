@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics;
+using AutoMapper;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -66,6 +68,7 @@ namespace TrackerService.Api
             services.AddSingleton(userManagementConfig);
             services.AddHttpContextAccessor();
             services.AddTransient<IUserContext, ApiUserContext>();
+            services.AddTransient<IServiceContext, ApiServiceContext>();
             services.AddHttpClients(authConfig, userManagementConfig);
 
             var storageConn = new StorageConnectionInfo(Configuration.GetConnectionString("CloudStorage"), Configuration["StorageConnection:ContainerName"]);
@@ -90,12 +93,21 @@ namespace TrackerService.Api
                 app.UseHttpsRedirection();
             }
 
+            DisableApplicationInsightsOnDebug();
+
             app.UseMiddleware<SerilogMiddleware>();
+            app.UseMiddleware<RequestIdGenerationMiddleware>();
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseMiddleware<ApplicationVersionMiddleware>();
             app.UseAuthentication();
             app.UseMvc();
+        }
+
+        [Conditional("DEBUG")]
+        private static void DisableApplicationInsightsOnDebug()
+        {
+            TelemetryConfiguration.Active.DisableTelemetry = true;
         }
     }
 }

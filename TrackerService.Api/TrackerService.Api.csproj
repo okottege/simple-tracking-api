@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <ApplicationInsightsResourceId>/subscriptions/8492b466-6081-43ca-85f2-7518c3ac96de/resourcegroups/rg-test-tracking-service/providers/microsoft.insights/components/test-tracking-service-api</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/8492b466-6081-43ca-85f2-7518c3ac96de/resourcegroups/rg-test-tracking-service/providers/microsoft.insights/components/test-tracking-service-api</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +21,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Serilog.Formatting.Compact" Version="1.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.0.1" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="3.0.3" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.Trace" Version="2.1.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
@@ -27,6 +30,10 @@
   <ItemGroup>
     <ProjectReference Include="..\TrackerService.Common\TrackerService.Common.csproj" />
     <ProjectReference Include="..\TrackerService.Data\TrackerService.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>

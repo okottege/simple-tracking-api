@@ -18,7 +18,7 @@ namespace TrackerService.Api.Infrastructure.Middleware
             var version = Assembly.GetEntryAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                 .InformationalVersion;
-            context.Response.Headers["x-track-appversion"] = version;
+            context.Response.Headers[CustomHeaders.ApiVersion] = version;
             await next.Invoke(context);
         }
     }
