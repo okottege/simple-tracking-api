@@ -6,18 +6,18 @@ namespace TrackerService.Api.Infrastructure
 {
     public class ApiServiceContext : IServiceContext
     {
-        private readonly HttpContext context;
+        private readonly IHttpContextAccessor httpAccessor;
 
         public ApiServiceContext(IHttpContextAccessor httpAccessor)
         {
-            context = httpAccessor.HttpContext;
+            this.httpAccessor = httpAccessor;
         }
 
         public string RequestId
         {
             get
             {
-                if (context.Items.TryGetValue(CustomHeaders.RequestId, out var requestId))
+                if (httpAccessor.HttpContext.Items.TryGetValue(CustomHeaders.RequestId, out var requestId))
                 {
                     return requestId.ToString();
                 }

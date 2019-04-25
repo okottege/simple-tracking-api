@@ -22,8 +22,8 @@ namespace TrackerService.Api.Infrastructure.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            var valueProvider = new LoggingValueProvider(env, context);
-            using (LogContext.Push(new LogEventEnricher(valueProvider, serviceContext)))
+            var valueProvider = new LoggingValueProvider(env, context, serviceContext);
+            using (LogContext.Push(new LogEventEnricher(valueProvider)))
             {
                 await next.Invoke(context);
             }

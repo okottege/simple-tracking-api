@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
+using TrackerService.Api.Infrastructure.Logging;
 
 namespace TrackerService.Api
 {
@@ -32,6 +33,7 @@ namespace TrackerService.Api
         {
             var appInsightKey = context.Configuration.GetValue<string>("APPINSIGHTKEY");
             config.Enrich.FromLogContext()
+                .Enrich.With<RemoveLogPropertiesEnricher>()
                 .WriteTo.Console(new RenderedCompactJsonFormatter())
                 .WriteTo.ApplicationInsights(appInsightKey, TelemetryConverter.Traces, LogEventLevel.Information);
         }
