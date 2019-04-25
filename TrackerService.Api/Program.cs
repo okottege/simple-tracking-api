@@ -32,10 +32,11 @@ namespace TrackerService.Api
         private static void SetupSerilog(WebHostBuilderContext context, LoggerConfiguration config)
         {
             var appInsightKey = context.Configuration.GetValue<string>("APPINSIGHTKEY");
-            config.Enrich.FromLogContext()
-                .Enrich.With<RemoveLogPropertiesEnricher>()
-                .WriteTo.Console(new RenderedCompactJsonFormatter())
-                .WriteTo.ApplicationInsights(appInsightKey, TelemetryConverter.Traces, LogEventLevel.Information);
+            config.MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                  .Enrich.FromLogContext()
+                  .Enrich.With<RemoveLogPropertiesEnricher>()
+                  .WriteTo.Console(new RenderedCompactJsonFormatter())
+                  .WriteTo.ApplicationInsights(appInsightKey, TelemetryConverter.Traces, LogEventLevel.Information);
         }
     }
 }
