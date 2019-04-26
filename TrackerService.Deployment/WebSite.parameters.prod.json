@@ -19,6 +19,9 @@
     },
     "blob-container-name": {
       "value": "prod-track-service-container"
+    },
+    "redis-cache-name": {
+      "value": "timesheeting"
     }
   }
 }

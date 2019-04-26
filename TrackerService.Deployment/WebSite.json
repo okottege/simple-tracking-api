@@ -61,6 +61,12 @@
     },
     "blob-container-name": {
       "type": "string"
+    },
+    "redis-cache-name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the redis cache instance"
+      }
     }
   },
   "variables": {
@@ -456,6 +462,21 @@
           ]
         }
       ]
+    },
+    {
+      "name": "[parameters('redis-cache-name')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sku": {
+          "name": "Basic",
+          "family": "C",
+          "capacity": 0
+        },
+        "redisConfiguration": {},
+        "enableNonSslPort": true
+      },
+      "apiVersion": "2018-03-01",
+      "type": "Microsoft.Cache/Redis"
     }
   ]
 }

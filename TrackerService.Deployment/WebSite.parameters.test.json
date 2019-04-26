@@ -19,6 +19,9 @@
     },
     "blob-container-name": {
       "value": "test-track-service-container"
-    }
+    },
+    "redis-cache-name": {
+      "value": "timesheeting-test"
+    } 
   }
 }
