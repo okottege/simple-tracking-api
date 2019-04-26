@@ -62,7 +62,8 @@ namespace TrackerService.Api
                     opt.SerializerSettings.ContractResolver = new DefaultContractResolver();
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
+            services.AddDistributedCache(environment, Configuration);
+            
             var userManagementConfig = Configuration.GetUserManagementOptions();
             services.AddSingleton(authConfig);
             services.AddSingleton(userManagementConfig);

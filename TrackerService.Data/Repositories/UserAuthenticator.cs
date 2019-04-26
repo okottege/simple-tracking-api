@@ -32,7 +32,7 @@ namespace TrackerService.Data.Repositories
                 realm = authConfig.Realm
             }.GetJsonContent();
             var response = await http.PostAsync("oauth/token", reqContent);
-            var userAuthContent = await response.GetContent<UserAuthenticationResponse>();
+            var userAuthContent = await response.GetContent<GetTokenResponse>();
             return new UserAuthenticationResult
             {
                 AccessToken = userAuthContent.access_token,

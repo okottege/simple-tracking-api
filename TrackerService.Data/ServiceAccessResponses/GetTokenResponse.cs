@@ -1,6 +1,6 @@
 ﻿namespace TrackerService.Data.ServiceAccessResponses
 {
-    internal class UserAuthenticationResponse
+    public class GetTokenResponse
     {
         public string access_token { get; set; }
         public string scope { get; set; }
