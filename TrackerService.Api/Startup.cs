@@ -63,7 +63,8 @@ namespace TrackerService.Api
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDistributedCache(environment, Configuration);
-            
+            services.AddHealthChecks();
+
             var userManagementConfig = Configuration.GetUserManagementOptions();
             services.AddSingleton(authConfig);
             services.AddSingleton(userManagementConfig);
@@ -93,6 +94,8 @@ namespace TrackerService.Api
                 app.UseHsts();
                 app.UseHttpsRedirection();
             }
+
+            app.UseHealthChecks("/health");
 
             DisableApplicationInsightsOnDebug();
 

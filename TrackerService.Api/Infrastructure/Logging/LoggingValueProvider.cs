@@ -21,6 +21,7 @@ namespace TrackerService.Api.Infrastructure.Logging
 
         public string ServiceName => AppDomain.CurrentDomain.FriendlyName;
         public string RequestId => serviceContext.RequestId;
+        public string RequestMethod => httpContext.Request.Method.ToUpperInvariant();
         public string HostName => Dns.GetHostName();
         public string Environment => environment.EnvironmentName;
         public string TraceIdentifier => httpContext.TraceIdentifier;

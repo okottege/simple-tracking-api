@@ -20,6 +20,7 @@ namespace TrackerService.Api.Infrastructure.Logging
 
             context.AddOrUpdateProperty("RequestId", valueProvider.RequestId);
             context.AddProperty("hostName", valueProvider.HostName);
+            context.AddProperty("requestMethod", valueProvider.RequestMethod);
             context.AddProperty("environment", valueProvider.Environment);
             context.AddProperty("timestamp", logEvent.Timestamp.ToUnixTimeMilliseconds());
             context.AddProperty("timestampISO", logEvent.Timestamp.ToOffset(TimeSpan.Zero));
