@@ -3,7 +3,9 @@ using AutoMapper;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using TrackerService.Api.Infrastructure;
 using TrackerService.Api.Infrastructure.Authentication;
+using TrackerService.Api.Infrastructure.HealthChecks;
 using TrackerService.Api.Infrastructure.Middleware;
 using TrackerService.Common.Configuration;
 using TrackerService.Common.Contracts;
@@ -63,7 +66,8 @@ namespace TrackerService.Api
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDistributedCache(environment, Configuration);
-            services.AddHealthChecks();
+            services.AddHealthChecks()
+                .AddCheck<ApiHealthCheck>("api-health-check");
 
             var userManagementConfig = Configuration.GetUserManagementOptions();
             services.AddSingleton(authConfig);
@@ -95,7 +99,15 @@ namespace TrackerService.Api
                 app.UseHttpsRedirection();
             }
 
-            app.UseHealthChecks("/health");
+            app.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                ResponseWriter = async (context, report) =>
+                {
+                    context.Response.ContentType = "application/json";
+                    var healthResponse = new HealthCheckResponse(report.Entries["api-health-check"]);
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(healthResponse, Formatting.Indented));
+                }
+            });
 
             DisableApplicationInsightsOnDebug();
 

@@ -31,5 +31,10 @@ namespace TrackerService.Data
         {
             return new TimesheetSqlRepository(connString, userContext);
         }
+
+        public IDBHealthCheckRepository CreateDBHealthRepository()
+        {
+            return new DBHealthRepository(connString);
+        }
     }
 }
