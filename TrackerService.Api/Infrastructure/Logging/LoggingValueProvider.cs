@@ -27,5 +27,6 @@ namespace TrackerService.Api.Infrastructure.Logging
         public string TraceIdentifier => httpContext.TraceIdentifier;
         public IPAddress LocalIPAddress => httpContext.Connection.LocalIpAddress;
         public IPAddress RemoteIPAddress => httpContext.Connection.RemoteIpAddress;
+        public string StatusCode => httpContext.Response?.StatusCode.ToString();
     }
 }

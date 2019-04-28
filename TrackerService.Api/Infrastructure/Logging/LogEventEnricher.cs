@@ -29,6 +29,7 @@ namespace TrackerService.Api.Infrastructure.Logging
             context.AddProperty("levelTag", logEvent.Level.ToString());
             context.AddProperty("localIPAddress", valueProvider.LocalIPAddress);
             context.AddProperty("remoteIPAddress", valueProvider.RemoteIPAddress);
+            context.AddProperty("statusCode", valueProvider.StatusCode);
         }
     }
 }
