@@ -1,17 +1,13 @@
 ﻿using System.Diagnostics;
-using System.Net;
 using AutoMapper;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using TrackerService.Api.Infrastructure;
@@ -60,6 +56,7 @@ namespace TrackerService.Api
             var authPolicyBuilder = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build();
+            services.AddApplicationInsights(Configuration, environment);
             services.AddMvc(options => options.Filters.Add(new AuthorizeFilter(authPolicyBuilder)))
                 .AddJsonOptions(opt =>
                 {
