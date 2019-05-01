@@ -35,5 +35,11 @@ namespace TrackerService.Api.Controllers
         {
             throw new ApplicationException("This is a test.");
         }
+
+        [Route("bad-request")]
+        public IActionResult GetBadRequest()
+        {
+            return BadRequest("Simple bad request response");
+        }
     }
 }
