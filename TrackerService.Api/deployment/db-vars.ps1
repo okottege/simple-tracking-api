@@ -1,0 +1,5 @@
+$location = "eastus"
+$acrName = "acrtrackingservice"
+$rgName = "rg-tracksvc-testdb-deploy"
+$rgForAci = "aci-rg-sql2017"
+$spName = "sp-pullAcrImages"

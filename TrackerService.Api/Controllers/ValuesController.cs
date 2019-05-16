@@ -14,7 +14,7 @@ namespace TrackerService.Api.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new[] { "value1", "value2" };
+            return new[] { "value1", "value2", "value3" };
         }
 
         [Route("time")]
@@ -27,7 +27,7 @@ namespace TrackerService.Api.Controllers
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
-            return "value";
+            return $"You sent: {id}";
         }
 
         [Route("error")]
