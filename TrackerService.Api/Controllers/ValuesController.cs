@@ -54,6 +54,8 @@ namespace TrackerService.Api.Controllers
         [HttpGet("config")]
         public IActionResult ShowEnvironmentVariables()
         {
+            var endpoint = config.GetValue<string>("KEYVAULTENDPOINT");
+            var envName = config.GetValue<string>("ENVIRONMENT");
             return Ok(new
             {
                 SimpleTaxDB = config.GetConnectionString("SimpleTaxDB"),
@@ -61,7 +63,8 @@ namespace TrackerService.Api.Controllers
                 RedisCache = config.GetConnectionString("RedisCache"),
                 Environment = hostEnv.EnvironmentName,
                 IsDevelopment = hostEnv.IsDevelopment(),
-                VaultEndpoint = config.GetValue<string>("KEYVAULTENDPOINT")
+                VaultEndpoint = endpoint ?? "not found",
+                Env = envName ?? "not found"
             });
         }
     }
