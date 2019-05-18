@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace TrackerService.Api.Controllers
 {
@@ -10,7 +11,13 @@ namespace TrackerService.Api.Controllers
     [AllowAnonymous]
     public class ValuesController : ControllerBase
     {
-        // GET api/values
+        private readonly IConfiguration config;
+
+        public ValuesController(IConfiguration config)
+        {
+            this.config = config;
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
@@ -23,7 +30,6 @@ namespace TrackerService.Api.Controllers
             return DateTime.Now.ToLongDateString();
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
@@ -36,10 +42,21 @@ namespace TrackerService.Api.Controllers
             throw new ApplicationException("This is a test.");
         }
 
-        [Route("bad-request")]
+        [HttpGet("bad-request")]
         public IActionResult GetBadRequest()
         {
             return BadRequest("Simple bad request response");
+        }
+
+        [HttpGet("config")]
+        public IActionResult ShowEnvironmentVariables()
+        {
+            return Ok(new
+            {
+                SimpleTaxDB = config.GetConnectionString("SimpleTaxDB"),
+                CloudStorage = config.GetConnectionString("CloudStorage"),
+                RedisCache = config.GetConnectionString("RedisCache")
+            });
         }
     }
 }

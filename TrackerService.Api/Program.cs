@@ -1,7 +1,10 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
@@ -25,6 +28,11 @@ namespace TrackerService.Api
                             config.SetBasePath(Directory.GetCurrentDirectory());
                             config.AddJsonFile("appSettings.dev.json", true);
                         }
+                        else
+                        {
+                            var keyVaultEndpoint = hostingContext.Configuration.GetValue<string>("KEY_VAULT_ENDPOINT");
+                            SetupAzureKeyVault(keyVaultEndpoint, config);
+                        }
                     })
                 .UseSerilog(SetupSerilog)
                 .UseStartup<Startup>();
@@ -37,6 +45,15 @@ namespace TrackerService.Api
                   .Enrich.With<RemoveLogPropertiesEnricher>()
                   .WriteTo.Console(new RenderedCompactJsonFormatter())
                   .WriteTo.ApplicationInsights(appInsightKey, TelemetryConverter.Traces, LogEventLevel.Information);
+        }
+
+        private static void SetupAzureKeyVault(string endpoint, IConfigurationBuilder builder)
+        {
+            if (string.IsNullOrWhiteSpace(endpoint)) return;
+
+            var tokenProvider = new AzureServiceTokenProvider();
+            var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(tokenProvider.KeyVaultTokenCallback));
+            builder.AddAzureKeyVault(endpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
         }
     }
 }
