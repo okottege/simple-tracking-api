@@ -60,7 +60,8 @@ namespace TrackerService.Api.Controllers
                 CloudStorage = config.GetConnectionString("CloudStorage"),
                 RedisCache = config.GetConnectionString("RedisCache"),
                 Environment = hostEnv.EnvironmentName,
-                IsDevelopment = hostEnv.IsDevelopment()
+                IsDevelopment = hostEnv.IsDevelopment(),
+                VaultEndpoint = config.GetValue<string>("KEYVAULTENDPOINT")
             });
         }
     }
