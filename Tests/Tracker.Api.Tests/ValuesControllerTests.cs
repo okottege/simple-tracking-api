@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+using NSubstitute;
 using TrackerService.Api.Controllers;
 using Xunit;
 
@@ -5,7 +7,7 @@ namespace Tracker.Api.Tests
 {
     public class ValuesControllerTests
     {
-        private readonly ValuesController controller = new ValuesController();
+        private readonly ValuesController controller = new ValuesController(Substitute.For<IConfiguration>());
 
         [Fact]
         public void ShouldReturnAListOfValues()
