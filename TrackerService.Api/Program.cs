@@ -30,7 +30,7 @@ namespace TrackerService.Api
                         }
                         else
                         {
-                            var keyVaultEndpoint = hostingContext.Configuration.GetValue<string>("KEY_VAULT_ENDPOINT");
+                            var keyVaultEndpoint = hostingContext.Configuration.GetValue<string>("KEYVAULTENDPOINT");
                             SetupAzureKeyVault(keyVaultEndpoint, config);
                         }
                     })

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -12,10 +13,12 @@ namespace TrackerService.Api.Controllers
     public class ValuesController : ControllerBase
     {
         private readonly IConfiguration config;
+        private readonly IHostingEnvironment hostEnv;
 
-        public ValuesController(IConfiguration config)
+        public ValuesController(IConfiguration config, IHostingEnvironment hostEnv)
         {
             this.config = config;
+            this.hostEnv = hostEnv;
         }
 
         [HttpGet]
@@ -55,7 +58,8 @@ namespace TrackerService.Api.Controllers
             {
                 SimpleTaxDB = config.GetConnectionString("SimpleTaxDB"),
                 CloudStorage = config.GetConnectionString("CloudStorage"),
-                RedisCache = config.GetConnectionString("RedisCache")
+                RedisCache = config.GetConnectionString("RedisCache"),
+                Environment = hostEnv.EnvironmentName
             });
         }
     }

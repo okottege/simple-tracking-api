@@ -14,8 +14,9 @@
       "launchBrowser": true,
       "launchUrl": "api/values",
       "environmentVariables": {
+        "ASPNETCORE_KEYVAULTENDPOINT": "https://track-svc-valult.vault.azure.net/",
         "ASPNETCORE_APPINSIGHTKEY": "4d2b57cd-9a53-45a2-921f-2a1c1034c3d1",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Production"
       }
     },
     "TrackerService.Api": {
