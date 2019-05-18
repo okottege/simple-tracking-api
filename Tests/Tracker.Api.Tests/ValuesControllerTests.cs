@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using NSubstitute;
 using TrackerService.Api.Controllers;
@@ -7,7 +8,8 @@ namespace Tracker.Api.Tests
 {
     public class ValuesControllerTests
     {
-        private readonly ValuesController controller = new ValuesController(Substitute.For<IConfiguration>());
+        private readonly ValuesController controller = new ValuesController(
+            Substitute.For<IConfiguration>(), Substitute.For<IHostingEnvironment>());
 
         [Fact]
         public void ShouldReturnAListOfValues()
