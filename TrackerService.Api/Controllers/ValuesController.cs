@@ -59,7 +59,8 @@ namespace TrackerService.Api.Controllers
                 SimpleTaxDB = config.GetConnectionString("SimpleTaxDB"),
                 CloudStorage = config.GetConnectionString("CloudStorage"),
                 RedisCache = config.GetConnectionString("RedisCache"),
-                Environment = hostEnv.EnvironmentName
+                Environment = hostEnv.EnvironmentName,
+                IsDevelopment = hostEnv.IsDevelopment()
             });
         }
     }
