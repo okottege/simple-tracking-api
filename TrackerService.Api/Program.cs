@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.KeyVault;
@@ -27,6 +28,7 @@ namespace TrackerService.Api
                         {
                             config.SetBasePath(Directory.GetCurrentDirectory());
                             config.AddJsonFile("appSettings.dev.json", true);
+                            config.AddUserSecrets(Assembly.Load(new AssemblyName(hostingContext.HostingEnvironment.ApplicationName)));
                         }
                         else
                         {
