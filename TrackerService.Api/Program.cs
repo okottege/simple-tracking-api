@@ -22,22 +22,23 @@ namespace TrackerService.Api
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostingContext, config) =>
+                .ConfigureAppConfiguration((hostingContext, configBuilder) =>
+                {
+                    var config = configBuilder.Build();
+                    if (hostingContext.HostingEnvironment.IsDevelopment())
                     {
-                        if (hostingContext.HostingEnvironment.IsDevelopment())
-                        {
-                            config.SetBasePath(Directory.GetCurrentDirectory());
-                            config.AddJsonFile("appSettings.dev.json", true);
-                            config.AddEnvironmentVariables();
-                            config.AddUserSecrets(Assembly.Load(new AssemblyName(hostingContext.HostingEnvironment.ApplicationName)));
-                        }
-                        else
-                        {
-                            var keyVaultEndpoint = hostingContext.Configuration.GetValue<string>("KEYVAULTENDPOINT");
-                            config.AddEnvironmentVariables();
-                            SetupAzureKeyVault(keyVaultEndpoint, config);
-                        }
-                    })
+                        configBuilder.SetBasePath(Directory.GetCurrentDirectory());
+                        configBuilder.AddJsonFile("appSettings.dev.json", true);
+                        configBuilder.AddEnvironmentVariables();
+                        configBuilder.AddUserSecrets(Assembly.Load(new AssemblyName(hostingContext.HostingEnvironment.ApplicationName)));
+                    }
+                    else
+                    {
+                        var keyVaultEndpoint = config.GetValue<string>("KEYVAULTENDPOINT");
+                        configBuilder.AddEnvironmentVariables();
+                        SetupAzureKeyVault(keyVaultEndpoint, configBuilder);
+                    }
+                })
                 .UseSerilog(SetupSerilog)
                 .UseStartup<Startup>();
 
