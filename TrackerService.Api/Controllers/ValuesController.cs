@@ -58,7 +58,7 @@ namespace TrackerService.Api.Controllers
             var envName = config.GetValue<string>("ENVIRONMENT");
             return Ok(new
             {
-                SimpleTaxDB = config.GetConnectionString("SimpleTaxDB"),
+                SimpleTaxDB = config["ConnectionStrings:SimpleTaxDB"],
                 CloudStorage = config.GetConnectionString("CloudStorage"),
                 RedisCache = config.GetConnectionString("RedisCache"),
                 Environment = hostEnv.EnvironmentName,
