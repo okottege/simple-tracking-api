@@ -85,8 +85,7 @@
     "webSiteName": "[parameters('website')]",
     "websiteProperties": {
       "ASPNETCORE_ENVIRONMENT": "[parameters('aspnetcore-env')]",
-      "ASPNETCORE_KEYVAULTENDPOINT": "[parameters('key-vault-url')]",
-      "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(concat('microsoft.insights/components/', variables('webSiteName'))).InstrumentationKey]"
+      "ASPNETCORE_KEYVAULTENDPOINT": "[parameters('key-vault-url')]"
     } 
   },
   "resources": [
