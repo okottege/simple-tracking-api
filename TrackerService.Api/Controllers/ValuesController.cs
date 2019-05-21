@@ -54,7 +54,7 @@ namespace TrackerService.Api.Controllers
         [HttpGet("config")]
         public IActionResult ShowEnvironmentVariables()
         {
-            var endpoint = config.GetValue<string>("KEYVAULTENDPOINT");
+            var endpoint = config.GetValue<string>("KeyVault:Endpoint");
             var envName = config.GetValue<string>("ENVIRONMENT");
             return Ok(new
             {

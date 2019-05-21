@@ -29,13 +29,11 @@ namespace TrackerService.Api
                     {
                         configBuilder.SetBasePath(Directory.GetCurrentDirectory());
                         configBuilder.AddJsonFile("appSettings.dev.json", true);
-                        configBuilder.AddEnvironmentVariables();
                         configBuilder.AddUserSecrets(Assembly.Load(new AssemblyName(hostingContext.HostingEnvironment.ApplicationName)));
                     }
                     else
                     {
-                        var keyVaultEndpoint = config.GetValue<string>("KEYVAULTENDPOINT");
-                        configBuilder.AddEnvironmentVariables();
+                        var keyVaultEndpoint = config.GetValue<string>("KeyVault:Endpoint");
                         SetupAzureKeyVault(keyVaultEndpoint, configBuilder);
                     }
                 })
