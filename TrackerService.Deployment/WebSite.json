@@ -414,7 +414,7 @@
           "name": "appsettings",
           "type": "config",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('websiteName'))]"
+            "[resourceId('Microsoft.Web/sites/slots', concat(variables('webSiteName'), '/staging'))]"
           ],
           "properties": "[variables('websiteProperties')]"
         }
