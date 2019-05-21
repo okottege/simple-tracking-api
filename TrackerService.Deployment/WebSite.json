@@ -67,7 +67,19 @@
       "metadata": {
         "description": "The name of the redis cache instance"
       }
-    }
+    },
+    "aspnetcore-env": {
+      "type": "string",
+      "metadata": {
+        "description": "The environment, this can be one of: Production, Staging or Development"
+      }
+    },
+    "key-vault-url": {
+      "type:": "string",
+      "metadata": {
+        "description": "The base url of the azure key vault that is used by the web application"
+      }
+    } 
   },
   "variables": {
     "webSiteName": "[parameters('website')]"
@@ -112,7 +124,24 @@
             ]
           }
         }
-      }
+      },
+      "resources": [
+        {
+          "name": "appsettings",
+          "type": "config",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('webSiteName'))]"
+          ],
+          "tags": {
+            "displayName": "WebsiteSettings"
+          },
+          "properties": {
+            "ASPNETCORE_ENVIRONMENT": "[parameters('aspnetcore-env')]",
+            "ASPNETCORE_KEYVAULTENDPOINT": "[parameters('key-vault-url')]"
+          }
+        }
+      ]
     },
     {
       "apiVersion": "2014-04-01",
