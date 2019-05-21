@@ -82,7 +82,12 @@
     } 
   },
   "variables": {
-    "webSiteName": "[parameters('website')]"
+    "webSiteName": "[parameters('website')]",
+    "websiteProperties": {
+      "ASPNETCORE_ENVIRONMENT": "[parameters('aspnetcore-env')]",
+      "ASPNETCORE_KEYVAULTENDPOINT": "[parameters('key-vault-url')]",
+      "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(concat('microsoft.insights/components/', variables('webSiteName'))).InstrumentationKey]"
+    } 
   },
   "resources": [
     {
@@ -136,10 +141,7 @@
           "tags": {
             "displayName": "WebsiteSettings"
           },
-          "properties": {
-            "ASPNETCORE_ENVIRONMENT": "[parameters('aspnetcore-env')]",
-            "ASPNETCORE_KEYVAULTENDPOINT": "[parameters('key-vault-url')]"
-          }
+          "properties": "[variables('websiteProperties')]"
         }
       ]
     },
@@ -406,6 +408,17 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('webSiteName'))]",
         "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+      ],
+      "resources": [
+        {
+          "apiVersion": "2016-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('websiteName'))]"
+          ],
+          "properties": "[variables('websiteProperties')]"
+        }
       ]
     },
     {
