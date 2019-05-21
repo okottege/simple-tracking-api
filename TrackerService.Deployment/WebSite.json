@@ -75,7 +75,7 @@
       }
     },
     "key-vault-url": {
-      "type:": "string",
+      "type": "string",
       "metadata": {
         "description": "The base url of the azure key vault that is used by the web application"
       }
