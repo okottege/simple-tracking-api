@@ -478,5 +478,11 @@
       "apiVersion": "2018-03-01",
       "type": "Microsoft.Cache/Redis"
     }
-  ]
+  ],
+  "outputs": {
+    "AppInsightsInstrumentationKey": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Insights/components', variables('webSiteName')), '2014-04-01').InstrumentationKey]"
+    }
+  }
 }
