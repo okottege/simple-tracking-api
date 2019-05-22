@@ -50,22 +50,5 @@ namespace TrackerService.Api.Controllers
         {
             return BadRequest("Simple bad request response");
         }
-
-        [HttpGet("config")]
-        public IActionResult ShowEnvironmentVariables()
-        {
-            var endpoint = config.GetValue<string>("KeyVault:Endpoint");
-            var envName = config.GetValue<string>("ENVIRONMENT");
-            return Ok(new
-            {
-                SimpleTaxDB = config["ConnectionStrings:SimpleTaxDB"],
-                CloudStorage = config.GetConnectionString("CloudStorage"),
-                RedisCache = config.GetConnectionString("RedisCache"),
-                Environment = hostEnv.EnvironmentName,
-                IsDevelopment = hostEnv.IsDevelopment(),
-                VaultEndpoint = endpoint ?? "not found",
-                Env = envName ?? "not found"
-            });
-        }
     }
 }
