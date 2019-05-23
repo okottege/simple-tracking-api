@@ -93,3 +93,9 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)/IntegrationTests'
     ArtifactName: IntegrationTests
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Container deployment PS Scripts'
+  inputs:
+    PathtoPublish: 'TrackerServie.Api/deployment'
+    ArtifactName: ContainerScripts
