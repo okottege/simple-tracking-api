@@ -4,8 +4,14 @@ param(
     [Parameter(Mandatory=$true)][string] $location,
     [Parameter(Mandatory=$true)][string] $acrName,
     [Parameter(Mandatory=$true)][string] $rgForAci,
-    [Parameter(Mandatory=$true)][string] $spName
+    [Parameter(Mandatory=$true)][string] $spName,
+    [Parameter(Mandatory)][string] $azureLoginId,
+    [Parameter(Mandatory)][string] $azureLoginSecret,
+    [Parameter(Mandatory)][string] $azureTenantId
 )
+
+Write-Host "Loging into azure using azure cli"
+az login --service-principal -u $azureLoginId -p $azureLoginSecret -t $azureTenantId
 
 Write-Host "Creating the Azure Container Instance with MSSQL 2017" -ForegroundColor Green
 Write-Host "Creating the resource group for ACI"
