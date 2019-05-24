@@ -1,7 +1,7 @@
 param(
     [Parameter(Mandatory=$true)][string] $dbHostName,
     [Parameter(Mandatory=$true)][string] $dbSAPassword,
-    [Parameter][string] $location = "eastus",
+    [Parameter(Mandatory=$true)][string] $location,
     [Parameter(Mandatory=$true)][string] $acrName,
     [Parameter(Mandatory=$true)][string] $rgForAci,
     [Parameter(Mandatory=$true)][string] $spName
