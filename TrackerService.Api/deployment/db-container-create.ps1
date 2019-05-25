@@ -6,8 +6,7 @@ param(
     [Parameter(Mandatory)][string] $rgForAci,
     [Parameter(Mandatory)][string] $azureLoginId,
     [Parameter(Mandatory)][string] $azureLoginSecret,
-    [Parameter(Mandatory)][string] $azureTenantId,
-    [Parameter(Mandatory)][string] $dbName
+    [Parameter(Mandatory)][string] $azureTenantId
 )
 
 Write-Host "Loging into azure using azure cli"
@@ -31,8 +30,3 @@ az container create --resource-group $rgForAci `
     --environment-variables ACCEPT_EULA="Y" SA_PASSWORD="$dbSAPassword"
 
 Write-Host "Successfully created the container instance with MSSQL 2017" -ForegroundColor Green
-
-Write-Host "Creating the database"
-$dbServer = "$dbHostName.$location.azurecontainer.io"
-Write-Host "The databse server is: $dbServer"
-sqlcmd -S $dbServer -U sa -P $dbSAPassword -Q "CREATE DATABASE [$dbName]"
