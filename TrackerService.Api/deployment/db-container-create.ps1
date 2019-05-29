@@ -23,7 +23,7 @@ az group create --name $rgForAci --location $location
 Write-Host "Getting acr login server"
 $acrLoginServer = (az acr show --name $acrName --query loginServer --output tsv)
 
-$containerGroupName = "ms-sql-2017_${rgGuid}"
+$containerGroupName = "ms-sql-2017-${rgGuid}"
 Write-Host "Creating the container: $containerGroupName"
 az container create --resource-group $rgForAci `
     --name $containerGroupName `
