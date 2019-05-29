@@ -7,7 +7,7 @@ param(
 
 Write-Host "Removing the database container MSSQL 2017" -ForegroundColor Green
 Write-Host "Loging in to azure using azure cli"
-azure login --service-principal -u $azureLoginId -p $azureLoginSecret -t $azureTenantId
+az login --service-principal -u $azureLoginId -p $azureLoginSecret -t $azureTenantId
 
 $rgExists = az group exists --name $rgForAci
 
