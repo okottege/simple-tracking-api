@@ -10,6 +10,8 @@ Write-Host "Loging in to azure using azure cli"
 az login --service-principal -u $azureLoginId -p $azureLoginSecret -t $azureTenantId
 
 $rgExists = az group exists --name $rgForAci
+Write-Host "resource exists? $rgExists"
+Write-Host "Resource group name: $(IntTestDbAciRsourceGroup)"
 
 if($rgExists) {
     Write-Host "Removing the resource group $rgForAci"
