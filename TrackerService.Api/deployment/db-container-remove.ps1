@@ -11,7 +11,7 @@ az login --service-principal -u $azureLoginId -p $azureLoginSecret -t $azureTena
 
 $rgExists = az group exists --name $rgForAci
 Write-Host "resource exists? $rgExists"
-Write-Host "Resource group name: $(IntTestDbAciRsourceGroup)"
+Write-Host "Resource group name: ($env:IntTestDbAciRsourceGroup)"
 
 if($rgExists) {
     Write-Host "Removing the resource group $rgForAci"
