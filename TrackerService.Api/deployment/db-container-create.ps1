@@ -14,6 +14,10 @@ az login --service-principal -u $azureLoginId -p $azureLoginSecret -t $azureTena
 
 Write-Host "Creating the Azure Container Instance with MSSQL 2017" -ForegroundColor Green
 Write-Host "Creating the resource group for ACI"
+$rgGuid = New-Guid
+$rgForAci = "${rgForAci}_${rgGuid}"
+Write-Host "Writing the resource group name to VSO variable with new value: $rgForAci"
+Write-Host "##vso[task.setvariable variable=IntTestDbAciRsourceGroup]$rgForAci"
 az group create --name $rgForAci --location $location
 
 Write-Host "Getting acr login server"
