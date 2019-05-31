@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-#{Release.EnvironmentName}#
+  labels:
+    app: tracking-application
+spec:
+  replicas: 3
+  template: 
+    metadata:
+      name: web-api
+      labels:
+        app: web-api
+    spec:
+      containers:
+      - name: web-api
+        image: acrtrackingservice.azurecr.io/web-api:#{Release.Artifacts.WebApi.BuildNumber}
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: web-api
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tracking-web-api
+spec:
+  selector:
+    app: web-api
+  ports:
+    - port: 80
+  type: LoadBalancer
