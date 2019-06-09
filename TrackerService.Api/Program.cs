@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -53,7 +54,7 @@ namespace TrackerService.Api
         private static void SetupAzureKeyVault(string endpoint, IConfigurationBuilder builder)
         {
             if (string.IsNullOrWhiteSpace(endpoint)) return;
-
+            Console.WriteLine($"The endpoint is: {endpoint}");
             var tokenProvider = new AzureServiceTokenProvider();
             var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(tokenProvider.KeyVaultTokenCallback));
             builder.AddAzureKeyVault(endpoint, keyVaultClient, new DefaultKeyVaultSecretManager());

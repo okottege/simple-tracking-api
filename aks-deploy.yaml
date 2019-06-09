@@ -1,35 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deployment-#{Release.EnvironmentName}#
-  labels:
-    app: tracking-application
+  name: tracking-api
 spec:
   replicas: 3
+  selector: 
+    matchLabels: 
+      app: tracking-api
   template: 
     metadata:
-      name: web-api
       labels:
-        app: web-api
+        app: tracking-api
     spec:
       containers:
-      - name: web-api
-        image: acrtrackingservice.azurecr.io/web-api:#{Release.Artifacts.WebApi.BuildNumber}
-        imagePullPolicy: IfNotPresent
+      - name: tracking-api
+        image: acrtrackingservice.azurecr.io/tracking-svc-api:20190601.1
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+        env:
+          - name: KeyVault__Endpoint
+            value: <KeyVaultEndpoint>
       restartPolicy: Always
-  selector:
-    matchLabels:
-      app: web-api
-
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: tracking-web-api
+  name: tracking-api
+  labels: 
+    apps: tracking-api
 spec:
   selector:
-    app: web-api
+    app: tracking-api
   ports:
-    - port: 80
+    - port: 8080
+      targetPort: 80
   type: LoadBalancer
