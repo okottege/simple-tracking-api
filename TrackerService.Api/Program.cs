@@ -30,12 +30,12 @@ namespace TrackerService.Api
                     {
                         configBuilder.SetBasePath(Directory.GetCurrentDirectory());
                         configBuilder.AddJsonFile("appSettings.dev.json", true);
+                        configBuilder.AddJsonFile("appSettings.Development.json", true);
                         configBuilder.AddUserSecrets(Assembly.Load(new AssemblyName(hostingContext.HostingEnvironment.ApplicationName)));
                     }
                     else
                     {
-                        var keyVaultEndpoint = config.GetValue<string>("KeyVault:Endpoint");
-                        SetupAzureKeyVault(keyVaultEndpoint, configBuilder);
+                        SetupAzureKeyVault(config, configBuilder);
                     }
                 })
                 .UseSerilog(SetupSerilog)
@@ -51,13 +51,16 @@ namespace TrackerService.Api
                   .WriteTo.ApplicationInsights(appInsightKey, TelemetryConverter.Traces, LogEventLevel.Information);
         }
 
-        private static void SetupAzureKeyVault(string endpoint, IConfigurationBuilder builder)
+        private static void SetupAzureKeyVault(IConfigurationRoot config, IConfigurationBuilder builder)
         {
+            var endpoint = config.GetValue<string>("KeyVault:Endpoint");
+            var clientId = config.GetValue<string>("KeyVault:SPClientId");
+            var clientSecret = config.GetValue<string>("KeyVault:SPClientSecret");
+
             if (string.IsNullOrWhiteSpace(endpoint)) return;
+
             Console.WriteLine($"The endpoint is: {endpoint}");
-            var tokenProvider = new AzureServiceTokenProvider();
-            var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(tokenProvider.KeyVaultTokenCallback));
-            builder.AddAzureKeyVault(endpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
+            builder.AddAzureKeyVault(endpoint, clientId, clientSecret);
         }
     }
 }

@@ -339,3 +339,5 @@ ASALocalRun/
 
 # any developer configuration json files
 *.dev.json
+TrackerService.Api/appsettings.Development.json
+TrackerService.Api/Properties/launchSettings.json

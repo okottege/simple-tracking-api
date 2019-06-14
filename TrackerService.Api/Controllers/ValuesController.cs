@@ -50,5 +50,11 @@ namespace TrackerService.Api.Controllers
         {
             return BadRequest("Simple bad request response");
         }
+
+        [HttpGet("config-settings")]
+        public IActionResult ConfigSettings()
+        {
+            return Ok(new {ConnectionString = config["ConnectionStrings:SimpleTaxDB"]});
+        }
     }
 }
