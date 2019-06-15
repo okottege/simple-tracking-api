@@ -1,0 +1,16 @@
+apiVersion : apps/v1beta1
+kind: Deployment
+metadata:
+  name: tracking-svc-api 
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tracking-svc-api 
+    spec:
+      containers:
+        - name: tracking-svc-api 
+          image: trackingservice.azurecr.io/tracking-svc-api 
+          ports:
+          - containerPort: 80
