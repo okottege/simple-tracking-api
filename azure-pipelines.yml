@@ -40,7 +40,7 @@ stages:
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
         defaultContext: false
-        context: .
+        context: '.'
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
