@@ -1,0 +1,101 @@
+resources:
+- repo: self
+name: $(date:yyyy).1.0$(rev:.rrr)
+queue:
+  name: Hosted VS2017
+
+steps:
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET core 2.2.104'
+  inputs:
+    version: 2.2.104
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: '$(Parameters.RestoreBuildProjects)'
+
+- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-Task.Assembly-Info-Task@1
+  displayName: 'Set Assembly Manifest Data'
+  inputs:
+    FileNames: '*.csproj'
+    InsertAttributes: true
+    Title: 'Tracking api '
+    Description: 'Simple api to test out the Azure dev-ops capabilities'
+    VersionNumber: '$(Build.BuildNumber)'
+    FileVersionNumber: '$(Build.BuildNumber)'
+    InformationalVersion: '$(Build.BuildNumber)'
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '$(Parameters.RestoreBuildProjects)'
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests'
+  inputs:
+    command: test
+    projects: '**/[Tt]ests/**/*.csproj'
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run SQL Scripts Combine'
+  inputs:
+    command: run
+    arguments: '--project Build/TrackerService.BuildTools/TrackerService.BuildTools.csproj sql-script-combine $(Parameters.SqlFilesFolder) $(Parameters.CombinedSqlFileName)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish web project'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '$(Parameters.RestoreBuildProjects)'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+    zipAfterPublish: True
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Integration Test project'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '**/*IntegrationTest*.csproj'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/IntegrationTests'
+    zipAfterPublish: false
+
+- task: CopyFiles@2
+  displayName: 'Copy runsettings file'
+  inputs:
+    Contents: '**\*.runsettings'
+    TargetFolder: '$(build.artifactstagingdirectory)\IntegrationTests'
+    flattenFolders: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Web Artifacts'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)/TrackerService.Api.zip'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Sql Scripts'
+  inputs:
+    PathtoPublish: '$(Parameters.CombinedSqlFileName)'
+    ArtifactName: 'sql'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish ARM Artifacts'
+  inputs:
+    PathtoPublish: TrackerService.Deployment
+    ArtifactName: arm
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Integration Test Artifacts'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)/IntegrationTests'
+    ArtifactName: IntegrationTests
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Container deployment PS Scripts'
+  inputs:
+    PathtoPublish: 'TrackerService.Api/deployment'
+    ArtifactName: ContainerScripts
