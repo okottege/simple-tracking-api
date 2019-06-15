@@ -14,7 +14,7 @@ variables:
   dockerRegistryServiceConnection: '1271a01e-4aee-4294-90d9-73dd088478c5'
   imageRepository: 'trackingsvcapi'
   containerRegistry: 'trackingservice.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
+  dockerfilePath: 'multi-stage.DOCKERFILE'
   tag: '$(Build.BuildId)'
   
   # Kubernetes Namespace
