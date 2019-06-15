@@ -14,13 +14,15 @@ spec:
     spec:
       containers:
       - name: tracking-api
-        image: acrtrackingservice.azurecr.io/tracking-svc-api:20190601.1
+        image: acrtrackingservice.azurecr.io/tracking-svc-api:20190614.1
         imagePullPolicy: Always
         ports:
           - containerPort: 80
         env:
-          - name: KeyVault__Endpoint
-            value: <KeyVaultEndpoint>
+          - name: KeyVault__SPClientId
+            value: "[Client_id]"
+          - name: KeyVault__SPClientSecret
+            value: "[Client_Secret]"
       restartPolicy: Always
 ---
 
