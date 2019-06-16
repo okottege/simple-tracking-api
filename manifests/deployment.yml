@@ -14,3 +14,8 @@ spec:
           image: trackingservice.azurecr.io/tracking-svc-api 
           ports:
           - containerPort: 80
+          env:
+            - name: KeyVault__SPClientId
+              value: "#{keyvault.clientId}#"
+            - name: KeyVault__SPClientSecret
+              value: "#{keyvault.clientSecret}#"
