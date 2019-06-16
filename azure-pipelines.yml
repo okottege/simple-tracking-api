@@ -37,6 +37,7 @@ stages:
       displayName: 'Replace Tokens in aks deployment file'
       inputs:
         targetFiles: 'manifests/*.yaml'
+        verbosity: detailed
 
     - task: Docker@2
       displayName: Build and push an image to container registry
