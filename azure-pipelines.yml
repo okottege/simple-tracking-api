@@ -26,7 +26,7 @@ variables:
 
 stages:
 - stage: Build
-  displayName: Build stage
+  displayName: Build Tracking Service
   jobs:  
   - job: Build
     displayName: Build job
@@ -39,8 +39,8 @@ stages:
         command: buildAndPush
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
-        context: ../
         containerRegistry: $(dockerRegistryServiceConnection)
+        buildContext: .
         tags: |
           $(tag)
           
