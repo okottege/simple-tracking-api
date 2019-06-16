@@ -16,6 +16,6 @@ spec:
           - containerPort: 80
           env:
             - name: KeyVault__SPClientId
-              value: "#{keyvault.clientId}#"
+              value: #{keyvault.clientId}#
             - name: KeyVault__SPClientSecret
-              value: "#{keyvault.clientSecret}#"
+              value: #{keyvault.clientSecret}#
