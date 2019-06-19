@@ -20,9 +20,15 @@ spec:
           - containerPort: 80
         env:
           - name: KeyVault__SPClientId
-            value: "[Client_id]"
+            valueFrom:
+              secretKeyRef:
+                name: keyvaultsecrets
+                key: keyvaultClientId
           - name: KeyVault__SPClientSecret
-            value: "[Client_Secret]"
+            valueFrom:
+              secretKeyRef:
+                name: keyvaultsecrets
+                key: keyvaultClientSecret
       restartPolicy: Always
 ---
 
