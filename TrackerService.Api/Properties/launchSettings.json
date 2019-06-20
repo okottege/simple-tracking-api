@@ -16,7 +16,9 @@
       "environmentVariables": {
         "ASPNETCORE_KEYVAULTENDPOINT": "https://track-svc-valult.vault.azure.net/",
         "ASPNETCORE_APPINSIGHTKEY": "4d2b57cd-9a53-45a2-921f-2a1c1034c3d1",
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "KeyVault:SPClientId": "f6d50ab7-9f62-4255-bb6c-588f5bc12bc6",
+        "KeyVault:SPClientSecret": "rVNWBQxmGk1F1uBP6zTylEE/C/M0HJZv/VGKNZB5eKc="
       }
     },
     "TrackerService.Api": {

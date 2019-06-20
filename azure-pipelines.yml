@@ -11,7 +11,7 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '1271a01e-4aee-4294-90d9-73dd088478c5'
+  dockerRegistryServiceConnection: '57b4e0af-5f8e-4dfa-bd6c-44d6c31f76f1'
   imageRepository: 'trackingsvcapi'
   containerRegistry: 'trackingservice.azurecr.io'
   dockerfilePath: 'TrackerService.Api/multi-stage.DOCKERFILE'
