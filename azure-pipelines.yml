@@ -33,12 +33,6 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - task: qetza.replacetokens.replacetokens-task.replacetokens@3
-      displayName: 'Replace Tokens in aks deployment file'
-      inputs:
-        targetFiles: 'manifests/*.yaml'
-        verbosity: detailed
-
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
@@ -79,7 +73,7 @@ stages:
               action: createSecret
               secretName: $(imagePullSecret)
               namespace: $(k8sNamespace)
-              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+              dockerRegistryEndpoint: acrPipelineConnection
 
           - task: KubernetesManifest@0
             displayName: Create secrets for Azure Key vault
