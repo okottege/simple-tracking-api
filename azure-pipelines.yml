@@ -74,6 +74,7 @@ stages:
               secretName: $(imagePullSecret)
               namespace: $(k8sNamespace)
               dockerRegistryEndpoint: acrPipelineConnection
+              kubernetesServiceConnection: 7be58294-4216-48a9-b8b4-9592b4b36e61
 
           - task: KubernetesManifest@0
             displayName: Create secrets for Azure Key vault
