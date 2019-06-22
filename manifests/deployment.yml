@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: tracking-svc-api 
-          image: trackingservice.azurecr.io/tracking-svc-api 
+          image: trackingservice.azurecr.io/okottegesimpletrackingapi 
           ports:
           - containerPort: 80
           env:
