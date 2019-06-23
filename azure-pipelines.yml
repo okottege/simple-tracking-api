@@ -38,7 +38,7 @@ stages:
       inputs:
         version: '2.2.300'
     
-    - task:
+    - task: DotNetCoreCLI@2
       displayName: Restore unit test projects
       inputs:
         command: restore
