@@ -1,4 +1,6 @@
 ﻿using System;
+using System.CommandLine;
+using System.CommandLine.Invocation;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,70 +10,74 @@ namespace TrackerService.BuildTools
 {
     class Program
     {
+        private const string SQL_SCRIPT_COMBINE = "sql-script-combine";
+        private const string DB_UPGRADE = "database-upgrade";
+        private const string ROOT_COMMAND_NAME = "tracksvc-util";
+
         static void  Main(string[] args)
         {
             Console.WriteLine("Tracker Service Build Tools started.");
-            Console.WriteLine($"Command Line arguments: {string.Join(", ", args)}");
+            //Console.WriteLine($"Command Line arguments: {string.Join(", ", args)}");
 
-            if (args.Any())
+            //if (args.Any())
+            //{
+            //    switch (args[0])
+            //    {
+            //        case SQL_SCRIPT_COMBINE:
+            //            await CombineSqlScripts(args);
+            //            break;
+            //        case DB_UPGRADE:
+            //            await UpgradeDatabase();
+            //            break;
+            //        default:
+            //            Console.WriteLine($"Unsupported command '{args[0]}'");
+            //            break;
+            //    }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Command Line Arguments must be supplied.");
+            //    Environment.Exit(-1);
+            //}
+            var rootCommand = new RootCommand
             {
-                switch (args[0])
-                {
-                    case "sql-script-combine":
-                        CombineSqlScripts(args).Wait();
-                        break;
-                    default:
-                        Console.WriteLine($"Unsupported command '{args[0]}'");
-                        break;
-                }
-            }
-            else
-            {
-                Console.WriteLine("Command Line Arguments must be supplied.");
-                Environment.Exit(-1);
-            }
+                Description = "The tracking service command line utility.",
+                Name = ROOT_COMMAND_NAME,
+                TreatUnmatchedTokensAsErrors = true
+            };
+            rootCommand.AddCommand(GetCombineSqlScriptsRootCommand());
 
-            Console.WriteLine("Build Tools finished execution.");
+            rootCommand.InvokeAsync(args).Wait();
         }
 
-        private static async Task CombineSqlScripts(string[] args)
+        private static void CombineSqlScripts(string sqlFileFolder, string outputFileName)
         {
             try
             {
                 Console.WriteLine("Executing the combining of SQL scripts command.");
+                var sb = new StringBuilder();
+                var sqlFiles = Directory.EnumerateFiles(sqlFileFolder, "*.sql").ToList();
 
-                if (args.Length < 3)
+                Console.WriteLine($"Found the following SQL files: {string.Join(", ", sqlFiles)}");
+
+                foreach (var sqlFile in sqlFiles.OrderBy(f => f))
                 {
-                    Console.WriteLine("Cannot combine sql scripts as source sql folder and destination sql file not provided.");
-                    Environment.Exit(-1);
+                    var content = File.ReadAllTextAsync(sqlFile).Result;
+                    sb.Append(content);
+                    sb.Append(Environment.NewLine);
                 }
-                else
+
+                if (sb.Length > 0)
                 {
-                    var sb = new StringBuilder();
-                    var sqlFiles = Directory.EnumerateFiles(args[1], "*.sql").ToList();
-                    var outputFileName = args[2];
-
-                    Console.WriteLine($"Found the following SQL files: {string.Join(", ", sqlFiles)}");
-
-                    foreach (var sqlFile in sqlFiles.OrderBy(f => f))
+                    if (File.Exists(outputFileName))
                     {
-                        var content = await File.ReadAllTextAsync(sqlFile);
-                        sb.Append(content);
-                        sb.Append(Environment.NewLine);
+                        File.Delete(outputFileName);
                     }
 
-                    if (sb.Length > 0)
+                    using (var outputFile = new StreamWriter(outputFileName))
                     {
-                        if (File.Exists(outputFileName))
-                        {
-                            File.Delete(outputFileName);
-                        }
-
-                        using (var outputFile = new StreamWriter(outputFileName))
-                        {
-                            await outputFile.WriteAsync(sb.ToString());
-                            Console.WriteLine($"Created the combined sql file: {outputFileName}");
-                        }
+                        outputFile.WriteAsync(sb.ToString()).Wait();
+                        Console.WriteLine($"Created the combined sql file: {outputFileName}");
                     }
                 }
             }
@@ -80,6 +86,26 @@ namespace TrackerService.BuildTools
                 Console.WriteLine(ex.Message);
                 Environment.Exit(-1);
             }
+        }
+
+        private static Command GetCombineSqlScriptsRootCommand()
+        {
+            var command = new Command(SQL_SCRIPT_COMBINE)
+            {
+                Description = "Combines sql files in a folder into a single file.",
+                TreatUnmatchedTokensAsErrors = true
+            };
+            var optSqlFileFolder = new Option("--sql-file-folder", "The path to the folder containing all the sql files.");
+            optSqlFileFolder.AddAlias("-sff");
+            optSqlFileFolder.Argument = new Argument<string>();
+            var optOutputPath = new Option("--output", "The output file name of the combined sql script.");
+            optOutputPath.AddAlias("-o");
+            optOutputPath.Argument = new Argument<string>();
+            command.AddOption(optSqlFileFolder);
+            command.AddOption(optOutputPath);
+            command.Handler = CommandHandler.Create(new Action<string, string>(CombineSqlScripts));
+
+            return command;
         }
     }
 }
