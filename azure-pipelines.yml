@@ -11,8 +11,8 @@ resources:
 variables:
   testProjects: 'Tests/**/*.csproj'
   sqlScriptCombineProject: 'Build/TrackerService.BuildTools/TrackerService.BuildTools.csproj'
-  sqlFilesFolder: '$(SqlFilesFolder)'
-  combinedSqlScriptFileName: '$(CombinedSqlScriptFileName)'
+  sqlFilesFolder: '$(Parameters.SqlFilesFolder)'
+  combinedSqlScriptFileName: '$(Parameters.CombinedSqlScriptFileName)'
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'b962112b-308d-4fc4-96b8-ef084398eea2'
