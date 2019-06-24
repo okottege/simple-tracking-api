@@ -10,6 +10,9 @@ resources:
 
 variables:
   testProjects: 'Tests/**/*.csproj'
+  sqlScriptCombineProject: 'Build/TrackerService.BuildTools/TrackerService.BuildTools.csproj'
+  sqlFilesFolder: '$(SqlFilesFolder)'
+  combinedSqlScriptFileName: '$(CombinedSqlScriptFileName)'
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'b962112b-308d-4fc4-96b8-ef084398eea2'
@@ -50,6 +53,19 @@ stages:
         command: test
         projects: $(testProjects)
         arguments: '--logger trx'
+    
+    - task: DotNetCoreCLI@2
+      displayName: Restore Combine SQL scripts project
+      inputs:
+        command: restore
+        projects: $(sqlScriptCombineProject)
+    
+    - task: DotNetCoreCLI@2
+      displayName: Combine SQL upgrade scripts
+      inputs:
+        command: run
+        projects: $(sqlScriptCombineProject)
+        arguments: 'sql-script-combine $(sqlFilesFolder) $(combinedSqlScriptFileName)'
         
     - task: Docker@2
       displayName: Build and push an image to container registry
@@ -66,6 +82,12 @@ stages:
       inputs:
         artifactName: 'manifests'
         targetPath: 'manifests'
+    
+    - task: PublishPipelineArtifact@0
+      displayName: Publish combined sql upgrade script file
+      inputs:
+        artifactName: sql
+        targetPath: $(combinedSqlScriptFileName)
 
 - stage: Deploy
   displayName: Deploy stage
