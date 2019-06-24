@@ -64,8 +64,7 @@ stages:
       displayName: Combine SQL upgrade scripts
       inputs:
         command: run
-        projects: $(sqlScriptCombineProject)
-        arguments: 'sql-script-combine $(sqlFilesFolder) $(combinedSqlScriptFileName)'
+        arguments: '--project $(sqlScriptCombineProject) sql-script-combine $(sqlFilesFolder) $(combinedSqlScriptFileName)'
         
     - task: Docker@2
       displayName: Build and push an image to container registry
