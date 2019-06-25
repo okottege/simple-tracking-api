@@ -4,7 +4,6 @@ using System.CommandLine.Invocation;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TrackerService.BuildTools
 {
@@ -17,28 +16,7 @@ namespace TrackerService.BuildTools
         static void  Main(string[] args)
         {
             Console.WriteLine("Tracker Service Build Tools started.");
-            //Console.WriteLine($"Command Line arguments: {string.Join(", ", args)}");
-
-            //if (args.Any())
-            //{
-            //    switch (args[0])
-            //    {
-            //        case SQL_SCRIPT_COMBINE:
-            //            await CombineSqlScripts(args);
-            //            break;
-            //        case DB_UPGRADE:
-            //            await UpgradeDatabase();
-            //            break;
-            //        default:
-            //            Console.WriteLine($"Unsupported command '{args[0]}'");
-            //            break;
-            //    }
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Command Line Arguments must be supplied.");
-            //    Environment.Exit(-1);
-            //}
+            
             var rootCommand = new RootCommand
             {
                 Description = "The tracking service command line utility.",
@@ -55,6 +33,7 @@ namespace TrackerService.BuildTools
             try
             {
                 Console.WriteLine("Executing the combining of SQL scripts command.");
+                Console.WriteLine($"sql file folder: {sqlFileFolder}, output file: {outputFileName}");
                 var sb = new StringBuilder();
                 var sqlFiles = Directory.EnumerateFiles(sqlFileFolder, "*.sql").ToList();
 
@@ -98,7 +77,7 @@ namespace TrackerService.BuildTools
             var optSqlFileFolder = new Option("--sql-file-folder", "The path to the folder containing all the sql files.");
             optSqlFileFolder.AddAlias("-sff");
             optSqlFileFolder.Argument = new Argument<string>();
-            var optOutputPath = new Option("--output", "The output file name of the combined sql script.");
+            var optOutputPath = new Option("--output-file-name", "The output file name of the combined sql script.");
             optOutputPath.AddAlias("-o");
             optOutputPath.Argument = new Argument<string>();
             command.AddOption(optSqlFileFolder);

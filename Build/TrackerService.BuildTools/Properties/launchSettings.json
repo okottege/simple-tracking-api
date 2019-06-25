@@ -2,7 +2,8 @@
   "profiles": {
     "TrackerService.BuildTools": {
       "commandName": "Project",
-      "commandLineArgs": "sql-script-combine ../../../../../TrackerService.Data/SqlFiles sql-script.sql"
+      "commandLineArgs": "tracksvc-util sql-script-combine TrackerService.Data/SqlFiles sql-script.sql",
+      "workingDirectory": "C:\\research\\development\\simple-tracking-api"
     }
   }
 }
