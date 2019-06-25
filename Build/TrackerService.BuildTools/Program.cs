@@ -24,6 +24,7 @@ namespace TrackerService.BuildTools
                 TreatUnmatchedTokensAsErrors = true
             };
             rootCommand.AddCommand(GetCombineSqlScriptsRootCommand());
+            rootCommand.AddCommand(GetDatabaseUpgradeCommand());
 
             rootCommand.InvokeAsync(args).Wait();
         }
@@ -67,6 +68,11 @@ namespace TrackerService.BuildTools
             }
         }
 
+        private static void UpgradeDatabase(string sqlFileName, string keyVaultClientId, string keyVaultClientSecret)
+        {
+
+        }
+
         private static Command GetCombineSqlScriptsRootCommand()
         {
             var command = new Command(SQL_SCRIPT_COMBINE)
@@ -83,6 +89,18 @@ namespace TrackerService.BuildTools
             command.AddOption(optSqlFileFolder);
             command.AddOption(optOutputPath);
             command.Handler = CommandHandler.Create(new Action<string, string>(CombineSqlScripts));
+
+            return command;
+        }
+
+        private static Command GetDatabaseUpgradeCommand()
+        {
+            var command = new Command(DB_UPGRADE)
+            {
+                Description = "Upgrades the database using connection stored in Azure Key Vault",
+                TreatUnmatchedTokensAsErrors = true,
+                Handler = CommandHandler.Create(new Action<string, string, string>(UpgradeDatabase))
+            };
 
             return command;
         }
