@@ -3,7 +3,10 @@
     "TrackerService.BuildTools": {
       "commandName": "Project",
       "commandLineArgs": "tracksvc-util sql-script-combine TrackerService.Data/SqlFiles sql-script.sql",
-      "workingDirectory": "C:\\research\\development\\simple-tracking-api"
+      "workingDirectory": "C:\\research\\development\\simple-tracking-api",
+      "environmentVariables": {
+        "KeyVault__Endpoint": "https://track-svc-valult.vault.azure.net/"
+      }
     }
   }
 }

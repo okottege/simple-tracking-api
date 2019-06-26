@@ -4,6 +4,7 @@ using System.CommandLine.Invocation;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace TrackerService.BuildTools
 {
@@ -16,7 +17,7 @@ namespace TrackerService.BuildTools
         static void  Main(string[] args)
         {
             Console.WriteLine("Tracker Service Build Tools started.");
-            
+
             var rootCommand = new RootCommand
             {
                 Description = "The tracking service command line utility.",
@@ -70,7 +71,15 @@ namespace TrackerService.BuildTools
 
         private static void UpgradeDatabase(string sqlFileName, string keyVaultClientId, string keyVaultClientSecret)
         {
+            var builder = new ConfigurationBuilder()
+                .AddEnvironmentVariables();
+            var config = builder.Build();
+            var endpoint = config["KeyVault:Endpoint"];
 
+            Console.WriteLine($"endpoint: {endpoint}, client id: {keyVaultClientId}, secret: {keyVaultClientSecret}");
+
+            builder.AddAzureKeyVault(endpoint, keyVaultClientId, keyVaultClientSecret);
+            config = builder.Build();
         }
 
         private static Command GetCombineSqlScriptsRootCommand()
@@ -101,7 +110,25 @@ namespace TrackerService.BuildTools
                 TreatUnmatchedTokensAsErrors = true,
                 Handler = CommandHandler.Create(new Action<string, string, string>(UpgradeDatabase))
             };
-
+            var optSqlFileName = new Option(new []{"--sql-file-name", "-f"})
+            {
+                Description = "The name of the SQL file contains the upgrade database script.",
+                Argument = new Argument<string>()
+            };
+            var optClientId = new Option(new []{"--key-vault-client-id", "-cid" })
+            {
+                Description = "The service principal client id to use to connect to the key vault.",
+                Argument = new Argument<string>()
+            };
+            var optClientSecret = new Option(new[]{"--key-vault-client-secret", "-cs"})
+            {
+                Description = "The service principal client secret to use to connect to the key vault.",
+                Argument = new Argument<string>()
+            };
+            command.AddOption(optSqlFileName);
+            command.AddOption(optClientId);
+            command.AddOption(optClientSecret);
+            
             return command;
         }
     }
