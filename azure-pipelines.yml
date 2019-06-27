@@ -69,10 +69,12 @@ stages:
         arguments: '--project $(buildToolsProjectFile) tracksvc-util sql-script-combine -sff $(sqlFilesFolder) -o $(combinedSqlScriptFileName)'
     
     - task: DotNetCoreCLI@2
-      displayName: Publish build tools
+      displayName: Dotnet core publish the web tools
       inputs:
         command: publish
-        publishWebProjects: false
+        projects: $(buildToolsProjectFile)
+        publishWebProjects: False
+        zipAfterPublish: False
         arguments: '$(buildToolsProjectFile) -c Release -o buildTools'
         
     - task: Docker@2
@@ -98,7 +100,7 @@ stages:
         targetPath: $(combinedSqlScriptFileName)
     
     - task: PublishPipelineArtifact@0
-      displayName: Publish Build Tools
+      displayName: Publish Build Tools as an artifact
       inputs:
         artifactName: buildTools
         targetPath: '$(buildToolsProjectFolder)/buildTools'
