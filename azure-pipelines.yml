@@ -75,7 +75,7 @@ stages:
         projects: $(buildToolsProjectFile)
         publishWebProjects: False
         zipAfterPublish: False
-        arguments: '$(buildToolsProjectFile) -c Release -o buildTools'
+        arguments: '-c Release -o buildTools'
         
     - task: Docker@2
       displayName: Build and push an image to container registry
