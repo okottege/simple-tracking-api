@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -84,6 +85,23 @@ namespace TrackerService.BuildTools
             config = builder.Build();
 
             var dbConnectionString = config.GetConnectionString("SimpleTaxDB");
+            var sql = File.ReadAllText(sqlFileName);
+            var sqlStatements = sql.Split("GO", StringSplitOptions.RemoveEmptyEntries)
+                .Where(s => !string.IsNullOrWhiteSpace(s));
+
+            using (var conn = new SqlConnection(dbConnectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand(string.Empty, conn))
+                {
+                    foreach (var sqlStatement in sqlStatements)
+                    {
+                        Console.WriteLine($"Executing query: {sqlStatement}");
+                        cmd.CommandText = sqlStatement;
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
         }
 
         private static Command GetCombineSqlScriptsRootCommand()
@@ -114,9 +132,9 @@ namespace TrackerService.BuildTools
                 TreatUnmatchedTokensAsErrors = true,
                 Handler = CommandHandler.Create(new Action<string>(UpgradeDatabase))
             };
-            var optSqlFileName = new Option(new []{"--sql-file-name", "-f"})
+            var optSqlFileName = new Option(new []{"--sql-file-name", "-sf"})
             {
-                Description = "The name of the SQL file contains the upgrade database script.",
+                Description = "The path to the database upgrade sql file.",
                 Argument = new Argument<string>()
             };
             command.AddOption(optSqlFileName);
