@@ -10,7 +10,8 @@ resources:
 
 variables:
   testProjects: 'Tests/**/*.csproj'
-  sqlScriptCombineProject: 'Build/TrackerService.BuildTools/TrackerService.BuildTools.csproj'
+  buildToolsProjectFolder: 'Build/TrackerService.BuildTools'
+  buildToolsProjectFile: '$(buildToolsProjectFolder)/TrackerService.BuildTools.csproj'
   sqlFilesFolder: '$(Parameters.SqlFilesFolder)'
   combinedSqlScriptFileName: '$(Parameters.CombinedSqlScriptFileName)'
   combinedSqlScriptArtifactPath: '$(System.ArtifactsDirectory)/sql/$(combinedSqlScriptFileName)'
@@ -56,16 +57,22 @@ stages:
         arguments: '--logger trx'
     
     - task: DotNetCoreCLI@2
-      displayName: Restore Combine SQL scripts project
+      displayName: Restore Build Tools project
       inputs:
         command: restore
-        projects: $(sqlScriptCombineProject)
+        projects: $(buildToolsProjectFile)
     
     - task: DotNetCoreCLI@2
       displayName: Combine SQL upgrade scripts
       inputs:
         command: run
-        arguments: '--project $(sqlScriptCombineProject) tracksvc-util sql-script-combine -sff $(sqlFilesFolder) -o $(combinedSqlScriptFileName)'
+        arguments: '--project $(buildToolsProjectFile) tracksvc-util sql-script-combine -sff $(sqlFilesFolder) -o $(combinedSqlScriptFileName)'
+    
+    - task: DotNetCoreCLI@2
+      displayName: Publish build tools
+      inputs:
+        command: publish
+        arguments: '$(buildToolsProjectFile) -c Release -o buildTools'
         
     - task: Docker@2
       displayName: Build and push an image to container registry
@@ -88,6 +95,12 @@ stages:
       inputs:
         artifactName: sql
         targetPath: $(combinedSqlScriptFileName)
+    
+    - task: PublishPipelineArtifact@0
+      displayName: Publish Build Tools
+      inputs:
+        artifactName: buildTools
+        targetPath: '$(buildToolsProjectFolder)/buildTools'
 
 - stage: Deploy
   displayName: Deploy stage
@@ -107,11 +120,11 @@ stages:
               artifactName: 'manifests'
               downloadPath: '$(System.ArtifactsDirectory)/manifests'
           
-          - task: DotNetCoreCLI@2
-            displayName: Upgrade Database
-            inputs:
-              command: run
-              arguments: '--project $(sqlScriptCombineProject) tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
+          # - task: DotNetCoreCLI@2
+          #   displayName: Upgrade Database
+          #   inputs:
+          #     command: run
+          #     arguments: '$(buildToolsProjectFile) tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
 
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
