@@ -73,6 +73,7 @@ stages:
       inputs:
         command: publish
         projects: $(buildToolsProjectFile)
+        publishWebProjects: false
         arguments: '-c Release -o buildTools'
         
     - task: Docker@2
