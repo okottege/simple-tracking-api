@@ -67,7 +67,8 @@ stages:
       displayName: Combine SQL upgrade scripts
       inputs:
         command: run
-        arguments: '--project $(buildToolsProjectFile) tracksvc-util sql-script-combine -sff $(sqlFilesFolder) -o $(combinedSqlScriptFileName)'
+        projects: $(buildToolsProjectFile)
+        arguments: 'tracksvc-util sql-script-combine -sff $(sqlFilesFolder) -o $(combinedSqlScriptFileName)'
     
     - task: DotNetCoreCLI@2
       displayName: Dotnet core publish the web tools
