@@ -136,7 +136,7 @@ stages:
               artifactName: 'buildTools'
               downloadPath: '$(System.ArtifactsDirectory)/buildTools'
           
-          - script: 'dotnet TrackerService.BuildTools.dll -- tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
+          - script: 'dotnet TrackerService.BuildTools.dll tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
             displayName: Upgrade Database 
             workingDirectory: $(buildToolsArtifactsPath)
 
