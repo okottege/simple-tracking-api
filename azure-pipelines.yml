@@ -128,7 +128,8 @@ stages:
             displayName: Upgrade Database
             inputs:
               command: custom
-              arguments: 'run $(buildToolsArtifactsPath)/TrackerService.BuildTools.dll tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
+              arguments: '$(buildToolsArtifactsPath)/TrackerService.BuildTools.dll tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
+              custom: run
 
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
