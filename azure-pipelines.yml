@@ -124,12 +124,10 @@ stages:
               artifactName: 'manifests'
               downloadPath: '$(System.ArtifactsDirectory)/manifests'
           
-          - task: DotNetCoreCLI@2
+          - task: CmdLine@2
             displayName: Upgrade Database
             inputs:
-              command: custom
-              arguments: '$(buildToolsArtifactsPath)/TrackerService.BuildTools.dll tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
-              custom: run
+              script: 'dotnet $(buildToolsArtifactsPath)/TrackerService.BuildTools.dll tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
 
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
