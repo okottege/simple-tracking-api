@@ -123,6 +123,18 @@ stages:
             inputs:
               artifactName: 'manifests'
               downloadPath: '$(System.ArtifactsDirectory)/manifests'
+
+          - task: DownloadPipelineArtifact@1
+            displayName: 'Download sql artifact'
+            inputs:
+              artifactName: 'sql'
+              downloadPath: '$(System.ArtifactsDirectory)/sql'
+          
+          - task: DownloadPipelineArtifact@1
+            displayName: 'Download build tools artifact'
+            inputs:
+              artifactName: 'buildTools'
+              downloadPath: '$(System.ArtifactsDirectory)/buildTools'
           
           - script: 'dotnet TrackerService.BuildTools.dll -- tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
             displayName: Upgrade Database 
