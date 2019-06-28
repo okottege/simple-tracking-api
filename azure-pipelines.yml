@@ -15,6 +15,7 @@ variables:
   sqlFilesFolder: '$(Parameters.SqlFilesFolder)'
   combinedSqlScriptFileName: '$(Parameters.CombinedSqlScriptFileName)'
   combinedSqlScriptArtifactPath: '$(System.ArtifactsDirectory)/sql/$(combinedSqlScriptFileName)'
+  buildToolsArtifactsPath: '$(System.ArtifactsDirectory)/buildTools/TrackerService.BuildTools'
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'b962112b-308d-4fc4-96b8-ef084398eea2'
@@ -123,11 +124,11 @@ stages:
               artifactName: 'manifests'
               downloadPath: '$(System.ArtifactsDirectory)/manifests'
           
-          # - task: DotNetCoreCLI@2
-          #   displayName: Upgrade Database
-          #   inputs:
-          #     command: run
-          #     arguments: '$(buildToolsProjectFile) tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
+          - task: DotNetCoreCLI@2
+            displayName: Upgrade Database
+            inputs:
+              command: run
+              arguments: '$(buildToolsArtifactsPath)/TrackerService.BuildTools.dll tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
 
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
