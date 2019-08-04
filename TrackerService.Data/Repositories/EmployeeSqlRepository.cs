@@ -35,7 +35,8 @@ namespace TrackerService.Data.Repositories
             const string SQL = @"INSERT INTO [Employee] (firstName, lastName, dateOfBirth, startDate, email) 
                                VALUES (@firstName, @lastName, @dateOfBirth, @startDate, @email);
                                SELECT CAST(SCOPE_IDENTITY() as int)";
-            var id = await Insert(SQL,
+            
+            var id = await Insert<int>(SQL,
                 new
                 {
                     firstName = employee.FirstName,

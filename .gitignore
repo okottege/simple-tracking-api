@@ -341,3 +341,4 @@ ASALocalRun/
 *.dev.json
 TrackerService.Api/appsettings.Development.json
 TrackerService.Api/Properties/launchSettings.json
+**/Properties/launchSettings.json

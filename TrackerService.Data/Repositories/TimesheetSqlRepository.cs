@@ -71,7 +71,7 @@ namespace TrackerService.Data.Repositories
             timesheet.CreatedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
             timesheet.ModifiedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
 
-            var timesheetId = await Insert(SQL, new
+            var timesheetId = await Insert<int>(SQL, new
             {
                 employeeId = timesheet.EmployeeId,
                 workDate = timesheet.WorkDate,
@@ -96,7 +96,7 @@ namespace TrackerService.Data.Repositories
             const string SQL = @"INSERT INTO TimesheetEntry (timesheetId, startDate, endDate, notes)
                                  VALUES (@timesheetId, @startDate, @endDate, @notes);
                                  SELECT CAST (SCOPE_IDENTITY() as int)";
-            var tsEntryId = await Insert(SQL, new
+            var tsEntryId = await Insert<int>(SQL, new
             {
                 timesheetId = timesheetEntry.TimesheetId,
                 startDate = timesheetEntry.StartDate,
