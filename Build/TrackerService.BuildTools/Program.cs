@@ -86,7 +86,7 @@ namespace TrackerService.BuildTools
 
             var dbConnectionString = config.GetConnectionString("SimpleTaxDB");
             var sql = File.ReadAllText(sqlFileName);
-            var sqlStatements = sql.Split("GO", StringSplitOptions.RemoveEmptyEntries)
+            var sqlStatements = sql.Split(new[]{"GO", "go"}, StringSplitOptions.RemoveEmptyEntries)
                 .Where(s => !string.IsNullOrWhiteSpace(s));
 
             using (var conn = new SqlConnection(dbConnectionString))
