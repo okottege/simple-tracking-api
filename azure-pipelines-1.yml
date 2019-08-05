@@ -73,8 +73,10 @@ stages:
         tags: |
           $(tag)
           
-    - upload: manifests
-      artifact: manifests
+    - task: PublishPipelineArtifact@0
+      inputs:
+        artifactName: 'manifests'
+        targetPath: 'manifests'
 
 - stage: Deploy
   displayName: Deploy stage
