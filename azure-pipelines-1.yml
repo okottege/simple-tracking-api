@@ -9,12 +9,19 @@ resources:
 - repo: self
 
 variables:
+  testProjects: 'Tests/**/*.csproj'
+  buildToolsProjectFolder: 'Build/TrackerService.BuildTools'
+  buildToolsProjectFile: '$(buildToolsProjectFolder)/TrackerService.BuildTools.csproj'
+  sqlFilesFolder: '$(Parameters.SqlFilesFolder)'
+  combinedSqlScriptFileName: '$(Parameters.CombinedSqlScriptFileName)'
+  combinedSqlScriptArtifactPath: '$(System.ArtifactsDirectory)/sql/$(combinedSqlScriptFileName)'
+  buildToolsArtifactsPath: '$(System.ArtifactsDirectory)/buildTools/TrackerService.BuildTools'
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '4a3471fa-d935-4b19-9314-99d80b8dce07'
   imageRepository: 'trackingsvapi'
   containerRegistry: 'trackingservice.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
+  dockerfilePath: 'TrackerService.Api/multi-stage.DOCKERFILE'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'trackingservice71623b75-auth'
 
