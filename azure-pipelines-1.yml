@@ -62,6 +62,21 @@ stages:
         command: restore
         projects: $(buildToolsProjectFile)
 
+    - task: DotNetCoreCLI@2
+      displayName: Combine SQL upgrade scripts
+      inputs:
+        command: run
+        arguments: '--project $(buildToolsProjectFile) tracksvc-util sql-script-combine -sff $(sqlFilesFolder) -o $(combinedSqlScriptFileName)'
+    
+    - task: DotNetCoreCLI@2
+      displayName: Dotnet core publish the web tools
+      inputs:
+        command: publish
+        projects: $(buildToolsProjectFile)
+        publishWebProjects: False
+        zipAfterPublish: False
+        arguments: '-c Release -o buildTools'
+
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
@@ -77,6 +92,18 @@ stages:
       inputs:
         artifactName: 'manifests'
         targetPath: 'manifests'
+
+    - task: PublishPipelineArtifact@0
+      displayName: Publish combined sql upgrade script file
+      inputs:
+        artifactName: sql
+        targetPath: $(combinedSqlScriptFileName)
+    
+    - task: PublishPipelineArtifact@0
+      displayName: Publish Build Tools as an artifact
+      inputs:
+        artifactName: buildTools
+        targetPath: '$(buildToolsProjectFolder)/buildTools'
 
 - stage: Deploy
   displayName: Deploy stage
@@ -95,6 +122,23 @@ stages:
             inputs:
               artifactName: 'manifests'
               downloadPath: '$(System.ArtifactsDirectory)/manifests'
+
+          - task: DownloadPipelineArtifact@1
+            displayName: 'Download sql artifact'
+            inputs:
+              artifactName: 'sql'
+              downloadPath: '$(System.ArtifactsDirectory)/sql'
+          
+          - task: DownloadPipelineArtifact@1
+            displayName: 'Download build tools artifact'
+            inputs:
+              artifactName: 'buildTools'
+              downloadPath: '$(System.ArtifactsDirectory)/buildTools'
+          
+          - script: 'dotnet TrackerService.BuildTools.dll tracksvc-util database-upgrade -sf $(combinedSqlScriptArtifactPath)'
+            displayName: Upgrade Database 
+            workingDirectory: $(buildToolsArtifactsPath)
+
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
