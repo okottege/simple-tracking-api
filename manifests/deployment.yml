@@ -15,6 +15,11 @@ spec:
           ports:
           - containerPort: 80
           env:
+            - name: KeyVault__Endpoint
+              valueFrom:
+                secretKeyRef:
+                  name: keyvaultsecrets
+                  key: keyvaultEndpoint
             - name: KeyVault__SPClientId
               valueFrom:
                 secretKeyRef:
