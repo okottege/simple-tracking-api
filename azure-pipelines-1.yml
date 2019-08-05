@@ -19,7 +19,7 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '4a3471fa-d935-4b19-9314-99d80b8dce07'
-  imageRepository: 'trackingsvapi'
+  imageRepository: 'okottegesimpletrackingapi'
   containerRegistry: 'trackingservice.azurecr.io'
   dockerfilePath: 'TrackerService.Api/multi-stage.DOCKERFILE'
   tag: '$(Build.BuildId)'
