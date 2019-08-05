@@ -25,6 +25,8 @@ variables:
   tag: '$(Build.BuildId)'
   imagePullSecret: 'trackingservice71623b75-auth'
 
+  k8sNamespace: 'default'
+
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
@@ -59,7 +61,7 @@ stages:
       inputs:
         command: restore
         projects: $(buildToolsProjectFile)
-        
+
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
@@ -92,15 +94,26 @@ stages:
             inputs:
               action: createSecret
               secretName: $(imagePullSecret)
+              namespace: $(k8sNamespace)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+          
+          - task: KubernetesManifest@0
+            displayName: Create secrets for Azure Key vault
+            inputs:
+              action: createSecret
+              secretName: keyvaultsecrets
+              secretType: generic
+              namespace: $(k8sNamespace)
+              secretArguments: --from-literal=keyvaultClientId=$(KeyVaultClientId) --from-literal=keyvaultClientSecret=$(KeyVaultClientSecret)
               
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
               action: deploy
+              namespace: $(k8sNamespace)
               manifests: |
-                $(Pipeline.Workspace)/manifests/deployment.yml
-                $(Pipeline.Workspace)/manifests/service.yml
+                $(System.ArtifactsDirectory)/manifests/deployment.yml
+                $(System.ArtifactsDirectory)/manifests/service.yml
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
