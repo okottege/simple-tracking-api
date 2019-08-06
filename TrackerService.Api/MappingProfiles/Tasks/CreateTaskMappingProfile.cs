@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using TrackerService.Api.ViewModels.Tasks;
 using TrackerService.Core.CoreDomain.Tasks;
-using TrackerService.Core.CoreDomain.Tasks.Definitions;
 
 namespace TrackerService.Api.MappingProfiles.Tasks
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -28,17 +29,23 @@ namespace TrackerService.Data.Repositories
             var taskPublicId = task.TaskId ?? Guid.NewGuid().ToString();
             const string insertCommand = @"insert into task(public_id, parent_id, tenant_id, title, [description], due_date, [status], 
                                                             [type], created_date, created_by, modified_date, modified_by)
-                                           values(@taskPublicId, @ParentId, @TenantId, @Title, @Description, @DueDate, @Status, @Type,
+                                           values(@taskPublicId, @parentTaskId, @TenantId, @Title, @Description, @DueDate, @Status, @Type,
                                                    @CreatedDate, @CreatedBy, @ModifiedDate, @ModifiedBy);
                                            select cast(scope_identity() as bigint);";
             using (var conn = await OpenNewConnection())
             {
                 using (var transaction = conn.BeginTransaction())
                 {
+                    long? parentTaskId = null;
+                    if (task.Parent?.TaskId != null)
+                    {
+                        parentTaskId = await EnsureTaskExists(task.Parent.TaskId, conn, transaction);
+                    }
+
                     var taskInternalId = await conn.ExecuteScalarAsync<long>(insertCommand, new
                     {
                         taskPublicId,
-                        ParentId = task.Parent.TaskId,
+                        parentTaskId,
                         serviceContext.TenantId,
                         task.Title,
                         task.Description,
@@ -146,12 +153,12 @@ namespace TrackerService.Data.Repositories
             }
         }
 
-        private async Task<long> EnsureTaskExists(string taskId, IDbConnection conn)
+        private async Task<long> EnsureTaskExists(string taskId, IDbConnection conn, SqlTransaction transaction = null)
         {
             var task = (await conn.QueryAsync<PlatformTaskData>(
                 "select * from task where public_id = @taskId and tenant_id = @TenantId",
-                new {taskId, serviceContext.TenantId})).FirstOrDefault();
-            if(task == null) throw new EntityNotFoundException(taskId, "Task");
+                new {taskId, serviceContext.TenantId}, transaction)).FirstOrDefault();
+            if(task == null) throw new EntityNotFoundException("Task", taskId);
 
             return task.id;
         }
