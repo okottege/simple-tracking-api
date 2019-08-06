@@ -18,15 +18,14 @@ variables:
   buildToolsArtifactsPath: '$(System.ArtifactsDirectory)/buildTools/TrackerService.BuildTools'
 
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'b962112b-308d-4fc4-96b8-ef084398eea2'
+  dockerRegistryServiceConnection: '4a3471fa-d935-4b19-9314-99d80b8dce07'
   imageRepository: 'okottegesimpletrackingapi'
   containerRegistry: 'trackingservice.azurecr.io'
   dockerfilePath: 'TrackerService.Api/multi-stage.DOCKERFILE'
   tag: '$(Build.BuildId)'
-  
-  # Kubernetes Namespace
+  imagePullSecret: 'trackingservice71623b75-auth'
+
   k8sNamespace: 'default'
-  imagePullSecret: 'trackingserviceca90-auth'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -36,7 +35,7 @@ stages:
   displayName: Build stage
   jobs:  
   - job: Build
-    displayName: Build job
+    displayName: Build
     pool:
       vmImage: $(vmImageName)
     steps:
@@ -62,7 +61,7 @@ stages:
       inputs:
         command: restore
         projects: $(buildToolsProjectFile)
-    
+
     - task: DotNetCoreCLI@2
       displayName: Combine SQL upgrade scripts
       inputs:
@@ -77,7 +76,7 @@ stages:
         publishWebProjects: False
         zipAfterPublish: False
         arguments: '-c Release -o buildTools'
-        
+
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
@@ -93,7 +92,7 @@ stages:
       inputs:
         artifactName: 'manifests'
         targetPath: 'manifests'
-    
+
     - task: PublishPipelineArtifact@0
       displayName: Publish combined sql upgrade script file
       inputs:
@@ -111,10 +110,10 @@ stages:
   dependsOn: Build
   jobs:
   - deployment: Deploy
-    displayName: Deploy job
+    displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: 'okottegesimpletrackingapi-2030.default'
+    environment: 'okottegesimpletrackingapi-1695.default'
     strategy:
       runOnce:
         deploy:
@@ -155,7 +154,7 @@ stages:
               secretName: keyvaultsecrets
               secretType: generic
               namespace: $(k8sNamespace)
-              secretArguments: --from-literal=keyvaultClientId=$(KeyVaultClientId) --from-literal=keyvaultClientSecret=$(KeyVaultClientSecret)
+              secretArguments: --from-literal=keyvaultEndpoint=$(KeyVaultEndpoint) --from-literal=keyvaultClientId=$(KeyVaultClientId) --from-literal=keyvaultClientSecret=$(KeyVaultClientSecret)
               
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
