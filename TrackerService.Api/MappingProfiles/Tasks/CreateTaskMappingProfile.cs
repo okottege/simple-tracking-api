@@ -9,10 +9,9 @@ namespace TrackerService.Api.MappingProfiles.Tasks
     {
         public CreateTaskMappingProfile()
         {
-            CreateMap<CreateTaskViewModel, ITask>()
+            CreateMap<CreateTaskViewModel, PlatformTask>()
                 .ForMember(dest => dest.Parent,
-                    opt => opt.MapFrom(src =>
-                        src.ParentTaskId != null ? new PlatformTask {TaskId = src.ParentTaskId} : null));
+                    opt => opt.MapFrom(src => new PlatformTask { TaskId = src.ParentTaskId }));
         }
     }
 }

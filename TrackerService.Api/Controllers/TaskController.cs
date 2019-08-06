@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrackerService.Api.ViewModels.Tasks;
+using TrackerService.Core.CoreDomain.Tasks;
 using TrackerService.Core.CoreDomain.Tasks.Definitions;
 using TrackerService.Core.Repositories;
+using TrackerService.Data.Contracts;
 
 namespace TrackerService.Api.Controllers
 {
@@ -16,16 +19,16 @@ namespace TrackerService.Api.Controllers
         private readonly ITaskRepository taskRepo;
         private readonly IMapper mapper;
 
-        public TaskController(ITaskRepository taskRepo, IMapper mapper)
+        public TaskController(IRepositoryFactory repoFactory, IMapper mapper)
         {
-            this.taskRepo = taskRepo;
+            taskRepo = repoFactory.CreateTaskRepository();
             this.mapper = mapper;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTask(CreateTaskViewModel model)
+        public async Task<IActionResult> CreateTask([Required] CreateTaskViewModel model)
         {
-            var task = mapper.Map<ITask>(model);
+            var task = mapper.Map<PlatformTask>(model);
             var taskId = await taskRepo.CreateNewTask(task);
             return Ok(new {taskId});
         }

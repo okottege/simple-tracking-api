@@ -26,7 +26,7 @@ namespace TrackerService.Data.Repositories
         public async Task<string> CreateNewTask(ITask task)
         {
             var taskPublicId = task.TaskId ?? Guid.NewGuid().ToString();
-            const string insertCommand = @"insert into task(public_id, parent_id, tenant_id, title, [description], dueDate, [status], 
+            const string insertCommand = @"insert into task(public_id, parent_id, tenant_id, title, [description], due_date, [status], 
                                                             [type], created_date, created_by, modified_date, modified_by)
                                            values(@taskPublicId, @ParentId, @TenantId, @Title, @Description, @DueDate, @Status, @Type,
                                                    @CreatedDate, @CreatedBy, @ModifiedDate, @ModifiedBy);
@@ -43,13 +43,13 @@ namespace TrackerService.Data.Repositories
                         task.Title,
                         task.Description,
                         task.DueDate,
-                        task.Status,
-                        task.Type,
+                        Status = task.Status.ToString(),
+                        Type = task.Type.ToString(),
                         CreatedDate = DateTime.UtcNow,
                         CreatedBy = userContext.UserId,
                         ModifiedDate = DateTime.UtcNow,
-                        task.ModifiedBy
-                    });
+                        ModifiedBy = userContext.UserId
+                    }, transaction);
 
                     await CreateAssignments(taskInternalId, task.Assignments, conn);
                     await CreateTaskContextItems(taskInternalId, task.ContextItems, conn);
@@ -82,7 +82,7 @@ namespace TrackerService.Data.Repositories
                         task.DueDate,
                         task.Status,
                         ModifiedDate = DateTime.UtcNow,
-                        task.ModifiedBy,
+                        ModifiedBy = userContext.UserId,
                         serviceContext.TenantId
                     });
             }
