@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Dapper;
 using TrackerService.Common.Exceptions;
 using TrackerService.Core.CoreDomain;
-using TrackerService.Core.CoreDomain.Tasks;
+using TrackerService.Core.CoreDomain.Tasks.Definitions;
 using TrackerService.Core.Repositories;
 using TrackerService.Data.DataObjects.Tasks;
 
@@ -14,11 +14,13 @@ namespace TrackerService.Data.Repositories
 {
     public class SqlTaskRepository : BaseSqlRepository, ITaskRepository
     {
-        private readonly IRequestContext reqContext;
+        private readonly IServiceContext serviceContext;
+        private readonly IUserContext userContext;
 
-        public SqlTaskRepository(string connString, IRequestContext reqContext) : base(connString)
+        public SqlTaskRepository(string connString, IServiceContext serviceContext, IUserContext userContext) : base(connString)
         {
-            this.reqContext = reqContext;
+            this.serviceContext = serviceContext;
+            this.userContext = userContext;
         }
 
         public async Task<string> CreateNewTask(ITask task)
@@ -37,14 +39,14 @@ namespace TrackerService.Data.Repositories
                     {
                         taskPublicId,
                         ParentId = task.Parent.TaskId,
-                        reqContext.TenantId,
+                        serviceContext.TenantId,
                         task.Title,
                         task.Description,
                         task.DueDate,
                         task.Status,
                         task.Type,
                         CreatedDate = DateTime.UtcNow,
-                        task.CreatedBy,
+                        CreatedBy = userContext.UserId,
                         ModifiedDate = DateTime.UtcNow,
                         task.ModifiedBy
                     });
@@ -81,7 +83,7 @@ namespace TrackerService.Data.Repositories
                         task.Status,
                         ModifiedDate = DateTime.UtcNow,
                         task.ModifiedBy,
-                        reqContext.TenantId
+                        serviceContext.TenantId
                     });
             }
         }
@@ -102,7 +104,7 @@ namespace TrackerService.Data.Repositories
                 select [key], [value], created_date, created_by
                 from task_context where task_id = @taskInternalId;";
 
-                var reader = await conn.QueryMultipleAsync(SelectQuery, new {taskInternalId, reqContext.TenantId});
+                var reader = await conn.QueryMultipleAsync(SelectQuery, new {taskInternalId, serviceContext.TenantId});
                 var task = reader.Read<PlatformTaskData>().Single();
                 task.Assignments = reader.Read<AssignmentData>().Cast<ITaskAssignment>().ToList();
                 task.ContextItems = reader.Read<ContextData>().Cast<ITaskContextItem>().ToList();
@@ -120,7 +122,8 @@ namespace TrackerService.Data.Repositories
                     new
                     {
                         taskId, Type = assignment.Type.ToString(), assignment.EntityId,
-                        CreatedDate = DateTime.UtcNow,assignment.CreatedBy
+                        CreatedDate = DateTime.UtcNow,
+                        CreatedBy = userContext.UserId
                     });
             }
         }
@@ -138,7 +141,7 @@ namespace TrackerService.Data.Repositories
                         ctxItem.ContextKey,
                         ctxItem.ContextValue,
                         CreatedDate = DateTime.UtcNow,
-                        ctxItem.CreatedBy
+                        CreatedBy = userContext.UserId
                     });
             }
         }
@@ -147,7 +150,7 @@ namespace TrackerService.Data.Repositories
         {
             var task = (await conn.QueryAsync<PlatformTaskData>(
                 "select * from task where public_id = @taskId and tenant_id = @TenantId",
-                new {taskId, reqContext.TenantId})).FirstOrDefault();
+                new {taskId, serviceContext.TenantId})).FirstOrDefault();
             if(task == null) throw new EntityNotFoundException(taskId, "Task");
 
             return task.id;

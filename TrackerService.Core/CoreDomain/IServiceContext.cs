@@ -1,8 +1,8 @@
 ﻿namespace TrackerService.Core.CoreDomain
 {
-    public interface IRequestContext
+    public interface IServiceContext
     {
-        string TenantId { get; }
         string RequestId { get; }
+        string TenantId { get; }
     }
 }

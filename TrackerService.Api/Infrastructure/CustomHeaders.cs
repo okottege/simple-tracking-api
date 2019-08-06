@@ -4,5 +4,6 @@
     {
         public const string ApiVersion = "x-track-appversion";
         public const string RequestId = "x-track-requestid";
+        public const string TenantId = "x-track-tenantid";
     }
 }

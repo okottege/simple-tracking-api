@@ -3,6 +3,7 @@ using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using TrackerService.Common.Contracts;
+using TrackerService.Core.CoreDomain;
 
 namespace TrackerService.Api.Infrastructure.Logging
 {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Serilog.Context;
 using TrackerService.Api.Infrastructure.Logging;
-using TrackerService.Common.Contracts;
+using TrackerService.Core.CoreDomain;
 
 namespace TrackerService.Api.Infrastructure.Middleware
 {

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using TrackerService.Core.CoreDomain.Tasks;
+using TrackerService.Core.CoreDomain.Tasks.Definitions;
 
 namespace TrackerService.Core.Repositories
 {

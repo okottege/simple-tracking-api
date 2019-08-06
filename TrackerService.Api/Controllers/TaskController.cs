@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrackerService.Api.ViewModels.Tasks;
+using TrackerService.Core.CoreDomain.Tasks.Definitions;
 using TrackerService.Core.Repositories;
 
 namespace TrackerService.Api.Controllers
@@ -23,9 +23,11 @@ namespace TrackerService.Api.Controllers
         }
 
         [HttpPost]
-        public Task<IActionResult> CreateTask(CreateTaskViewModel model)
+        public async Task<IActionResult> CreateTask(CreateTaskViewModel model)
         {
-            throw new NotImplementedException();
+            var task = mapper.Map<ITask>(model);
+            var taskId = await taskRepo.CreateNewTask(task);
+            return Ok(new {taskId});
         }
     }
 }

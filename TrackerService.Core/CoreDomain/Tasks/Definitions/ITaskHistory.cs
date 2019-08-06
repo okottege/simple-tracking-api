@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TrackerService.Core.CoreDomain.Tasks
+namespace TrackerService.Core.CoreDomain.Tasks.Definitions
 {
     public interface ITaskHistory
     {

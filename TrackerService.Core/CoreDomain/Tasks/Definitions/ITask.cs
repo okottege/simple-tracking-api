@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TrackerService.Core.CoreDomain.Tasks
+namespace TrackerService.Core.CoreDomain.Tasks.Definitions
 {
     public interface ITask : IAuditableEntity
     {

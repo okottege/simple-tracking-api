@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using TrackerService.Common.Contracts;
+using TrackerService.Core.CoreDomain;
 using TrackerService.Data.Contracts;
 using TrackerService.Data.DataObjects;
 

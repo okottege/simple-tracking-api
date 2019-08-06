@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
-using TrackerService.Common.Contracts;
+using TrackerService.Core.CoreDomain;
 
 namespace TrackerService.Api.Infrastructure
 {
@@ -17,13 +17,15 @@ namespace TrackerService.Api.Infrastructure
         {
             get
             {
-                if (httpAccessor.HttpContext.Items.TryGetValue(CustomHeaders.RequestId, out var requestId))
+                if (httpAccessor.HttpContext.Request.Headers.TryGetValue(CustomHeaders.RequestId, out var requestId))
                 {
                     return requestId.ToString();
                 }
 
-                throw new Exception($"Cannot find the {CustomHeaders.RequestId} header.");
+                return null;
             }
         }
+
+        public string TenantId => httpAccessor.HttpContext.Request.Headers[CustomHeaders.TenantId];
     }
 }

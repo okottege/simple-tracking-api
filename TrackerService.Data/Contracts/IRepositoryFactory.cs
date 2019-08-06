@@ -1,4 +1,6 @@
-﻿namespace TrackerService.Data.Contracts
+﻿using TrackerService.Core.Repositories;
+
+namespace TrackerService.Data.Contracts
 {
     public interface IRepositoryFactory
     {
@@ -6,5 +8,6 @@
         IDocumentStorageRepository CreateDocumentStorageRepository();
         ITimesheetRepository CreateTimesheetRepository();
         IDBHealthCheckRepository CreateDBHealthRepository();
+        ITaskRepository CreateTaskRepository();
     }
 }

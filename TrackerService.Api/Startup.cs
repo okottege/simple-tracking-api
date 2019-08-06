@@ -16,6 +16,7 @@ using TrackerService.Api.Infrastructure.HealthChecks;
 using TrackerService.Api.Infrastructure.Middleware;
 using TrackerService.Common.Configuration;
 using TrackerService.Common.Contracts;
+using TrackerService.Core.CoreDomain;
 using TrackerService.Data;
 using TrackerService.Data.Contracts;
 using TrackerService.Data.Repositories;
@@ -75,10 +76,7 @@ namespace TrackerService.Api
             services.AddTransient<IServiceContext, ApiServiceContext>();
             services.AddHttpClients(authConfig, userManagementConfig);
 
-            var storageConn = new StorageConnectionInfo(Configuration.GetConnectionString("CloudStorage"), Configuration["StorageConnection:ContainerName"]);
-            var serviceProvider = services.BuildServiceProvider();
-            var userContext = serviceProvider.GetService<IUserContext>();
-            services.AddTransient<IRepositoryFactory>(provider => new RepositoryFactory(Configuration.GetConnectionString("SimpleTaxDB"), storageConn, userContext));
+            services.AddRepositoryFactory(Configuration);
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserAuthenticator, UserAuthenticator>();
         }

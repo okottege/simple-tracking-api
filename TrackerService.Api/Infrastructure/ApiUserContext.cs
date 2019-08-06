@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using TrackerService.Common.Contracts;
+using TrackerService.Core.CoreDomain;
 
 namespace TrackerService.Api.Infrastructure
 {

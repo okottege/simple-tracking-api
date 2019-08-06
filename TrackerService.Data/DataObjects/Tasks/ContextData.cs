@@ -1,5 +1,5 @@
 ﻿using System;
-using TrackerService.Core.CoreDomain.Tasks;
+using TrackerService.Core.CoreDomain.Tasks.Definitions;
 
 namespace TrackerService.Data.DataObjects.Tasks
 {

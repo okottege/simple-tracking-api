@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using TrackerService.Core.CoreDomain;
 using TrackerService.Core.CoreDomain.Tasks;
+using TrackerService.Core.CoreDomain.Tasks.Definitions;
 
 namespace TrackerService.Data.DataObjects.Tasks
 {
-    internal class PlatformTaskData : ITask
+    internal class PlatformTaskData : IDocumentSignatureTask
     {
         public string TaskId => public_id;
         public string Title => title;
         public string Description => description;
-        public bool? Resolved => resolved;
         public DateTime? DueDate => due_date?.Date == DateTime.MinValue ? null : due_date?.Date.ToUniversalTime();
         public TaskStatus Status => EnumerationExtensions.FromString<TaskStatus>(status);
         public TaskType Type => EnumerationExtensions.FromString<TaskType>(type);
@@ -22,6 +22,8 @@ namespace TrackerService.Data.DataObjects.Tasks
         public DateTime CreatedDate => created_date;
         public string ModifiedBy => modified_by;
         public DateTime ModifiedDate => modified_date;
+        public bool Resolved => resolved == true;
+        public List<string> DocumentIdList { get; set; } = new List<string>();
 
         internal long id { get; set; }
         public string public_id { get; set; }
