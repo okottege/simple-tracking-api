@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrackerService.Api.ViewModels.Tasks;
 using TrackerService.Core.CoreDomain.Tasks;
-using TrackerService.Core.CoreDomain.Tasks.Definitions;
 using TrackerService.Core.Repositories;
 using TrackerService.Data.Contracts;
 
