@@ -25,9 +25,9 @@ namespace TrackerService.Data.Repositories
         {
             var taskPublicId = task.TaskId ?? Guid.NewGuid().ToString();
             const string insertCommand = @"insert into task(public_id, parent_id, tenant_id, title, [description], dueDate, [status], 
-                                                            [type], resolved, created_date, created_by, modified_date, modified_by)
+                                                            [type], created_date, created_by, modified_date, modified_by)
                                            values(@taskPublicId, @ParentId, @TenantId, @Title, @Description, @DueDate, @Status, @Type,
-                                                   @Resolved, @CreatedDate, @CreatedBy, @ModifiedDate, @ModifiedBy);
+                                                   @CreatedDate, @CreatedBy, @ModifiedDate, @ModifiedBy);
                                            select cast(scope_identity() as bigint);";
             using (var conn = await OpenNewConnection())
             {
@@ -43,7 +43,6 @@ namespace TrackerService.Data.Repositories
                         task.DueDate,
                         task.Status,
                         task.Type,
-                        task.Resolved,
                         CreatedDate = DateTime.UtcNow,
                         task.CreatedBy,
                         ModifiedDate = DateTime.UtcNow,
@@ -69,7 +68,6 @@ namespace TrackerService.Data.Repositories
                                                  title = @Title,
                                                  description = @Description,
                                                  due_date = @DueDate,
-                                                 resolved = @Resolved,
                                                  [status] = @Status,
                                                  modified_date = @ModifiedDate,
                                                  modified_by = @ModifiedBy
@@ -80,7 +78,6 @@ namespace TrackerService.Data.Repositories
                         task.Title,
                         task.Description,
                         task.DueDate,
-                        task.Resolved,
                         task.Status,
                         ModifiedDate = DateTime.UtcNow,
                         task.ModifiedBy,
