@@ -13,6 +13,7 @@ namespace TrackerService.Api.MappingProfiles.Tasks
         {
             CreateMap<AssignmentViewModel, Assignment>()
                 .ForMember(m => m.Type, opt => opt.MapFrom(src => EnumerationExtensions.FromString<AssignmentEntityType>(src.Type)));
+            CreateMap<AssignmentViewModel, ITaskAssignment>().As<Assignment>();
             CreateMap<ITaskAssignment, AssignmentViewModel>()
                 .ForMember(m => m.Type, opt => opt.MapFrom(src => src.Type.ToString()));
         }

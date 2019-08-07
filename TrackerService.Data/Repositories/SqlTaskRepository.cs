@@ -58,8 +58,8 @@ namespace TrackerService.Data.Repositories
                         ModifiedBy = userContext.UserId
                     }, transaction);
 
-                    await CreateAssignments(taskInternalId, task.Assignments, conn);
-                    await CreateTaskContextItems(taskInternalId, task.ContextItems, conn);
+                    await CreateAssignments(taskInternalId, task.Assignments, conn, transaction);
+                    await CreateTaskContextItems(taskInternalId, task.ContextItems, conn, transaction);
 
                     transaction.Commit();
                 }
@@ -119,7 +119,7 @@ namespace TrackerService.Data.Repositories
             }
         }
 
-        private async Task CreateAssignments(long taskId, List<ITaskAssignment> assignments, IDbConnection conn)
+        private async Task CreateAssignments(long taskId, List<ITaskAssignment> assignments, IDbConnection conn, SqlTransaction transaction)
         {
             const string insertQuery = @"insert into task_assignment(task_id, entity_type, [entity_id], created_date, created_by)
                                          values(@taskId, @Type, @EntityId, @CreatedDate, @CreatedBy)";
@@ -131,11 +131,11 @@ namespace TrackerService.Data.Repositories
                         taskId, Type = assignment.Type.ToString(), assignment.EntityId,
                         CreatedDate = DateTime.UtcNow,
                         CreatedBy = userContext.UserId
-                    });
+                    }, transaction);
             }
         }
 
-        private async Task CreateTaskContextItems(long taskId, List<ITaskContextItem> contextItems, IDbConnection conn)
+        private async Task CreateTaskContextItems(long taskId, List<ITaskContextItem> contextItems, IDbConnection conn, SqlTransaction transaction)
         {
             const string insertQuery = @"insert into task_context(task_id, [key], [value], created_date, created_by)
                                          values(@taskId, @ContextKey, @ContextValue, @CreatedDate, @CreatedBy)";
@@ -149,7 +149,7 @@ namespace TrackerService.Data.Repositories
                         ctxItem.ContextValue,
                         CreatedDate = DateTime.UtcNow,
                         CreatedBy = userContext.UserId
-                    });
+                    }, transaction);
             }
         }
 
