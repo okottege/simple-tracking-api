@@ -31,5 +31,13 @@ namespace TrackerService.Api.Controllers
             var taskId = await taskRepo.CreateNewTask(task);
             return Ok(new {taskId});
         }
+
+        [HttpGet("{taskId}")]
+        public async Task<IActionResult> RetrieveTask(string taskId)
+        {
+            var task = await taskRepo.GetTask(taskId);
+            var model = mapper.Map<TaskDetailsViewModel>(task);
+            return Ok(model);
+        }
     }
 }

@@ -99,7 +99,7 @@ namespace TrackerService.Data.Repositories
         {
             using (var conn = await OpenNewConnection())
             {
-                var taskInternalId = EnsureTaskExists(taskId, conn);
+                var taskInternalId = await EnsureTaskExists(taskId, conn);
                 const string SelectQuery = @"
                 select id, public_id, title, description, parent_id, due_date, [status], [type], 
                        resolved, created_date, created_by, modified_date, modified_by
