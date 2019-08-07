@@ -105,6 +105,11 @@ namespace TrackerService.Data.Repositories
                        resolved, created_date, created_by, modified_date, modified_by
                 from task where id = @taskInternalId and tenant_id = @TenantId;
                 
+                select id, public_id, title, description, parent_id, due_date, [status], [type], 
+                       resolved, created_date, created_by, modified_date, modified_by
+                from task where id = (select parent_id from task where id = @taskInternalId)
+                and tenant_id = @TenantId;
+                
                 select entity_type, [entity_id], created_date, created_by
                 from task_assignment where task_id = @taskInternalId;
 
@@ -112,7 +117,11 @@ namespace TrackerService.Data.Repositories
                 from task_context where task_id = @taskInternalId;";
 
                 var reader = await conn.QueryMultipleAsync(SelectQuery, new {taskInternalId, serviceContext.TenantId});
-                var task = reader.Read<PlatformTaskData>().Single();
+                var tasks = new[] {reader.ReadFirstOrDefault<PlatformTaskData>(), reader.ReadFirstOrDefault<PlatformTaskData>()}
+                    .Where(t => t != null)
+                    .ToList();
+                var task = tasks.Single(t => t.id == taskInternalId);
+                task.Parent = tasks.FirstOrDefault(t => t.id == task.parent_id);
                 task.Assignments = reader.Read<AssignmentData>().Cast<ITaskAssignment>().ToList();
                 task.ContextItems = reader.Read<ContextData>().Cast<ITaskContextItem>().ToList();
                 return task;
