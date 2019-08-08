@@ -69,3 +69,21 @@ begin
 	)
 end
 go
+
+if not exists(select * from sysobjects where name = 'task_dependency' and xtype = 'U')
+begin
+    create table dbo.task_dependency (
+        id bigint identity(1, 1),
+        task_id bigint not null,
+        depends_on_task_id bigint not null,
+        [type] nvarchar(30) not null,
+        created_date datetime not null,
+        created_by nvarchar(64) not null,
+
+        constraint pk_task_dependency_id primary key (id),
+        constraint fk_task_dependency_task_task_id foreign key (task_id) references task(id),
+        constraint fk_task_dependency_task_depends_on_task_id foreign key (depends_on_task_id) references task(id),
+        constraint unq_task_dependency_task_id_depends_on_task_id unique(task_id, depends_on_task_id)
+    )
+end
+go
