@@ -14,6 +14,6 @@ namespace TrackerService.Api.ViewModels.Tasks
         public string Type { get; set; }
         public List<AssignmentViewModel> Assignments { get; set; } = new List<AssignmentViewModel>();
         public List<ContextViewModel> ContextItems { get; set; } = new List<ContextViewModel>();
-        public string ParentTaskId { get; set; }
+        public TaskDetailsViewModel Parent { get; set; }
     }
 }

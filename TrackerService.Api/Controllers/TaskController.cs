@@ -29,7 +29,7 @@ namespace TrackerService.Api.Controllers
         {
             var task = mapper.Map<PlatformTask>(model);
             var taskId = await taskRepo.CreateNewTask(task);
-            return Ok(new {taskId});
+            return CreatedAtAction(nameof(RetrieveTask), new {taskId}, new{taskId});
         }
 
         [HttpGet("{taskId}")]
