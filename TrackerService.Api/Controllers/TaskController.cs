@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using TrackerService.Api.ViewModels.Tasks;
 using TrackerService.Core.CoreDomain.Tasks;
 using TrackerService.Core.Repositories;
+using TrackerService.Core.Tasks.TaskCreation;
 using TrackerService.Data.Contracts;
 
 namespace TrackerService.Api.Controllers
@@ -16,11 +17,13 @@ namespace TrackerService.Api.Controllers
     public class TaskController : ControllerBase
     {
         private readonly ITaskRepository taskRepo;
+        private readonly ITaskCreator taskCreator;
         private readonly IMapper mapper;
 
-        public TaskController(IRepositoryFactory repoFactory, IMapper mapper)
+        public TaskController(ITaskCreator taskCreator, ITaskRepository taskRepo, IMapper mapper)
         {
-            taskRepo = repoFactory.CreateTaskRepository();
+            this.taskRepo = taskRepo;
+            this.taskCreator = taskCreator;
             this.mapper = mapper;
         }
 
@@ -28,7 +31,7 @@ namespace TrackerService.Api.Controllers
         public async Task<IActionResult> CreateTask([Required] CreateTaskViewModel model)
         {
             var task = mapper.Map<PlatformTask>(model);
-            var taskId = await taskRepo.CreateNewTask(task);
+            var taskId = await taskCreator.CreateTask(task);
             return CreatedAtAction(nameof(RetrieveTask), new {taskId}, new{taskId});
         }
 

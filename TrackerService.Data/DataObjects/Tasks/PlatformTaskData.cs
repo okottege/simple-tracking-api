@@ -18,6 +18,7 @@ namespace TrackerService.Data.DataObjects.Tasks
         public List<ITask> Children { get; set; } = new List<ITask>();
         public List<ITaskAssignment> Assignments { get; set; } = new List<ITaskAssignment>();
         public List<ITaskContextItem> ContextItems { get; set; } = new List<ITaskContextItem>();
+        public List<ITaskDependency> Dependencies { get; set; } = new List<ITaskDependency>();
         public string CreatedBy => created_by;
         public DateTime CreatedDate => created_date;
         public string ModifiedBy => modified_by;

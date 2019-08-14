@@ -16,7 +16,7 @@ namespace TrackerService.Api.Infrastructure
             var serviceContext = serviceProvider.GetService<IServiceContext>();
 
             services.AddTransient<IRepositoryFactory>(provider =>
-                new RepositoryFactory(config.GetConnectionString("SimpleTaxDB"), storageConn, serviceContext, userContext));
+                new RepositoryFactory(config.GetConnectionString("SimpleTaxDB"), storageConn,  userContext));
         }
     }
 }

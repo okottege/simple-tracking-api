@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using TrackerService.Common.Exceptions;
+using TrackerService.Core;
 using TrackerService.Core.CoreDomain;
 using TrackerService.Core.CoreDomain.Tasks.Definitions;
 using TrackerService.Core.Repositories;
@@ -18,7 +19,8 @@ namespace TrackerService.Data.Repositories
         private readonly IServiceContext serviceContext;
         private readonly IUserContext userContext;
 
-        public SqlTaskRepository(string connString, IServiceContext serviceContext, IUserContext userContext) : base(connString)
+        public SqlTaskRepository(IDataAccessConfiguration config, IServiceContext serviceContext, IUserContext userContext) 
+            : base(config.ConnectionString)
         {
             this.serviceContext = serviceContext;
             this.userContext = userContext;

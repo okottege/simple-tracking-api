@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NSubstitute;
 using TrackerService.Core.CoreDomain.Tasks;
 using TrackerService.Core.CoreDomain.Tasks.Definitions;
@@ -22,6 +23,7 @@ namespace Tracker.Api.Tests.CoreDomain
         public List<ITask> Children { get; set; }
         public List<ITaskAssignment> Assignments { get; set; }
         public List<ITaskContextItem> ContextItems { get; set; }
+        public List<ITaskDependency> Dependencies { get; set; }
 
         internal TestTask WithBasicData(string id)
         {
@@ -67,6 +69,18 @@ namespace Tracker.Api.Tests.CoreDomain
             }
 
             ContextItems = contextItems;
+            return this;
+        }
+
+        internal TestTask WithTaskDependencies(params string[] taskIds)
+        {
+            Dependencies = taskIds.Select(id =>
+            {
+                var dependency = Substitute.For<ITaskDependency>();
+                dependency.DependsOnTaskId.Returns(id);
+                dependency.Type.Returns(DependencyType.Complete);
+                return dependency;
+            }).ToList();
             return this;
         }
     }

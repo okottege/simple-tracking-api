@@ -16,7 +16,10 @@ using TrackerService.Api.Infrastructure.HealthChecks;
 using TrackerService.Api.Infrastructure.Middleware;
 using TrackerService.Common.Configuration;
 using TrackerService.Common.Contracts;
+using TrackerService.Core;
 using TrackerService.Core.CoreDomain;
+using TrackerService.Core.Repositories;
+using TrackerService.Core.Tasks.TaskCreation;
 using TrackerService.Data;
 using TrackerService.Data.Contracts;
 using TrackerService.Data.Repositories;
@@ -77,6 +80,9 @@ namespace TrackerService.Api
             services.AddHttpClients(authConfig, userManagementConfig);
 
             services.AddRepositoryFactory(Configuration);
+            services.AddTransient<IDataAccessConfiguration, DataAccessConfiguration>();
+            services.AddTransient<ITaskRepository, SqlTaskRepository>();
+            services.AddTransient<ITaskCreator, TaskCreator>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserAuthenticator, UserAuthenticator>();
         }

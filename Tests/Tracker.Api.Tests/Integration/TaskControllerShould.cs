@@ -12,7 +12,7 @@ using TrackerService.Api.ViewModels.Tasks;
 using TrackerService.Common;
 using TrackerService.Core.CoreDomain.Tasks.Definitions;
 using TrackerService.Core.Repositories;
-using TrackerService.Data.Contracts;
+using TrackerService.Core.Tasks.TaskCreation;
 using Xunit;
 
 namespace Tracker.Api.Tests.Integration
@@ -31,7 +31,8 @@ namespace Tracker.Api.Tests.Integration
         public async Task ReturnErrorWhenNoRequestBodyProvided()
         {
             var mockTaskRepo = Substitute.For<ITaskRepository>();
-            var http = CreateHttpClient(mockTaskRepo);
+            var mockTaskCreator = Substitute.For<ITaskCreator>();
+            var http = CreateHttpClient(mockTaskRepo, mockTaskCreator);
 
             var response = await http.PostAsync(BaseTaskUrl, new StringContent(string.Empty, Encoding.UTF8, "application/json"));
 
@@ -42,7 +43,7 @@ namespace Tracker.Api.Tests.Integration
         public async Task ReturnsBadRequestResponse_WhenTitleIsNotProvided()
         {
             var createTaskPayload = new CreateTaskViewModel().ToJsonContent();
-            var http = CreateHttpClient(Substitute.For<ITaskRepository>());
+            var http = CreateHttpClient(Substitute.For<ITaskRepository>(), Substitute.For<ITaskCreator>());
 
             var response = await http.PostAsync(BaseTaskUrl, createTaskPayload);
 
@@ -54,10 +55,10 @@ namespace Tracker.Api.Tests.Integration
         public async Task ReturnsPayloadWithTaskId_WhenTaskIsCreated()
         {
             var createTaskPayload = new CreateTaskViewModel{Title = "Test task"}.ToJsonContent();
-            var mockTaskRepo = Substitute.For<ITaskRepository>();
+            var mockTaskCreator = Substitute.For<ITaskCreator>();
             var newTaskId = Guid.NewGuid().ToString();
-            mockTaskRepo.CreateNewTask(Arg.Any<ITask>()).Returns(newTaskId);
-            var http = CreateHttpClient(mockTaskRepo);
+            mockTaskCreator.CreateTask(Arg.Any<ITask>()).Returns(newTaskId);
+            var http = CreateHttpClient(Substitute.For<ITaskRepository>(), mockTaskCreator);
 
             var response = await http.PostAsync(BaseTaskUrl, createTaskPayload);
 
@@ -70,12 +71,13 @@ namespace Tracker.Api.Tests.Integration
         public async Task ReturnsTaskDetails_ForTaskDetails()
         {
             var mockTaskRepo = Substitute.For<ITaskRepository>();
+            var mockTaskCreator = Substitute.For<ITaskCreator>();
             var testTask = new TestTask()
                 .WithBasicData("task-1234")
                 .WithNumberOfAssignments(2)
                 .WithNumberOfContextItems(2);
             mockTaskRepo.GetTask(Arg.Any<string>()).Returns(testTask);
-            var http = CreateHttpClient(mockTaskRepo);
+            var http = CreateHttpClient(mockTaskRepo, mockTaskCreator);
 
             var response = await http.GetAsync($"{BaseTaskUrl}/task-1234");
 
@@ -85,12 +87,14 @@ namespace Tracker.Api.Tests.Integration
             Assert.Equal(testTask.DueDate, vmContent.DueDate);
         }
 
-        private HttpClient CreateHttpClient(ITaskRepository mockTaskRepo)
+        private HttpClient CreateHttpClient(ITaskRepository mockTaskRepo, ITaskCreator mockTaskCreator)
         {
-            var mockRepoFactory = Substitute.For<IRepositoryFactory>();
-            mockRepoFactory.CreateTaskRepository().Returns(mockTaskRepo);
             return factory.WithWebHostBuilder(
-                        b => b.ConfigureTestServices(services => services.AddTransient(p => mockRepoFactory))
+                        b => b.ConfigureTestServices(services =>
+                        {
+                            services.AddTransient(p => mockTaskRepo);
+                            services.AddTransient(s => mockTaskCreator);
+                        })
                     ).CreateClient();
         }
     }

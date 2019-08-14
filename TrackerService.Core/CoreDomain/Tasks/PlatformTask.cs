@@ -20,5 +20,6 @@ namespace TrackerService.Core.CoreDomain.Tasks
         public List<ITask> Children { get; set; }
         public List<ITaskAssignment> Assignments { get; set; }
         public List<ITaskContextItem> ContextItems { get; set; }
+        public List<ITaskDependency> Dependencies { get; set; }
     }
 }
