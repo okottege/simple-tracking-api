@@ -15,12 +15,10 @@ using TrackerService.Api.Infrastructure.Authentication;
 using TrackerService.Api.Infrastructure.HealthChecks;
 using TrackerService.Api.Infrastructure.Middleware;
 using TrackerService.Common.Configuration;
-using TrackerService.Common.Contracts;
 using TrackerService.Core;
 using TrackerService.Core.CoreDomain;
 using TrackerService.Core.Repositories;
 using TrackerService.Core.Tasks.TaskCreation;
-using TrackerService.Data;
 using TrackerService.Data.Contracts;
 using TrackerService.Data.Repositories;
 
