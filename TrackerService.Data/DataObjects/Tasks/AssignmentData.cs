@@ -12,6 +12,7 @@ namespace TrackerService.Data.DataObjects.Tasks
         public DateTime CreatedDate => created_date.ToUniversalTime();
         public string CreatedBy => created_by;
 
+        internal long assignment_id { get; set; }
         public string entity_type { get; set; }
         public string entity_id { get; set; }
         public DateTime created_date { get; set; }

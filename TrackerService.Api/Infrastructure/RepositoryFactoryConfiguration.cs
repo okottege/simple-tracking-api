@@ -13,7 +13,6 @@ namespace TrackerService.Api.Infrastructure
             var storageConn = new StorageConnectionInfo(config.GetConnectionString("CloudStorage"), config["StorageConnection:ContainerName"]);
             var serviceProvider = services.BuildServiceProvider();
             var userContext = serviceProvider.GetService<IUserContext>();
-            var serviceContext = serviceProvider.GetService<IServiceContext>();
 
             services.AddTransient<IRepositoryFactory>(provider =>
                 new RepositoryFactory(config.GetConnectionString("SimpleTaxDB"), storageConn,  userContext));

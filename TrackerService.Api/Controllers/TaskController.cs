@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,6 @@ using TrackerService.Api.ViewModels.Tasks;
 using TrackerService.Core.CoreDomain.Tasks;
 using TrackerService.Core.Repositories;
 using TrackerService.Core.Tasks.TaskCreation;
-using TrackerService.Data.Contracts;
 
 namespace TrackerService.Api.Controllers
 {

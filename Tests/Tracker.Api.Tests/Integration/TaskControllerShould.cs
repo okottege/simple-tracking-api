@@ -20,8 +20,7 @@ namespace Tracker.Api.Tests.Integration
     public class TaskControllerShould : IClassFixture<InMemoryWebApplicationFactory>
     {
         private readonly InMemoryWebApplicationFactory factory;
-        private const string BaseTaskUrl = "/api/tasks";
-
+        
         public TaskControllerShould(InMemoryWebApplicationFactory factory)
         {
             this.factory = factory;
@@ -34,7 +33,7 @@ namespace Tracker.Api.Tests.Integration
             var mockTaskCreator = Substitute.For<ITaskCreator>();
             var http = CreateHttpClient(mockTaskRepo, mockTaskCreator);
 
-            var response = await http.PostAsync(BaseTaskUrl, new StringContent(string.Empty, Encoding.UTF8, "application/json"));
+            var response = await http.PostAsync(Constants.BaseTaskUrl, new StringContent(string.Empty, Encoding.UTF8, "application/json"));
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
@@ -45,7 +44,7 @@ namespace Tracker.Api.Tests.Integration
             var createTaskPayload = new CreateTaskViewModel().ToJsonContent();
             var http = CreateHttpClient(Substitute.For<ITaskRepository>(), Substitute.For<ITaskCreator>());
 
-            var response = await http.PostAsync(BaseTaskUrl, createTaskPayload);
+            var response = await http.PostAsync(Constants.BaseTaskUrl, createTaskPayload);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.Contains("The Title field is required", await response.Content.ReadAsStringAsync());
@@ -60,10 +59,10 @@ namespace Tracker.Api.Tests.Integration
             mockTaskCreator.CreateTask(Arg.Any<ITask>()).Returns(newTaskId);
             var http = CreateHttpClient(Substitute.For<ITaskRepository>(), mockTaskCreator);
 
-            var response = await http.PostAsync(BaseTaskUrl, createTaskPayload);
+            var response = await http.PostAsync(Constants.BaseTaskUrl, createTaskPayload);
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-            Assert.Contains($"{BaseTaskUrl}/{newTaskId}", response.Headers.Location.ToString());
+            Assert.Contains($"{Constants.BaseTaskUrl}/{newTaskId}", response.Headers.Location.ToString());
             Assert.Contains($@"""taskId"":""{newTaskId}""", await response.Content.ReadAsStringAsync());
         }
 
@@ -79,7 +78,7 @@ namespace Tracker.Api.Tests.Integration
             mockTaskRepo.GetTask(Arg.Any<string>()).Returns(testTask);
             var http = CreateHttpClient(mockTaskRepo, mockTaskCreator);
 
-            var response = await http.GetAsync($"{BaseTaskUrl}/task-1234");
+            var response = await http.GetAsync($"{Constants.BaseTaskUrl}/task-1234");
 
             var vmContent = await response.GetContent<TaskDetailsViewModel>();
             Assert.Equal(testTask.Title, vmContent.Title);
