@@ -32,11 +32,11 @@ namespace TrackerService.Data.Repositories
             ";
             var sqlBuilder = new SqlBuilder();
             sqlBuilder.Select(
-                @"t.public_id, t.title, t.status, t.resolved, t.due_date, t.created_by, 
-                  ta.id assignment_id, ta. ta.entity_id, ta.entity_type, 
+                @"t.public_id, t.title, t.status, t.type, t.resolved, t.due_date, t.created_date, t.created_by, 
+                  ta.id assignment_id, ta.entity_id, ta.entity_type, 
                   tc.id context_id, tc.[key], tc.value");
-            sqlBuilder.LeftJoin("left join task_context tc on t.id = tc.task_id");
-            sqlBuilder.LeftJoin("left join task_assignment ta on t.id = ta.task_id");
+            sqlBuilder.LeftJoin("task_context tc on t.id = tc.task_id");
+            sqlBuilder.LeftJoin("task_assignment ta on t.id = ta.task_id");
             sqlBuilder.Where("t.tenant_id = @TenantId", new {serviceContext.TenantId});
             sqlBuilder.OrderBy("t.due_date, t.created_date");
             AddFilterCriteria(filter, sqlBuilder);

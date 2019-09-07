@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TrackerService.Common\TrackerService.Common.csproj" />
+    <ProjectReference Include="..\TrackerService.Core\TrackerService.Core.csproj" />
     <ProjectReference Include="..\TrackerService.Data\TrackerService.Data.csproj" />
   </ItemGroup>
 

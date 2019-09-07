@@ -13,7 +13,7 @@ namespace TrackerService.Core.Tasks.TaskRetrieval
             this.repo = repo;
         }
 
-        public async Task<ITaskList> Search(ITaskFilterOptions options)
+        public async Task<ITaskList> Search(ITaskFilterOptions options) 
         {
             return await repo.GetTasks(options);
         }

@@ -19,6 +19,7 @@ using TrackerService.Core;
 using TrackerService.Core.CoreDomain;
 using TrackerService.Core.Repositories;
 using TrackerService.Core.Tasks.TaskCreation;
+using TrackerService.Core.Tasks.TaskRetrieval;
 using TrackerService.Data.Contracts;
 using TrackerService.Data.Repositories;
 
@@ -83,6 +84,8 @@ namespace TrackerService.Api
             services.AddTransient<ITaskCreator, TaskCreator>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserAuthenticator, UserAuthenticator>();
+            services.AddTransient<ITaskRetrievalRepository, SqlTaskRetrievalRepository>();
+            services.AddTransient<ITaskRetriever, TaskRetriever>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -26,7 +26,7 @@ namespace TrackerService.Api.Controllers
         public async Task<IActionResult> SearchTasks([FromQuery] TaskSearchViewModel model)
         {
             var options = mapper.Map<TaskFilterOptions>(model);
-            var taskList = await taskRetriever.Search(options);
+            var taskList = await taskRetriever.Search(options); 
             return Ok(taskList);
         }
     }

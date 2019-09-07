@@ -4,6 +4,8 @@ WORKDIR /app
 COPY ["TrackerService.Api/TrackerService.Api.csproj", "TrackerService.Api/"]
 COPY ["TrackerService.Common/TrackerService.Common.csproj", "TrackerService.Common/"]
 COPY ["TrackerService.Data/TrackerService.Data.csproj", "TrackerService.Data/"]
+COPY ["TrackerService.Data/TrackerService.Core.csproj", "TrackerService.Core/"]
+COPY ["TrackerService.Data/TrackerService.Services.csproj", "TrackerService.Services/"]
 
 RUN dotnet restore "TrackerService.Api/TrackerService.Api.csproj"
 
